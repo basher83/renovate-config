@@ -16,6 +16,7 @@ repos:
       - id: check-added-large-files
       - id: check-shebang-scripts-are-executable
       - id: detect-private-key
+        exclude: ^docs/
       - id: detect-aws-credentials
         args: ["--allow-missing-credentials"]
       - id: check-executables-have-shebangs
@@ -28,7 +29,5 @@ repos:
     rev: v0.0.166 # Use the latest release tag
     hooks:
       - id: rumdl
-        # To only check (default):
-        # args: []
-        # To automatically fix issues:
-        # args: [--fix]
+        # Exclude docs/ - these are Renovate reference docs with their own formatting
+        exclude: ^docs/

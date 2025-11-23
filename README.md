@@ -2,23 +2,33 @@
 
 ## Problem Statement
 
-Renovate configurations are duplicated across 20+ repositories with inconsistent settings. Most repos use basic `config:recommended` while three repos (Sombrero-Edge-Control, Zammad-MCP, docs) have advanced configurations tailored to specific use cases. Need centralized presets to share common patterns while allowing repository-specific customization.
+Renovate configurations are duplicated across 20+ repositories with inconsistent settings.
+Most repos use basic `config:recommended` while three repos (Sombrero-Edge-Control,
+Zammad-MCP, docs) have advanced configurations tailored to specific use cases.
+Need centralized presets to share common patterns while allowing repository-specific
+customization.
 
 ## Current State Analysis
 
 ### Configuration Patterns Identified
 
 **Basic Configuration (15 repos):**
-- Triangulum-Prime, andromeda-orchestration, Supernova-MicroK8s-Infra, Hercules-Vault-Infra, scalr-deploy-kestra, scalr-hashistack, automation-scripts, my_tailnet_acl, docker, lunar-claude, Laniakea-Edge, iac
+
+- Triangulum-Prime, andromeda-orchestration, Supernova-MicroK8s-Infra, Hercules-Vault-Infra,
+  scalr-deploy-kestra, scalr-hashistack, automation-scripts, my_tailnet_acl, docker,
+  lunar-claude, Laniakea-Edge, iac
 - Simple `config:recommended` extension only
 - No customization, scheduling, or rate limiting
 
 **Docker-Focused Configuration (1 repo):**
+
 - Virgo-Core
-- Extends: `config:recommended`, `docker:pinDigests`, `helpers:pinGitHubActionDigests`, `:configMigration`, `:pinDevDependencies`, `abandonments:recommended`
+- Extends: `config:recommended`, `docker:pinDigests`, `helpers:pinGitHubActionDigests`,
+  `:configMigration`, `:pinDevDependencies`, `abandonments:recommended`
 - Focus on Docker image digest pinning and GitHub Actions security
 
 **Infrastructure-as-Code Advanced Configuration (1 repo):**
+
 - Sombrero-Edge-Control
 - Most comprehensive configuration with:
   - Semantic commits, dependency dashboard, Monday scheduling (UTC)
@@ -30,6 +40,7 @@ Renovate configurations are duplicated across 20+ repositories with inconsistent
   - Labels: dependencies, renovate, security (for vulnerability alerts)
 
 **Python Project Advanced Configuration (1 repo):**
+
 - Zammad-MCP
 - Python/MCP-specific with:
   - Semantic commits, preserve semver ranges, pin GitHub Actions digests
@@ -42,6 +53,7 @@ Renovate configurations are duplicated across 20+ repositories with inconsistent
   - Custom commit prefixes: `chore(deps):` for prod, `chore(dev-deps):` for dev
 
 **Documentation Site Configuration (1 repo):**
+
 - docs
 - Documentation-specific with:
   - Pin all except peer dependencies
@@ -72,6 +84,7 @@ Renovate configurations are duplicated across 20+ repositories with inconsistent
 Create layered presets in `repository root` directory:
 
 **Base Preset (`default.json`):**
+
 - Extends `config:recommended`, `workarounds:all`
 - Common PR limits (3 concurrent, 2 hourly, not-pending)
 - Standard labels (dependencies, renovate)
@@ -124,10 +137,10 @@ Create layered presets in `repository root` directory:
 
 ### Directory Structure
 
-```
-
+```text
+basher83/renovate-config/
 ├── renovate.json              # This repo's config (extends local>basher83/renovate-config:base)
-├── renovate/
+├── presets/
 │   ├── default.json          # Base preset (referenced as local>basher83/renovate-config)
 │   ├── docker.json           # Docker-specific preset
 │   ├── infrastructure.json   # IaC preset (Terraform, Ansible, Packer)
@@ -141,6 +154,7 @@ Create layered presets in `repository root` directory:
 ### Reference Format for Other Repos
 
 **Basic projects:**
+
 ```json
 {
   "extends": ["local>basher83/renovate-config"]
@@ -148,54 +162,59 @@ Create layered presets in `repository root` directory:
 ```
 
 **Docker projects:**
+
 ```json
 {
   "extends": [
     "local>basher83/renovate-config",
-    "local>basher83/renovate-config:docker"
+    "local>basher83/renovate-config//presets:docker"
   ]
 }
 ```
 
 **Infrastructure projects:**
+
 ```json
 {
   "extends": [
     "local>basher83/renovate-config",
-    "local>basher83/renovate-config:infrastructure"
+    "local>basher83/renovate-config//presets:infrastructure"
   ]
 }
 ```
 
 **Python projects:**
+
 ```json
 {
   "extends": [
     "local>basher83/renovate-config",
-    "local>basher83/renovate-config:python"
+    "local>basher83/renovate-config//presets:python"
   ]
 }
 ```
 
 **Python MCP projects (Zammad-MCP):**
+
 ```json
 {
   "extends": [
     "local>basher83/renovate-config",
-    "local>basher83/renovate-config:python-mcp",
-    "local>basher83/renovate-config:github-actions-security"
+    "local>basher83/renovate-config://presets:python-mcp",
+    "local>basher83/renovate-config://presets:github-actions-security"
   ]
 }
 ```
 
 **Multi-stack projects (example: Sombrero-Edge-Control):**
+
 ```json
 {
   "extends": [
     "local>basher83/renovate-config",
-    "local>basher83/renovate-config:infrastructure",
-    "local>basher83/renovate-config:python",
-    "local>basher83/renovate-config:github-actions-security"
+    "local>basher83/renovate-config//presets:infrastructure",
+    "local>basher83/renovate-config//presets:python",
+    "local>basher83/renovate-config//presets:github-actions-security"
   ],
   "packageRules": [
     // Repository-specific overrides
@@ -209,18 +228,17 @@ Create layered presets in `repository root` directory:
 2. Create `default.json` base preset with common settings and expanded auto-merge
 3. Create specialized presets (docker, infrastructure, python, python-mcp, documentation, github-actions-security)
 4. Update `renovate.json` to extend from `local>basher83/renovate-config`
-5. Validate all preset files using `renovate-config-validator` (see https://docs.renovatebot.com/config-validation/)
+5. Validate all preset files using `renovate-config-validator` (see <https://docs.renovatebot.com/config-validation/>)
 6. Update WARP.md with Renovate preset documentation
 7. Create migration guide for updating existing repositories
 
 ## Validation Strategy
 
-1. Run `npx renovate-config-validator` on all preset files
-2. Test preset resolution locally using Renovate dry-run
-3. Update this repository first as proof-of-concept
-4. Gradually migrate 2-3 test repositories
-5. Monitor for configuration errors and adjust presets
-6. Roll out to remaining repositories
+1. Run `npx --yes --package renovate -- renovate-config-validator --strict` on all preset files
+2. Update this repository first as proof-of-concept
+3. Gradually migrate 2-3 test repositories
+4. Monitor for configuration errors and adjust presets
+5. Roll out to remaining repositories
 
 ## Benefits
 
@@ -233,12 +251,16 @@ Create layered presets in `repository root` directory:
 
 ## Migration Considerations
 
-1. **Repository-Specific Rules**: Complex configs like Sombrero-Edge-Control will keep repo-specific packageRules for unique needs (Proxmox provider)
-2. **Python 3.14 Blocking**: Centralized in `python-mcp.json` preset for MCP SDK incompatibility - any Python project using MCP SDK should extend this preset
+1. **Repository-Specific Rules**: Complex configs like Sombrero-Edge-Control will keep
+   repo-specific packageRules for unique needs (Proxmox provider)
+2. **Python 3.14 Blocking**: Centralized in `python-mcp.json` preset for MCP SDK
+   incompatibility - any Python project using MCP SDK should extend this preset
 3. **Timezone**: Base preset uses America/New_York (EST) - override at repo level if needed
-4. **Commit Prefixes**: No emoji by default in presets - add custom emoji (like ⬆️) at repo level if desired
+4. **Commit Prefixes**: No emoji by default in presets - add custom emoji (like the
+   upward arrow) at repo level if desired
 5. **Backwards Compatibility**: All repos will continue working; migration is opt-in
-6. **Auto-merge Strategy**: Expanded to reduce manual PR management - patches/minor for trusted dependencies, security updates always auto-merge
+6. **Auto-merge Strategy**: Expanded to reduce manual PR management - patches/minor for
+   trusted dependencies, security updates always auto-merge
 
 ## Key Discoveries During Implementation
 
@@ -254,5 +276,6 @@ Renovate has **native support** for the following, eliminating the need for cust
 ### Recommended Renovate Presets
 
 The base preset leverages official Renovate presets:
-- `config:recommended` - Best practices from maintainers
+
+- `config:best-practices` - Best practices from maintainers
 - `workarounds:all` - Crowd-sourced fixes for known package issues (Alpine, Java LTS, Node, Maven, etc.)

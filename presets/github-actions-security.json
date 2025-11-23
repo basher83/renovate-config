@@ -1,9 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "GitHub Actions security hardening preset - pins to commit SHA, auto-merges digests/patches/minor, groups updates",
-  "extends": [
-    "helpers:pinGitHubActionDigests"
-  ],
+  "description": "GitHub Actions security preset - groups all updates, auto-merges digests/patches/minor, requires dashboard approval for majors",
   "packageRules": [
     {
       "description": "Group all GitHub Actions updates together",

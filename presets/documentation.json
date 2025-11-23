@@ -11,9 +11,8 @@
   "reviewers": ["basher83"],
   "packageRules": [
     {
-      "description": "GitHub Actions - pin to commit SHA and auto-merge patch/minor",
+      "description": "GitHub Actions - auto-merge patch/minor/pin updates",
       "matchManagers": ["github-actions"],
-      "pinDigests": true,
       "automerge": true,
       "automergeType": "pr",
       "matchUpdateTypes": ["patch", "minor", "pin"]
@@ -25,17 +24,6 @@
       "automerge": true,
       "automergeType": "pr",
       "matchUpdateTypes": ["patch", "minor"]
-    },
-    {
-      "description": "Security updates - high priority, auto-merge",
-      "matchPackagePatterns": ["*"],
-      "automerge": true,
-      "automergeType": "pr",
-      "labels": ["security", "dependencies", "automated"],
-      "reviewersFromCodeOwners": true,
-      "vulnerabilityAlerts": {
-        "enabled": true
-      }
     },
     {
       "description": "Major updates - require manual review",

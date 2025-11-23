@@ -1,0 +1,38 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Python MCP project preset - extends python.json with Python 3.14 blocking due to MCP SDK incompatibility",
+  "extends": [
+    "local>basher83/renovate-config//presets:python"
+  ],
+  "packageRules": [
+    {
+      "description": "Cap Python to 3.13.x (3.14 MCP SDK incompatibility)",
+      "matchPackageNames": [
+        "python"
+      ],
+      "matchDatasources": [
+        "docker",
+        "github-tags"
+      ],
+      "allowedVersions": "<=3.13"
+    },
+    {
+      "description": "Block Python 3.14+ updates until MCP SDK compatibility confirmed",
+      "matchPackageNames": [
+        "python"
+      ],
+      "matchCurrentVersion": ">=3.14.0",
+      "enabled": false
+    },
+    {
+      "description": "Require approval for major MCP updates",
+      "matchPackageNames": [
+        "mcp"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    }
+  ]
+}

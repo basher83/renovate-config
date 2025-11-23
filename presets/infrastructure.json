@@ -1,9 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Infrastructure-as-Code preset - Terraform, Ansible, Packer with custom managers and auto-merge policies",
+  "description": "Infrastructure-as-Code preset - Terraform, Ansible, Packer with auto-merge policies and Monday scheduling",
   "extends": [
-    ":semanticCommits",
-    ":dependencyDashboard",
     "schedule:earlyMondays"
   ],
   "packageRules": [
@@ -30,27 +28,14 @@
       "rangeStrategy": "pin"
     },
     {
-      "description": "Auto-merge GitHub Actions patches and minor updates",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true,
-      "automergeType": "pr"
-    },
-    {
       "description": "Require approval for major Terraform updates",
-      "matchPackagePatterns": ["terraform"],
+      "matchPackageNames": ["/terraform/"],
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true
     },
     {
-      "description": "Group all GitHub Actions updates",
-      "matchManagers": ["github-actions"],
-      "groupName": "github-actions",
-      "groupSlug": "actions"
-    },
-    {
       "description": "Group Python dependencies",
-      "matchManagers": ["pip_requirements"],
+      "matchCategories": ["python"],
       "groupName": "python-dependencies"
     }
   ]

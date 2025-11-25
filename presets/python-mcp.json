@@ -1,37 +1,26 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Python MCP project preset - extends python.json with Python 3.14 blocking due to MCP SDK incompatibility",
+  "description": "Python MCP preset with 3.13 cap. Remove when https://github.com/modelcontextprotocol/python-sdk support is resolved",
   "extends": [
     "local>basher83/renovate-config//presets/python"
   ],
   "packageRules": [
     {
-      "description": "Cap Python to 3.13.x (3.14 MCP SDK incompatibility)",
-      "matchPackageNames": [
-        "python"
-      ],
-      "matchDatasources": [
-        "docker",
-        "github-tags"
-      ],
+      "description": "Cap Python runtime to 3.13.x (MCP SDK doesn't support 3.14 yet)",
+      "matchPackageNames": ["python"],
+      "matchDatasources": ["docker", "github-tags"],
       "allowedVersions": "<=3.13"
     },
     {
-      "description": "Block Python 3.14+ updates until MCP SDK compatibility confirmed",
-      "matchPackageNames": [
-        "python"
-      ],
-      "matchCurrentVersion": ">=3.14.0",
-      "enabled": false
+      "description": "Cap requires-python to <3.14 (MCP SDK compatibility)",
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["requires-python"],
+      "allowedVersions": "<3.14"
     },
     {
-      "description": "Require approval for major MCP updates",
-      "matchPackageNames": [
-        "mcp"
-      ],
-      "matchUpdateTypes": [
-        "major"
-      ],
+      "description": "Require approval for MCP SDK major version updates",
+      "matchPackageNames": ["mcp"],
+      "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true
     }
   ]

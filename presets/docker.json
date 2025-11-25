@@ -1,21 +1,76 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Docker preset - auto-merges patch updates and groups/auto-merges digest updates",
+  "description": "Docker security preset - pins to digests, auto-merges digests/patches, requires approval for minor/major",
   "packageRules": [
     {
-      "description": "Auto-merge Docker patch updates",
+      "description": "Pin Docker images to digests for security",
+      "matchDatasources": ["docker"],
+      "pinDigests": true
+    },
+    {
+	  "description": "Group Docker digest updates",
+	  "matchDatasources": ["docker"],
+	  "matchUpdateTypes": ["digest"],
+	  "groupName": "Docker Digests",
+	  "automerge": true,
+	  "automergeType": "branch"
+    },
+    {
+      "description": "Auto-merge Docker patch updates (off-hours)",
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["patch"],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "branch",
+      "automergeSchedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
     },
     {
-      "description": "Group Docker digest updates",
+      "description": "Auto-merge non-sensitive Docker minor updates (off-hours)",
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["digest"],
-      "groupName": "docker-digests",
+      "excludePackagePatterns": [
+        "^postgres$",
+        "^mysql$",
+        "^redis$",
+        "^mongo",
+        "^elasticsearch$",
+        "^rabbitmq$",
+        "^kafka$",
+        "^nginx$",
+        "^traefik$",
+        "^envoyproxy/"
+      ],
+      "matchUpdateTypes": ["minor"],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "branch",
+      "automergeSchedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+    },
+    {
+      "description": "Require approval for critical Docker minor updates",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": [
+        "^postgres$",
+        "^mysql$",
+        "^redis$",
+        "^mongo",
+        "^elasticsearch$",
+        "^rabbitmq$",
+        "^kafka$",
+        "^nginx$",
+        "^traefik$",
+        "^envoyproxy/"
+      ],
+      "matchUpdateTypes": ["minor"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Require approval for all Docker major updates",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label Docker PRs",
+      "matchDatasources": ["docker"],
+      "addLabels": ["docker", "dependencies"]
     }
   ]
 }

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Ansible preset - collection/role updates with flexible scheduling",
+  "packageRules": [
+    {
+      "description": "Auto-merge Ansible collection patch updates (off-hours)",
+      "matchManagers": ["ansible", "ansible-galaxy"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "branch",
+      "automergeSchedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+    },
+    {
+      "description": "Group Ansible collection minor updates for Monday review",
+      "matchManagers": ["ansible", "ansible-galaxy"],
+      "matchUpdateTypes": ["minor"],
+      "groupName": "Ansible Collections (Minor)",
+      "schedule": ["before 5am on Monday"]
+    },
+    {
+      "description": "Require approval for Ansible collection major updates",
+      "matchManagers": ["ansible", "ansible-galaxy"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label Ansible PRs",
+      "matchManagers": ["ansible", "ansible-galaxy"],
+      "addLabels": ["ansible", "configuration-management"]
+    }
+  ]
+}

@@ -10,19 +10,23 @@
       "matchCategories": ["python"],
       "matchUpdateTypes": ["patch"],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "branch"
     },
     {
       "description": "Group Python test dependencies",
       "matchCategories": ["python"],
       "matchPackageNames": ["/^pytest/"],
-      "groupName": "Python test dependencies"
+      "groupName": "Python test dependencies",
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
-      "description": "Group Python linting tools",
+      "description": "Group Python linting and dev tools",
       "matchCategories": ["python"],
-      "matchPackageNames": ["black", "ruff", "mypy", "flake8", "isort", "pylint"],
-      "groupName": "Python linters"
+      "matchPackageNames": ["black", "ruff", "mypy", "flake8", "isort", "pylint", "uv"],
+      "groupName": "Python linters and dev tools",
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
       "description": "Group Python type stubs",
@@ -30,7 +34,7 @@
       "matchPackageNames": ["/^types-/"],
       "groupName": "Python type stubs",
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "branch"
     }
   ]
 }

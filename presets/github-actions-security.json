@@ -3,32 +3,96 @@
   "description": "GitHub Actions security preset - groups all updates, auto-merges digests/patches/minor, requires dashboard approval for majors",
   "packageRules": [
     {
+      "description": "Pin GitHub Actions to commit SHA digests for security",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "pinDigests": true
+    },
+    {
       "description": "Group all GitHub Actions updates together",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "groupName": "GitHub Actions",
       "groupSlug": "github-actions"
     },
     {
-      "description": "Auto-merge GitHub Actions digest updates",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["digest"],
+      "description": "Auto-merge GitHub Actions digest updates (silent)",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
       "automerge": true,
-      "automergeType": "pr",
-      "commitMessageTopic": "{{depName}} digest to {{newDigestShort}}",
-      "commitMessageExtra": "({{currentValue}})"
+      "automergeType": "branch"
     },
     {
-      "description": "Auto-merge GitHub Actions patches and minor updates",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["patch", "minor"],
+      "description": "Auto-merge GitHub Actions patches and minor updates (silent)",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "branch",
+      "automergeSchedule": [
+        "after 10pm every weekday",
+        "before 5am every weekday",
+        "every weekend"
+      ]
     },
     {
-      "description": "Require approval for major GitHub Actions updates",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["major"],
+      "description": "Require approval for security-sensitive action updates (major + minor)",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackagePatterns": [
+        "^actions/checkout",
+        "^actions/upload-artifact",
+        "^actions/download-artifact",
+        "^aws-actions/",
+        "^google-github-actions/",
+        "^azure/",
+        "^docker/"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor"
+      ],
       "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Require approval for non-sensitive major GitHub Actions updates",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "excludePackagePatterns": [
+        "^actions/checkout",
+        "^actions/upload-artifact",
+        "^actions/download-artifact",
+        "^aws-actions/",
+        "^google-github-actions/",
+        "^azure/",
+        "^docker/"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label GitHub Actions PRs",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "addLabels": [
+        "github-actions",
+        "security"
+      ]
     }
   ]
 }

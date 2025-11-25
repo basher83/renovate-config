@@ -1,0 +1,65 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Terraform/OpenTofu preset - provider/module updates with security-first approach",
+  "packageRules": [
+    {
+      "description": "Auto-merge Terraform/OpenTofu provider digest updates (silent)",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["provider"],
+      "matchUpdateTypes": ["digest"],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "description": "Auto-merge Terraform/OpenTofu provider patch updates (off-hours)",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["provider"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "branch",
+      "automergeSchedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+    },
+    {
+      "description": "Group Terraform/OpenTofu provider minor updates for Monday review",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["provider"],
+      "matchUpdateTypes": ["minor"],
+      "groupName": "Terraform Providers (Minor)",
+      "schedule": ["before 5am on Monday"]
+    },
+    {
+      "description": "Require approval for Terraform/OpenTofu provider major updates",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["provider"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Group Terraform/OpenTofu module minor/patch updates for Monday review",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["module"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Terraform Modules",
+      "schedule": ["before 5am on Monday"]
+    },
+    {
+      "description": "Require approval for Terraform/OpenTofu module major updates",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["module"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Group OpenTofu-specific resources",
+      "matchManagers": ["terraform"],
+      "matchPackagePatterns": ["^opentofu/"],
+      "groupName": "OpenTofu Resources",
+      "schedule": ["before 5am on Monday"]
+    },
+    {
+      "description": "Label Terraform/OpenTofu PRs",
+      "matchManagers": ["terraform"],
+      "addLabels": ["terraform", "infrastructure"]
+    }
+  ]
+}

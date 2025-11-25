@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Python MCP preset with 3.13 cap. Remove when https://github.com/modelcontextprotocol/python-sdk support is resolved",
   "extends": [
-    "local>basher83/renovate-config//presets/python"
+    "local>basher83/renovate-config//presets/python.json"
   ],
   "packageRules": [
     {

@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Python MCP project preset - extends python.json with Python 3.14 blocking due to MCP SDK incompatibility",
   "extends": [
-    "local>basher83/renovate-config//presets:python"
+    "local>basher83/renovate-config//presets/python"
   ],
   "packageRules": [
     {

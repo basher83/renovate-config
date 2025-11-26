@@ -52,9 +52,9 @@
     {
       "description": "Group OpenTofu-specific resources",
       "matchManagers": ["terraform"],
-      "matchPackagePatterns": ["^opentofu/"],
       "groupName": "OpenTofu Resources",
-      "schedule": ["before 5am on Monday"]
+      "schedule": ["before 5am on Monday"],
+      "matchPackageNames": ["/^opentofu//"]
     },
     {
       "description": "Label Terraform/OpenTofu PRs",

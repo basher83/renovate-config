@@ -4,7 +4,9 @@
   "packageRules": [
     {
       "description": "Pin critical infrastructure tools for stability",
-      "matchManagers": ["mise"],
+      "matchManagers": [
+        "mise"
+      ],
       "matchPackageNames": [
         "terraform",
         "opentofu",
@@ -15,46 +17,69 @@
         "helm"
       ],
       "rangeStrategy": "pin",
-      "schedule": ["before 5am on Monday"],
+      "schedule": [
+        "before 5am on Monday"
+      ],
       "groupName": "mise: Infrastructure Tools"
     },
     {
       "description": "Pin Python runtime versions",
-      "matchManagers": ["mise"],
-      "matchPackagePatterns": ["^python$", "^python@"],
+      "matchManagers": [
+        "mise"
+      ],
       "rangeStrategy": "pin",
-      "schedule": ["before 5am on Monday"],
-      "groupName": "mise: Python Runtime"
+      "schedule": [
+        "before 5am on Monday"
+      ],
+      "groupName": "mise: Python Runtime",
+      "matchPackageNames": [
+        "/^python$/",
+        "/^python@/"
+      ]
     },
     {
       "description": "Pin Node.js runtime versions",
-      "matchManagers": ["mise"],
-      "matchPackagePatterns": ["^node$", "^nodejs$"],
+      "matchManagers": [
+        "mise"
+      ],
       "rangeStrategy": "pin",
-      "schedule": ["before 5am on Monday"],
-      "groupName": "mise: Node.js Runtime"
+      "schedule": [
+        "before 5am on Monday"
+      ],
+      "groupName": "mise: Node.js Runtime",
+      "matchPackageNames": [
+        "/^node$/",
+        "/^nodejs$/"
+      ]
     },
     {
       "description": "Auto-update utility tools (patch only)",
-      "matchManagers": ["mise"],
-      "excludePackageNames": [
-        "terraform",
-        "opentofu",
-        "packer",
-        "ansible",
-        "ansible-core",
-        "kubectl",
-        "helm"
+      "matchManagers": [
+        "mise"
       ],
-      "excludePackagePatterns": ["^python", "^node"],
-      "matchUpdateTypes": ["patch"],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
       "automerge": true,
       "automergeType": "branch",
-      "schedule": ["before 5am on Monday"]
+      "matchPackageNames": [
+        "!terraform",
+        "!opentofu",
+        "!packer",
+        "!ansible",
+        "!ansible-core",
+        "!kubectl",
+        "!helm",
+        "!/^python/",
+        "!/^node/"
+      ]
     },
     {
       "description": "Require approval for critical tool major updates",
-      "matchManagers": ["mise"],
+      "matchManagers": [
+        "mise"
+      ],
       "matchPackageNames": [
         "terraform",
         "opentofu",
@@ -66,13 +91,20 @@
         "kubectl",
         "helm"
       ],
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true
     },
     {
       "description": "Label mise tool updates",
-      "matchManagers": ["mise"],
-      "addLabels": ["mise", "tooling"]
+      "matchManagers": [
+        "mise"
+      ],
+      "addLabels": [
+        "mise",
+        "tooling"
+      ]
     }
   ]
 }

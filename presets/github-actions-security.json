@@ -38,51 +38,46 @@
         "minor"
       ],
       "automerge": true,
-      "automergeType": "branch",
-      "automergeSchedule": [
-        "after 10pm every weekday",
-        "before 5am every weekday",
-        "every weekend"
-      ]
+      "automergeType": "branch"
     },
     {
       "description": "Require approval for security-sensitive action updates (major + minor)",
       "matchManagers": [
         "github-actions"
       ],
-      "matchPackagePatterns": [
-        "^actions/checkout",
-        "^actions/upload-artifact",
-        "^actions/download-artifact",
-        "^aws-actions/",
-        "^google-github-actions/",
-        "^azure/",
-        "^docker/"
-      ],
       "matchUpdateTypes": [
         "major",
         "minor"
       ],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "matchPackageNames": [
+        "/^actions/checkout/",
+        "/^actions/upload-artifact/",
+        "/^actions/download-artifact/",
+        "/^aws-actions//",
+        "/^google-github-actions//",
+        "/^azure//",
+        "/^docker//"
+      ]
     },
     {
       "description": "Require approval for non-sensitive major GitHub Actions updates",
       "matchManagers": [
         "github-actions"
       ],
-      "excludePackagePatterns": [
-        "^actions/checkout",
-        "^actions/upload-artifact",
-        "^actions/download-artifact",
-        "^aws-actions/",
-        "^google-github-actions/",
-        "^azure/",
-        "^docker/"
-      ],
       "matchUpdateTypes": [
         "major"
       ],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "matchPackageNames": [
+        "!/^actions/checkout/",
+        "!/^actions/upload-artifact/",
+        "!/^actions/download-artifact/",
+        "!/^aws-actions//",
+        "!/^google-github-actions//",
+        "!/^azure//",
+        "!/^docker//"
+      ]
     },
     {
       "description": "Label GitHub Actions PRs",

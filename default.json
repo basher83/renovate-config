@@ -3,7 +3,8 @@
   "description": "Base Renovate preset for basher83 repositories - provides common settings for PR management, security alerts, and semantic commits",
   "extends": [
     "config:best-practices",
-    "workarounds:all"
+    "workarounds:all",
+    "local>basher83/renovate-config//presets/mise.json"
   ],
   "timezone": "America/New_York",
   "prConcurrentLimit": 3,

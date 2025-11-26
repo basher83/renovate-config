@@ -1,0 +1,28 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "local>basher83/renovate-config",
+        "local>basher83/renovate-config//presets/python-mcp.json",
+        "local>basher83/renovate-config//presets/github-actions-security.json"
+    ],
+    "labels": [
+        "dependencies",
+        "renovate"
+    ],
+    "assignees": [
+        "basher83"
+    ],
+    "commitMessagePrefix": "chore(deps):",
+    "packageRules": [
+        {
+            "description": "Require approval for major Zammad API updates",
+            "matchPackageNames": [
+                "zammad-py"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "dependencyDashboardApproval": true
+        }
+    ]
+}

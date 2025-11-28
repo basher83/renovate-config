@@ -4,7 +4,8 @@
   "extends": [
     "config:best-practices",
     "workarounds:all",
-    "local>basher83/renovate-config//presets/mise.json"
+    "local>basher83/renovate-config//presets/mise.json",
+    "local>basher83/renovate-config//presets/github-actions-security.json"
   ],
   "timezone": "America/New_York",
   "prConcurrentLimit": 3,

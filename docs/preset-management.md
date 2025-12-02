@@ -43,11 +43,10 @@ When creating a new preset, determine whether it should be:
 
 - `python-mcp.json` – Only MCP projects should cap Python to 3.13
 - `terraform-tofu.json` – Only infrastructure repos using Terraform/OpenTofu
-- `documentation.json` – Only docs sites that can tolerate aggressive auto-merge
 
-> Note: Historically, `mise.json` was treated as a global preset. Renovate now has first-class support for
+> Note: Renovate now has first-class support for updating `mise` directly, so we rely on Renovate's
 > updating `mise` directly, so we plan to **remove** this preset from `default.json` and rely on Renovate’s
-> built-in behavior instead.
+> built-in behavior instead of a custom preset.
 
 ---
 
@@ -60,12 +59,12 @@ Create a focused preset file in the `presets/` directory:
 ```jsonc
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Universal mise tooling preset - conservative updates for all tool versions",
+  "description": "Python project preset - auto-merges patches, groups linters and test tools",
   "packageRules": [
     {
-      "description": "Auto-update utility tools (patch and minor)",
-      "matchManagers": ["mise"],
-      "matchUpdateTypes": ["patch", "minor"],
+      "description": "Auto-merge Python patch updates (PR merge)",
+      "matchCategories": ["python"],
+      "matchUpdateTypes": ["patch"],
       "automerge": true
     }
   ]
@@ -85,7 +84,7 @@ If the preset should apply to all repositories, add it to `default.json`:
   "extends": [
     "config:best-practices",
     "workarounds:all",
-    "local>basher83/renovate-config//presets/mise.json"
+    "local>basher83/renovate-config//presets/github-actions-security.json"
   ]
   // ... rest of config
 }
@@ -102,7 +101,7 @@ Repositories that were previously extending the preset explicitly can now remove
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>basher83/renovate-config",
-    "local>basher83/renovate-config//presets/mise.json",
+    "local>basher83/renovate-config//presets/docker.json",
     "local>basher83/renovate-config//presets/python-mcp.json"
   ]
 }
@@ -242,10 +241,9 @@ When triaging such a case, check:
 
 The following presets are included in `default.json`:
 
-- *(Subject to change as Renovate gains more built‑in capabilities, e.g. for `mise`.)*
+- `github-actions-security.json` – GitHub Actions security rules (digest pinning & selective automerge)
 
-> TODO: As part of the `mise.json` deprecation, update this section once `mise.json`
-> has been removed from `default.json`.
+> Note: Renovate now has built-in support for `mise`, so no custom preset is needed.
 
 ---
 
@@ -256,11 +254,8 @@ The following presets are available but must be explicitly extended:
 - `python.json` – Python project defaults
 - `python-mcp.json` – MCP-specific Python rules (Python 3.13 cap, MCP majors require approval)
 - `docker.json` – Docker security and digest pinning
-- `github-actions-security.json` – GitHub Actions security rules (digest pinning & selective automerge)
 - `terraform-tofu.json` – Terraform/OpenTofu provider/module rules
 - `ansible.json` – Ansible collection/role updates
-- `infrastructure.json` – Infrastructure-as-Code comprehensive preset
-- `documentation.json` – Documentation site aggressive auto-merge
 
 ---
 

@@ -99,6 +99,7 @@ Repositories that were previously extending the preset explicitly can now remove
 
 ```jsonc
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>basher83/renovate-config",
     "local>basher83/renovate-config//presets/mise.json",
@@ -111,6 +112,7 @@ Repositories that were previously extending the preset explicitly can now remove
 
 ```jsonc
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>basher83/renovate-config",
     "local>basher83/renovate-config//presets/python-mcp.json"

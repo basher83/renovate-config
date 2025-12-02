@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Docker security preset - pins to digests, auto-merges digests/patches, requires approval for minor/major",
+  "description": "Docker security preset - pins to digests, auto-merges safe changes, requires approval for higher-risk ones",
   "packageRules": [
     {
       "description": "Pin Docker images to digests for security",
@@ -10,7 +10,7 @@
       "pinDigests": true
     },
     {
-      "description": "Group Docker digest updates",
+      "description": "Group & auto-merge Docker digest updates (PR merge)",
       "matchDatasources": [
         "docker"
       ],
@@ -18,22 +18,20 @@
         "digest"
       ],
       "groupName": "Docker Digests",
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
-      "description": "Auto-merge Docker patch updates",
+      "description": "Auto-merge Docker patch updates (PR merge)",
       "matchDatasources": [
         "docker"
       ],
       "matchUpdateTypes": [
         "patch"
       ],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
-      "description": "Auto-merge non-sensitive Docker minor updates",
+      "description": "Auto-merge non-sensitive Docker minor updates (PR merge)",
       "matchDatasources": [
         "docker"
       ],
@@ -41,7 +39,6 @@
         "minor"
       ],
       "automerge": true,
-      "automergeType": "branch",
       "matchPackageNames": [
         "!/^postgres$/",
         "!/^mysql$/",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "GitHub Actions security preset - groups all updates, auto-merges digests/patches/minor, requires dashboard approval for majors",
+  "description": "GitHub Actions security preset - groups all updates, auto-merges low-risk changes into main, requires dashboard approval for security-sensitive updates",
   "packageRules": [
     {
       "description": "Pin GitHub Actions to commit SHA digests for security",
@@ -17,31 +17,51 @@
       "groupName": "GitHub Actions",
       "groupSlug": "github-actions"
     },
+
+    //
+    // LOW-RISK: FULLY AUTOMERGE TO MAIN (PR MERGE)
+    //
+
     {
-      "description": "Auto-merge GitHub Actions digest updates (silent)",
+      "description": "Auto-merge ALL GitHub Actions digest updates into main (no approval)",
       "matchManagers": [
         "github-actions"
       ],
       "matchUpdateTypes": [
         "digest"
       ],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
+      // automergeType defaults to "pr" → PR gets merged & disappears
     },
     {
-      "description": "Auto-merge GitHub Actions patches and minor updates (silent)",
+      "description": "Auto-merge non-sensitive GitHub Actions patch, minor, and major updates into main (no approval)",
       "matchManagers": [
         "github-actions"
       ],
       "matchUpdateTypes": [
         "patch",
-        "minor"
+        "minor",
+        "major"
       ],
-      "automerge": true,
-      "automergeType": "branch"
+      "matchPackageNames": [
+        "!/^actions\\/checkout/",
+        "!/^actions\\/upload-artifact/",
+        "!/^actions\\/download-artifact/",
+        "!/^aws-actions\\//",
+        "!/^google-github-actions\\//",
+        "!/^azure\\//",
+        "!/^docker\\//"
+      ],
+      "automerge": true
+      // automergeType defaults to "pr"
     },
+
+    //
+    // HIGHER-RISK: REQUIRE MANUAL APPROVAL
+    //
+
     {
-      "description": "Require approval for security-sensitive action updates (major + minor)",
+      "description": "Require approval for security-sensitive GitHub Actions minor and major updates",
       "matchManagers": [
         "github-actions"
       ],
@@ -51,34 +71,20 @@
       ],
       "dependencyDashboardApproval": true,
       "matchPackageNames": [
-        "/^actions/checkout/",
-        "/^actions/upload-artifact/",
-        "/^actions/download-artifact/",
-        "/^aws-actions//",
-        "/^google-github-actions//",
-        "/^azure//",
-        "/^docker//"
+        "/^actions\\/checkout/",
+        "/^actions\\/upload-artifact/",
+        "/^actions\\/download-artifact/",
+        "/^aws-actions\\//",
+        "/^google-github-actions\\//",
+        "/^azure\\//",
+        "/^docker\\//"
       ]
     },
-    {
-      "description": "Require approval for non-sensitive major GitHub Actions updates",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "dependencyDashboardApproval": true,
-      "matchPackageNames": [
-        "!/^actions/checkout/",
-        "!/^actions/upload-artifact/",
-        "!/^actions/download-artifact/",
-        "!/^aws-actions//",
-        "!/^google-github-actions//",
-        "!/^azure//",
-        "!/^docker//"
-      ]
-    },
+
+    //
+    // LABELING
+    //
+
     {
       "description": "Label GitHub Actions PRs",
       "matchManagers": [

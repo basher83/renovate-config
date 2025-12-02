@@ -3,7 +3,7 @@
   "description": "Ansible preset - collection/role updates",
   "packageRules": [
     {
-      "description": "Auto-merge Ansible collection patch updates",
+      "description": "Auto-merge Ansible collection patch updates (PR merge)",
       "matchManagers": [
         "ansible",
         "ansible-galaxy"
@@ -11,8 +11,7 @@
       "matchUpdateTypes": [
         "patch"
       ],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
       "description": "Group Ansible collection minor updates",

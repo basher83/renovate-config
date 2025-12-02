@@ -17,11 +17,6 @@
       "groupName": "GitHub Actions",
       "groupSlug": "github-actions"
     },
-
-    //
-    // LOW-RISK: FULLY AUTOMERGE TO MAIN (PR MERGE)
-    //
-
     {
       "description": "Auto-merge ALL GitHub Actions digest updates into main (no approval)",
       "matchManagers": [
@@ -31,7 +26,6 @@
         "digest"
       ],
       "automerge": true
-      // automergeType defaults to "pr" → PR gets merged & disappears
     },
     {
       "description": "Auto-merge non-sensitive GitHub Actions patch, minor, and major updates into main (no approval)",
@@ -53,13 +47,7 @@
         "!/^docker\\//"
       ],
       "automerge": true
-      // automergeType defaults to "pr"
     },
-
-    //
-    // HIGHER-RISK: REQUIRE MANUAL APPROVAL
-    //
-
     {
       "description": "Require approval for security-sensitive GitHub Actions minor and major updates",
       "matchManagers": [
@@ -80,11 +68,6 @@
         "/^docker\\//"
       ]
     },
-
-    //
-    // LABELING
-    //
-
     {
       "description": "Label GitHub Actions PRs",
       "matchManagers": [

@@ -7,20 +7,33 @@
   "packageRules": [
     {
       "description": "Cap Python runtime to 3.13.x (MCP SDK doesn't support 3.14 yet)",
-      "matchPackageNames": ["python"],
-      "matchDatasources": ["docker", "github-tags"],
+      "matchPackageNames": [
+        "python"
+      ],
+      "matchDatasources": [
+        "docker",
+        "github-tags"
+      ],
       "allowedVersions": "<=3.13"
     },
     {
       "description": "Cap requires-python to <3.14 (MCP SDK compatibility)",
-      "matchManagers": ["pep621"],
-      "matchDepTypes": ["requires-python"],
+      "matchManagers": [
+        "pep621"
+      ],
+      "matchDepTypes": [
+        "requires-python"
+      ],
       "allowedVersions": "<3.14"
     },
     {
       "description": "Require approval for MCP SDK major version updates",
-      "matchPackageNames": ["mcp"],
-      "matchUpdateTypes": ["major"],
+      "matchPackageNames": [
+        "mcp"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true
     }
   ]

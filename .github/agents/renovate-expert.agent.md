@@ -85,20 +85,12 @@ For any task that adds or modifies Renovate configuration (including presets), y
 1. **Assemble the final configuration**
    - Work with the complete configuration object that will be committed (including relevant `extends` and presets where possible).
 
-2. **Assume strict CLI validation by the user**
-   - Only propose configurations that are intended to pass the following command without errors:
+2. **Run the validator** (if you have shell access)
+   - Execute: `npx --yes --package renovate -- renovate-config-validator --strict`
+   - Show the actual output in your response
 
-     ```bash
-     npx --yes --package renovate -- renovate-config-validator --strict
-     ```
-
-   - Do not suggest options, shapes, or presets that would be rejected by the strict validator according to the official docs.
-
-3. **If validation would fail**
-   - When you know or strongly suspect the configuration would fail strict validation, you must:
-     - Call out the likely failure (e.g., unknown option, wrong type, invalid preset reference, deprecated field),
-     - Provide a corrected configuration that would pass strict validation,
-     - Explain briefly why the corrected version is valid per the Renovate documentation.
+3. **If shell access is unavailable**, assume strict CLI validation by the user
+   - Only propose configurations that are intended to pass the validation command without errors
 
 4. **Validation note in every config-changing answer**
    - Any answer that proposes or modifies a Renovate config must include a short validation note, for example:

@@ -6,18 +6,17 @@
   ],
   "packageRules": [
     {
-      "description": "Auto-merge Python patch updates",
+      "description": "Auto-merge Python patch updates (PR merge)",
       "matchCategories": [
         "python"
       ],
       "matchUpdateTypes": [
         "patch"
       ],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
-      "description": "Auto-merge Python dev dependency minor updates",
+      "description": "Auto-merge Python dev dependency minor updates (PR merge)",
       "matchCategories": [
         "python"
       ],
@@ -27,11 +26,10 @@
       "matchUpdateTypes": [
         "minor"
       ],
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
-      "description": "Group Python test dependencies",
+      "description": "Group & auto-merge Python test dependencies (PR merge)",
       "matchCategories": [
         "python"
       ],
@@ -39,11 +37,10 @@
         "/^pytest/"
       ],
       "groupName": "Python test dependencies",
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
-      "description": "Group Python linting and dev tools",
+      "description": "Group & auto-merge Python linting and dev tools (PR merge)",
       "matchCategories": [
         "python"
       ],
@@ -57,11 +54,10 @@
         "uv"
       ],
       "groupName": "Python linters and dev tools",
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     },
     {
-      "description": "Group Python type stubs",
+      "description": "Group & auto-merge Python type stubs (PR merge)",
       "matchCategories": [
         "python"
       ],
@@ -69,8 +65,7 @@
         "/^types-/"
       ],
       "groupName": "Python type stubs",
-      "automerge": true,
-      "automergeType": "branch"
+      "automerge": true
     }
   ]
 }

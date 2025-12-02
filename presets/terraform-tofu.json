@@ -3,63 +3,117 @@
   "description": "Terraform/OpenTofu preset - provider/module updates with security-first approach",
   "packageRules": [
     {
-      "description": "Auto-merge Terraform/OpenTofu provider digest updates (silent)",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["provider"],
-      "matchUpdateTypes": ["digest"],
-      "automerge": true,
-      "automergeType": "branch"
+      "description": "Auto-merge Terraform/OpenTofu provider digest updates (PR merge, no approval)",
+      "matchManagers": [
+        "terraform"
+      ],
+      "matchDepTypes": [
+        "provider"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "automerge": true
     },
     {
-      "description": "Auto-merge Terraform/OpenTofu provider patch updates (off-hours)",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["provider"],
-      "matchUpdateTypes": ["patch"],
+      "description": "Auto-merge Terraform/OpenTofu provider patch updates (off-hours, PR merge, no approval)",
+      "matchManagers": [
+        "terraform"
+      ],
+      "matchDepTypes": [
+        "provider"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "automerge": true,
-      "automergeType": "branch",
-      "automergeSchedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"]
+      "automergeSchedule": [
+        "after 10pm every weekday",
+        "before 5am every weekday",
+        "every weekend"
+      ]
     },
     {
       "description": "Group Terraform/OpenTofu provider minor updates for Monday review",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["provider"],
-      "matchUpdateTypes": ["minor"],
+      "matchManagers": [
+        "terraform"
+      ],
+      "matchDepTypes": [
+        "provider"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
       "groupName": "Terraform Providers (Minor)",
-      "schedule": ["before 5am on Monday"]
+      "schedule": [
+        "before 5am on Monday"
+      ]
     },
     {
       "description": "Require approval for Terraform/OpenTofu provider major updates",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["provider"],
-      "matchUpdateTypes": ["major"],
+      "matchManagers": [
+        "terraform"
+      ],
+      "matchDepTypes": [
+        "provider"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true
     },
     {
       "description": "Group Terraform/OpenTofu module minor/patch updates for Monday review",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["module"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": [
+        "terraform"
+      ],
+      "matchDepTypes": [
+        "module"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "Terraform Modules",
-      "schedule": ["before 5am on Monday"]
+      "schedule": [
+        "before 5am on Monday"
+      ]
     },
     {
       "description": "Require approval for Terraform/OpenTofu module major updates",
-      "matchManagers": ["terraform"],
-      "matchDepTypes": ["module"],
-      "matchUpdateTypes": ["major"],
+      "matchManagers": [
+        "terraform"
+      ],
+      "matchDepTypes": [
+        "module"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true
     },
     {
       "description": "Group OpenTofu-specific resources",
-      "matchManagers": ["terraform"],
+      "matchManagers": [
+        "terraform"
+      ],
       "groupName": "OpenTofu Resources",
-      "schedule": ["before 5am on Monday"],
-      "matchPackageNames": ["/^opentofu//"]
+      "schedule": [
+        "before 5am on Monday"
+      ],
+      "matchPackageNames": [
+        "/^opentofu//"
+      ]
     },
     {
       "description": "Label Terraform/OpenTofu PRs",
-      "matchManagers": ["terraform"],
-      "addLabels": ["terraform", "infrastructure"]
+      "matchManagers": [
+        "terraform"
+      ],
+      "addLabels": [
+        "terraform",
+        "infrastructure"
+      ]
     }
   ]
 }

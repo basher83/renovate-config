@@ -8,7 +8,10 @@ Centralized Renovate presets for consistent dependency management across all rep
 
 ```jsonc
 {
-  "extends": ["local>basher83/renovate-config"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>basher83/renovate-config"
+  ]
 }
 ```
 
@@ -16,6 +19,7 @@ Centralized Renovate presets for consistent dependency management across all rep
 
 ```jsonc
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>basher83/renovate-config",
     "local>basher83/renovate-config//presets/python.json"
@@ -27,6 +31,7 @@ Centralized Renovate presets for consistent dependency management across all rep
 
 ```jsonc
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>basher83/renovate-config",
     "local>basher83/renovate-config//presets/docker.json"

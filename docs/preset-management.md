@@ -44,9 +44,8 @@ When creating a new preset, determine whether it should be:
 - `python-mcp.json` – Only MCP projects should cap Python to 3.13
 - `terraform-tofu.json` – Only infrastructure repos using Terraform/OpenTofu
 
-> Note: Renovate now has first-class support for updating `mise` directly, so we rely on Renovate's
-> updating `mise` directly, so we plan to **remove** this preset from `default.json` and rely on Renovate’s
-> built-in behavior instead of a custom preset.
+> Note: `mise.json` is now globally included in `default.json` for dev tool updates. Python runtime caps
+> are handled in stack-specific presets (`python-mcp.json`, `ansible-python-cap.json`).
 
 ---
 

@@ -17,6 +17,16 @@
       "allowedVersions": "<=3.13"
     },
     {
+      "description": "Cap Python runtime to <3.14.0 when managed via mise (MCP SDK doesn't support 3.14 yet)",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchPackageNames": [
+        "python"
+      ],
+      "allowedVersions": "<3.14.0"
+    },
+    {
       "description": "Cap requires-python to <3.14 (MCP SDK compatibility)",
       "matchManagers": [
         "pep621"

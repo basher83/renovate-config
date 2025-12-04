@@ -44,9 +44,8 @@ When creating a new preset, determine whether it should be:
 - `python-mcp.json` – Only MCP projects should cap Python to 3.13
 - `terraform-tofu.json` – Only infrastructure repos using Terraform/OpenTofu
 
-> Note: Renovate now has first-class support for updating `mise` directly, so we rely on Renovate's
-> updating `mise` directly, so we plan to **remove** this preset from `default.json` and rely on Renovate’s
-> built-in behavior instead of a custom preset.
+> Note: `mise.json` is now globally included in `default.json` for dev tool updates. Python runtime caps
+> are handled in stack-specific presets (`python-mcp.json`, `ansible-python-cap.json`).
 
 ---
 
@@ -242,8 +241,7 @@ When triaging such a case, check:
 The following presets are included in `default.json`:
 
 - `github-actions-security.json` – GitHub Actions security rules (digest pinning & selective automerge)
-
-> Note: Renovate now has built-in support for `mise`, so no custom preset is needed.
+- `mise.json` – mise dev tools (grouped updates, auto-merge; runtimes handled in stack-specific presets)
 
 ---
 
@@ -252,10 +250,11 @@ The following presets are included in `default.json`:
 The following presets are available but must be explicitly extended:
 
 - `python.json` – Python project defaults
-- `python-mcp.json` – MCP-specific Python rules (Python 3.13 cap, MCP majors require approval)
+- `python-mcp.json` – MCP-specific Python rules (Python 3.13 cap including mise, MCP majors require approval)
 - `docker.json` – Docker security and digest pinning
 - `terraform-tofu.json` – Terraform/OpenTofu provider/module rules
 - `ansible.json` – Ansible collection/role updates
+- `ansible-python-cap.json` – Optional Ansible preset to cap Python <3.14.0 when managed via mise
 
 ---
 

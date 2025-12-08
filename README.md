@@ -55,19 +55,21 @@ All presets are in [`presets/`](./presets/):
 - **`python-mcp.json`** – MCP projects (Python 3.13 cap, MCP majors require approval, extends `python.json`)
 - **`docker.json`** – Docker security (digest pinning, auto-merge digests/patches and non‑critical minors)
 - **`github-actions-security.json`** – GitHub Actions security (digest pinning, selective automerge vs. approval)
-- **`ansible.json`** – Ansible collections (auto-merge patches, grouped minors)
+- **`mise.json`** – mise dev tools (grouped updates, auto-merge; runtimes handled in stack-specific presets)
+- **`ansible.json`** – Ansible collections (auto-merge patches, grouped minors, Python <3.14.0 cap for mise)
 - **`terraform-tofu.json`** – Terraform/OpenTofu providers and modules
 - **`infrastructure.json`** – Comprehensive IaC preset
 - **`documentation.json`** – Documentation sites (aggressive auto-merge)
 
-> Note: An older `mise.json` preset existed; Renovate now auto‑updates `mise` directly.
-> We are migrating away from a custom `mise.json` preset in favor of Renovate’s built‑in capabilities.
+> Note: `mise.json` is now included globally in `default.json` for dev tools. Runtime caps (e.g., Python <3.14.0)
+> are handled in stack-specific presets like `python-mcp.json` or `ansible.json`.
 
 ---
 
 ## Documentation
 
-- **[Preset Management Strategy](./docs/preset-management.md)** – Guidelines for creating and organizing presets, including the automerge mental model
+- **[Preset Management Strategy](./docs/preset-management.md)** – Guidelines for creating and organizing
+  presets, including the automerge mental model
 - **[Official Renovate Docs](./docs/offical-docs/)** – Reference documentation mirrors
 - **[Configuration Examples](./examples/)** – Real-world configuration examples
 
@@ -139,7 +141,7 @@ For a deeper explanation with examples (e.g., `Zammad-MCP`), see
 
 Presets follow a simple rule:
 
-> If it’s used universally and is safe, include it in `default.json`.  
+> If it’s used universally and is safe, include it in `default.json`.
 > Otherwise, make it an **optional preset** and extend it only where needed.
 
 - **Global presets** (in `default.json`): very conservative, universal behavior.

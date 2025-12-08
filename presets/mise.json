@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "mise preset - safe dev tool updates; runtimes handled in stack-specific presets",
+  "packageRules": [
+    {
+      "description": "Group and auto-merge mise dev tools (PR merge)",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchPackageNames": [
+        "eza",
+        "fd",
+        "rg",
+        "terraform-docs",
+        "tflint",
+        "git-cliff",
+        "yamllint",
+        "yamlfmt",
+        "shellcheck",
+        "opentofu",
+        "uv",
+        "lychee",
+        "prek",
+        "ruff"
+      ],
+      "groupName": "mise dev tools",
+      "automerge": true
+    }
+  ]
+}

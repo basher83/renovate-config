@@ -44,9 +44,8 @@ When creating a new preset, determine whether it should be:
 - `python-mcp.json` – Only MCP projects should cap Python to 3.13
 - `terraform-tofu.json` – Only infrastructure repos using Terraform/OpenTofu
 
-> Note: Renovate now has first-class support for updating `mise` directly, so we rely on Renovate's
-> updating `mise` directly, so we plan to **remove** this preset from `default.json` and rely on Renovate’s
-> built-in behavior instead of a custom preset.
+> Note: `mise.json` is now globally included in `default.json` for dev tool updates. Python runtime caps
+> are handled in stack-specific presets (`python-mcp.json`, `ansible.json`).
 
 ---
 
@@ -148,8 +147,8 @@ Renovate supports two main automerge modes:
 
 **House rule:**
 
-> If the goal is that safe updates “just land in `main`” and PRs disappear,  
-> use `automerge: true` and **do not** set `automergeType` (or set it to `"pr"` explicitly).  
+> If the goal is that safe updates “just land in `main`” and PRs disappear,
+> use `automerge: true` and **do not** set `automergeType` (or set it to `"pr"` explicitly).
 > Avoid `automergeType: "branch"` unless you explicitly want long-lived PRs.
 
 ### 2. What “Safe” vs “Risky” Means
@@ -192,8 +191,8 @@ Branch protection determines **when** Renovate is allowed to merge:
 
 **Mental model:**
 
-> Presets describe which changes **could** be merged automatically.  
-> Branch protection + required checks describe when they are **actually safe** to merge.  
+> Presets describe which changes **could** be merged automatically.
+> Branch protection + required checks describe when they are **actually safe** to merge.
 > Renovate obeys both.
 
 ### 4. When a PR Stays Open Despite “Automerge: Enabled”
@@ -254,8 +253,7 @@ The following presets are available but must be explicitly extended:
 - `python-mcp.json` – MCP-specific Python rules (Python 3.13 cap including mise, MCP majors require approval)
 - `docker.json` – Docker security and digest pinning
 - `terraform-tofu.json` – Terraform/OpenTofu provider/module rules
-- `ansible.json` – Ansible collection/role updates
-- `ansible-python-cap.json` – Optional Ansible preset to cap Python <3.14.0 when managed via mise
+- `ansible.json` – Ansible collection/role updates (includes Python <3.14.0 cap for mise)
 
 ---
 
@@ -276,7 +274,8 @@ When promoting a preset from optional to global:
 
 ## Best Practices
 
-1. **Keep presets focused**: Each preset should have a single, clear purpose (e.g., “Python dev tooling”, “Terraform providers”, “Docker security”).
+1. **Keep presets focused**: Each preset should have a single, clear purpose
+   (e.g., "Python dev tooling", "Terraform providers", "Docker security").
 2. **Use descriptive names**: Preset filenames should clearly indicate their purpose.
 3. **Document decisions**:
    - Add comments or descriptions explaining why certain rules exist.

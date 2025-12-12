@@ -1,30 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "mise preset - safe dev tool updates; runtimes handled in stack-specific presets",
+  "description": "mise preset - automerge most tooling; cap Python at 3.13.x",
   "packageRules": [
     {
-      "description": "Group and auto-merge mise dev tools (PR merge)",
-      "matchManagers": [
-        "mise"
-      ],
-      "matchPackageNames": [
-        "eza",
-        "fd",
-        "rg",
-        "terraform-docs",
-        "tflint",
-        "git-cliff",
-        "yamllint",
-        "yamlfmt",
-        "shellcheck",
-        "opentofu",
-        "uv",
-        "lychee",
-        "prek",
-        "ruff"
-      ],
-      "groupName": "mise dev tools",
-      "automerge": true
+      "description": "Cap mise python to 3.13.x (block 3.14+)",
+      "matchManagers": ["mise"],
+      "matchPackageNames": ["python"],
+      "allowedVersions": "<3.14.0"
+    },
+    {
+      "description": "Automerge all mise tool updates (excluding the python cap via rule above)",
+      "matchManagers": ["mise"],
+      "automerge": true,
+      "groupName": "mise tools"
     }
   ]
 }

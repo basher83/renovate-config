@@ -3,9 +3,12 @@
   "description": "GitHub Actions security preset - groups all updates, auto-merges low-risk changes into main, requires dashboard approval for security-sensitive updates",
   "packageRules": [
     {
-      "description": "Pin GitHub Actions to commit SHA digests for security",
+      "description": "Pin GitHub Actions (uses:) to commit SHA digests for security",
       "matchManagers": [
         "github-actions"
+      ],
+      "matchDepTypes": [
+        "action"
       ],
       "pinDigests": true
     },

@@ -6,6 +6,13 @@
   ],
   "packageRules": [
     {
+      "description": "Disable digest pinning for pyenv (.python-version) - format doesn't support digests",
+      "matchManagers": [
+        "pyenv"
+      ],
+      "pinDigests": false
+    },
+    {
       "description": "Auto-merge Python patch updates (PR merge)",
       "matchCategories": [
         "python"

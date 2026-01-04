@@ -8,6 +8,23 @@ Centralized Renovate presets for dependency management across repositories.
 `default.json` provides base config that all repos inherit; optional presets in `presets/` are
 extended per-project.
 
+## References
+
+Canonical source: [Renovate Documentation](https://docs.renovatebot.com/)
+
+Always validate settings using the webfetch tool. Quick reference:
+
+`WebFetch(domain:docs.renovatebot.com)` - Main landing page
+`WebFetch(domain:docs.renovatebot.com/config-overview/)` - Config overview
+`WebFetch(domain:docs.renovatebot.com/configuration-options/)` - Configuration options
+`WebFetch(domain:docs.renovatebot.com/config-validation/)` - Config validation
+`WebFetch(domain:docs.renovatebot.com/dependency-pinning/)` - Dependency pinning
+`WebFetch(domain:docs.renovatebot.com/key-concepts/presets/)` - Presets
+`WebFetch(domain:docs.renovatebot.com/presets-config/)` - Presets config
+`WebFetch(domain:docs.renovatebot.com/presets-default/)` - Presets default
+`WebFetch(domain:docs.renovatebot.com/key-concepts/how-renovate-works/)` - How Renovate works
+`WebFetch(domain:docs.renovatebot.com/key-concepts/automerge/)` - Automerge
+
 ## Commands
 
 ```bash
@@ -57,11 +74,3 @@ mise run markdown-fix
 - `matchManagers: ["mise"]` - Matches specific package manager
 - `automergeType: "branch"` - Merges directly to branch without PR
 - `dependencyDashboardApproval: true` - Requires manual approval via dashboard
-
-## Writing Style
-
-- Fenced code blocks must have a language specified
-- Fenced code blocks must be surrounded by blank lines
-- Lists must be surrounded by blank lines
-- Bash scripts use `set -euo pipefail`
-- Use `rg` instead of `grep`

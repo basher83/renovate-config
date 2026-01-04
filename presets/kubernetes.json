@@ -1,0 +1,239 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Kubernetes preset - manages K8s manifests, Helm charts, Kustomize, Talhelper, with security-first approach",
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/k8s/.+\\.ya?ml$/",
+      "/kubernetes/.+\\.ya?ml$/",
+      "/manifests/.+\\.ya?ml$/",
+      "/deploy/.+\\.ya?ml$/"
+    ]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Talos version in talconfig.yaml (Talhelper)",
+      "managerFilePatterns": [
+        "/(^|/)talconfig\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "talosVersion:\\s*['\"]?(?<currentValue>v[\\d.]+)['\"]?"
+      ],
+      "depNameTemplate": "siderolabs/talos",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Kubernetes version in talconfig.yaml (Talhelper)",
+      "managerFilePatterns": [
+        "/(^|/)talconfig\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "kubernetesVersion:\\s*['\"]?(?<currentValue>v[\\d.]+)['\"]?"
+      ],
+      "depNameTemplate": "kubernetes/kubernetes",
+      "datasourceTemplate": "github-releases"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Group Kubernetes manifest image updates",
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "groupName": "Kubernetes Images"
+    },
+    {
+      "description": "Auto-merge Helm chart patch updates (PR merge)",
+      "matchManagers": [
+        "helmv3",
+        "helm-values"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Group Helm chart minor updates for Monday review",
+      "matchManagers": [
+        "helmv3",
+        "helm-values"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "Helm Charts (Minor)",
+      "schedule": [
+        "before 5am on Monday"
+      ]
+    },
+    {
+      "description": "Require approval for Helm chart major updates",
+      "matchManagers": [
+        "helmv3",
+        "helm-values"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Auto-merge Kustomize patch updates (PR merge)",
+      "matchManagers": [
+        "kustomize"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Group Kustomize minor updates for Monday review",
+      "matchManagers": [
+        "kustomize"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "Kustomize Dependencies (Minor)",
+      "schedule": [
+        "before 5am on Monday"
+      ]
+    },
+    {
+      "description": "Require approval for Kustomize major updates",
+      "matchManagers": [
+        "kustomize"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Pin container images to digests in Kubernetes manifests",
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "pinDigests": true
+    },
+    {
+      "description": "Auto-merge container digest updates in Kubernetes manifests (PR merge)",
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "groupName": "Kubernetes Digests",
+      "automerge": true
+    },
+    {
+      "description": "Auto-merge container patch updates in Kubernetes manifests (PR merge)",
+      "matchManagers": [
+        "kubernetes"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Require approval for critical infrastructure images",
+      "matchManagers": [
+        "kubernetes",
+        "kustomize",
+        "helmv3",
+        "helm-values"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
+      "matchPackageNames": [
+        "/^postgres/",
+        "/^mysql/",
+        "/^redis/",
+        "/^mongo/",
+        "/^elasticsearch/",
+        "/^rabbitmq/",
+        "/^kafka/",
+        "/^nginx/",
+        "/^traefik/",
+        "/^envoyproxy/",
+        "/^istio/",
+        "/^linkerd/",
+        "/^vault/",
+        "/^consul/"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label Kubernetes PRs",
+      "matchManagers": [
+        "kubernetes",
+        "kustomize",
+        "helmv3",
+        "helm-values"
+      ],
+      "addLabels": [
+        "kubernetes",
+        "infrastructure"
+      ]
+    },
+    {
+      "description": "Group Talos cluster updates together",
+      "matchDepNames": [
+        "siderolabs/talos",
+        "kubernetes/kubernetes"
+      ],
+      "groupName": "Talos Cluster"
+    },
+    {
+      "description": "Auto-merge Talos patch updates (PR merge)",
+      "matchDepNames": [
+        "siderolabs/talos"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Require approval for Talos minor/major updates",
+      "matchDepNames": [
+        "siderolabs/talos"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Require approval for Kubernetes version updates (Talos clusters)",
+      "matchDepNames": [
+        "kubernetes/kubernetes"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label Talos cluster PRs",
+      "matchDepNames": [
+        "siderolabs/talos",
+        "kubernetes/kubernetes"
+      ],
+      "addLabels": [
+        "talos",
+        "kubernetes",
+        "infrastructure"
+      ]
+    }
+  ]
+}

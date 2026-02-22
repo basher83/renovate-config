@@ -252,6 +252,7 @@ The following presets are available but must be explicitly extended:
 - `python.json` – Python project defaults
 - `python-mcp.json` – MCP-specific Python rules (Python 3.13 cap including mise, MCP majors require approval)
 - `docker.json` – Docker security and digest pinning
+- `rust.json` – Rust/Cargo crate updates (ecosystem grouping, auto-merge patches, approval for critical majors)
 - `terraform-tofu.json` – Terraform/OpenTofu provider/module rules
 - `ansible.json` – Ansible collection/role updates (includes Python <3.14.0 cap for mise)
 

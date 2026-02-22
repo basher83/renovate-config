@@ -64,12 +64,14 @@ mise run markdown-fix
 - `python.json` - Auto-merges patches, groups linters/test tools
 - `python-mcp.json` - MCP projects with Python version constraints (extends `python.json`)
 - `docker.json` - Digest pinning, auto-merge patches/digests, approval for critical images
+- `rust.json` - Auto-merges patches, groups ecosystem crates (Tokio, Serde, observability), approval for critical majors
 - `github-actions-security.json` - Groups updates, auto-merges digests/patches/minor
 - `infrastructure.json` - Comprehensive IaC preset
 
 ## Renovate Concepts
 
 - `matchCategories: ["python"]` - Matches all Python ecosystem packages
+- `matchCategories: ["rust"]` - Matches all Rust/Cargo crate packages
 - `matchDatasources: ["docker"]` - Matches Docker image dependencies
 - `matchManagers: ["mise"]` - Matches specific package manager
 - `automergeType: "branch"` - Merges directly to branch without PR

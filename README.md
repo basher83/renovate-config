@@ -4,7 +4,7 @@ Centralized Renovate presets for consistent dependency management across all rep
 
 ## Quick Start
 
-**Basic projects:**
+Basic projects:
 
 ```jsonc
 {
@@ -15,7 +15,7 @@ Centralized Renovate presets for consistent dependency management across all rep
 }
 ```
 
-**Python projects:**
+Python projects:
 
 ```jsonc
 {
@@ -27,7 +27,7 @@ Centralized Renovate presets for consistent dependency management across all rep
 }
 ```
 
-**Docker projects:**
+Docker projects:
 
 ```jsonc
 {
@@ -45,33 +45,40 @@ See [`examples/`](./examples/) for more configuration examples.
 
 ## Available Presets
 
-All presets are in [`presets/`](./presets/):
+The base preset is `default.json`, which is automatically included when extending
+`local>basher83/renovate-config`. It provides shared behavior such as best practices,
+workarounds, PR limits, semantic commits, labels, timezone, and the global presets.
 
-- **`default.json`** – Base preset (automatically included when extending `local>basher83/renovate-config`)
-  - Includes: shared global behavior (e.g., best‑practices, workarounds)
-  - Common settings: PR limits, semantic commits, labels, timezone, etc.
+Global presets included by `default.json`:
 
-- **`python.json`** – Python project defaults (auto-merge patches + dev minor updates, groups tooling)
-- **`python-mcp.json`** – MCP projects (Python 3.13 cap, MCP majors require approval, extends `python.json`)
-- **`docker.json`** – Docker security (digest pinning, auto-merge digests/patches and non‑critical minors)
-- **`github-actions-security.json`** – GitHub Actions security (digest pinning, selective automerge vs. approval)
-- **`mise.json`** – mise dev tools (grouped updates, auto-merge; runtimes handled in stack-specific presets)
-- **`ansible.json`** – Ansible collections (auto-merge patches, grouped minors, Python <3.14.0 cap for mise)
-- **`terraform-tofu.json`** – Terraform/OpenTofu providers and modules
-- **`infrastructure.json`** – Comprehensive IaC preset
-- **`documentation.json`** – Documentation sites (aggressive auto-merge)
+- `github-actions-security.json` – GitHub Actions security rules with digest pinning,
+  selective automerge, and approval for sensitive updates.
+- `mise.json` – mise-managed development tool updates, grouped and automerged.
 
-> Note: `mise.json` is now included globally in `default.json` for dev tools. Runtime caps (e.g., Python <3.14.0)
-> are handled in stack-specific presets like `python-mcp.json` or `ansible.json`.
+Optional presets in [`presets/`](./presets/) are extended per project:
+
+- `ansible.json` – Ansible collection and role updates, including the mise-managed Python
+  `<3.14.0` cap for Ansible compatibility.
+- `docker.json` – Docker security, digest pinning, safe automerge, and approval for
+  higher-risk image updates.
+- `kubernetes.json` – Kubernetes manifests, Helm charts, Kustomize, and Talhelper updates.
+- `python.json` – Python project defaults with patch automerge and grouped tooling updates.
+- `python-mcp.json` – MCP projects with Python runtime caps and MCP major approval, extending
+  `python.json`.
+- `rust.json` – Rust/Cargo crate updates, ecosystem grouping, and approval for critical majors.
+- `terraform-tofu.json` – Terraform/OpenTofu provider and module updates.
+
+Python runtime caps are intentionally stack-specific and live in `python-mcp.json` and
+`ansible.json`, not in the global `mise.json` preset.
 
 ---
 
 ## Documentation
 
-- **[Preset Management Strategy](./docs/preset-management.md)** – Guidelines for creating and organizing
+- [Preset Management Strategy](./docs/preset-management.md) – Guidelines for creating and organizing
   presets, including the automerge mental model
-- **[Official Renovate Docs](./docs/offical-docs/)** – Reference documentation mirrors
-- **[Configuration Examples](./examples/)** – Real-world configuration examples
+- [Official Renovate Docs](./docs/offical-docs/) – Reference documentation mirrors
+- [Configuration Examples](./examples/) – Real-world configuration examples
 
 ---
 
@@ -79,20 +86,20 @@ All presets are in [`presets/`](./presets/):
 
 The base preset (`default.json`) typically provides:
 
-- **PR Management**:
+- PR management:
   - Limit concurrent PRs.
   - Limit creation rate (per hour) to avoid floods.
-- **Semantic Commits**:
+- Semantic commits:
   - `chore(deps):` style commit messages.
-- **Labels & Assignees**:
+- Labels and assignees:
   - Default `renovate` label (can be extended per repo).
   - Default assignee `basher83` (can be overridden per repo).
-- **Timezone**:
+- Timezone:
   - `America/New_York` for schedules.
-- **Global Workarounds / Best Practices**:
+- Global workarounds and best practices:
   - `config:best-practices` and `workarounds:all` as a baseline.
 
-Specific details may evolve; always check `presets/default.json` for the canonical configuration.
+Specific details may evolve; always check `default.json` for the canonical configuration.
 
 ---
 
@@ -100,7 +107,7 @@ Specific details may evolve; always check `presets/default.json` for the canonic
 
 Across all presets, automerge is designed to follow a simple mental model:
 
-1. **Safe changes auto‑merge via PR**
+1. Safe changes auto‑merge via PR
    - Examples:
      - Patch updates for most libraries.
      - Dev/test tooling (pytest, linters, type stubs).
@@ -108,7 +115,7 @@ Across all presets, automerge is designed to follow a simple mental model:
      - Non‑critical Docker minors.
    - Configured with `automerge: true` (and usually no `automergeType` override).
 
-2. **Risky changes require attention**
+2. Risky changes require attention
    - Examples:
      - Major library updates.
      - MCP and `zammad-py` majors.
@@ -118,9 +125,9 @@ Across all presets, automerge is designed to follow a simple mental model:
      - No `automerge` rule (PR stays open), or
      - `dependencyDashboardApproval: true` (requires explicit dashboard approval).
 
-3. **Branch vs PR automerge**
+3. Branch vs PR automerge
    - `automerge: true` + `automergeType: "branch"`:
-     - Updates only the Renovate branch, **does not merge the PR**.
+     - Creates a Renovate branch first; if checks pass, Renovate automerges it into the base branch.
      - We avoid this for “invisible” maintenance flows.
    - `automerge: true` with default `automergeType` (PR):
      - PR is merged into the base branch when checks pass.
@@ -133,7 +140,7 @@ Across all presets, automerge is designed to follow a simple mental model:
    - Renovate only automerges when these conditions are met.
 
 For a deeper explanation with examples (e.g., `Zammad-MCP`), see
-**[Preset Management Strategy](./docs/preset-management.md)**.
+[Preset Management Strategy](./docs/preset-management.md).
 
 ---
 
@@ -142,9 +149,9 @@ For a deeper explanation with examples (e.g., `Zammad-MCP`), see
 Presets follow a simple rule:
 
 > If it’s used universally and is safe, include it in `default.json`.
-> Otherwise, make it an **optional preset** and extend it only where needed.
+> Otherwise, make it an optional preset and extend it only where needed.
 
-- **Global presets** (in `default.json`): very conservative, universal behavior.
-- **Optional presets**: technology‑ or project‑specific behavior (Python, Docker, Actions, Terraform, etc.).
+- Global presets in `default.json`: very conservative, universal behavior.
+- Optional presets: technology- or project-specific behavior.
 
 See [Preset Management Strategy](./docs/preset-management.md) for detailed guidelines and the current global vs optional list.

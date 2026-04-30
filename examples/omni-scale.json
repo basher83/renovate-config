@@ -9,7 +9,7 @@
     {
       "customType": "regex",
       "description": "Update Talos version in cluster configs (nested talos.version format)",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/clusters/.+\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -21,7 +21,7 @@
     {
       "customType": "regex",
       "description": "Update Kubernetes version in cluster configs (nested kubernetes.version format)",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/clusters/.+\\.ya?ml$/"
       ],
       "matchStrings": [

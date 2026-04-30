@@ -1,0 +1,138 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Rust project preset - auto-merges patches, groups ecosystem crates, requires approval for critical majors",
+  "packageRules": [
+    {
+      "description": "Auto-merge Rust crate patch updates (PR merge)",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Auto-merge Rust dev-dependency minor updates (PR merge)",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Group & auto-merge Rust test and dev tools (PR merge)",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchPackageNames": [
+        "tempfile",
+        "insta",
+        "criterion",
+        "proptest",
+        "assert_cmd",
+        "predicates",
+        "pretty_assertions",
+        "test-case",
+        "mockall",
+        "wiremock",
+        "fake"
+      ],
+      "groupName": "Rust test and dev tools",
+      "automerge": true
+    },
+    {
+      "description": "Group Tokio ecosystem crates",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchPackageNames": [
+        "/^tokio/",
+        "futures-util",
+        "futures-core",
+        "futures",
+        "bytes",
+        "pin-project-lite",
+        "pin-project",
+        "mio"
+      ],
+      "groupName": "Tokio ecosystem"
+    },
+    {
+      "description": "Group Serde ecosystem crates",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchPackageNames": [
+        "/^serde/",
+        "toml",
+        "ciborium"
+      ],
+      "groupName": "Serde ecosystem"
+    },
+    {
+      "description": "Group observability crates",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchPackageNames": [
+        "/^tracing/",
+        "/^metrics/",
+        "/^opentelemetry/"
+      ],
+      "groupName": "Rust observability"
+    },
+    {
+      "description": "Require approval for web framework major updates",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "matchPackageNames": [
+        "axum",
+        "/^axum-/",
+        "tower",
+        "/^tower-/",
+        "reqwest",
+        "hyper",
+        "/^hyper-/",
+        "tonic",
+        "/^tonic-/",
+        "warp",
+        "actix-web",
+        "/^actix-/"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Require approval for async runtime major updates",
+      "matchCategories": [
+        "rust"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "matchPackageNames": [
+        "/^tokio/"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label Rust PRs",
+      "matchCategories": [
+        "rust"
+      ],
+      "addLabels": [
+        "rust",
+        "dependencies"
+      ]
+    }
+  ]
+}

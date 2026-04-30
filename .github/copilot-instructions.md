@@ -3,7 +3,7 @@
 ## Repository Overview
 
 This repository contains centralized Renovate presets for dependency management across basher83
-repositories. It is a small, configuration-only repository (~60 files) with no build artifacts or
+repositories. It is a small, configuration-only repository with no build artifacts or
 runtime code. All presets are JSON configuration files validated against Renovate's schema.
 
 **Key characteristics:**
@@ -19,12 +19,15 @@ runtime code. All presets are JSON configuration files validated against Renovat
 renovate-config/
 ├── default.json              # Base preset extended by all repos
 ├── renovate.json             # This repo's own Renovate config (dogfooding)
-├── presets/                  # Optional presets extended per-project
+├── presets/                  # Shared presets, some global and some optional
 │   ├── ansible.json          # Ansible collection/role updates
 │   ├── docker.json           # Docker security (digest pinning, automerge)
-│   ├── github-actions-security.json  # GitHub Actions security
+│   ├── github-actions-security.json  # Global GitHub Actions security
+│   ├── kubernetes.json       # Kubernetes, Helm, Kustomize, and Talhelper updates
+│   ├── mise.json             # Global mise-managed development tool updates
 │   ├── python.json           # Python project defaults
 │   ├── python-mcp.json       # MCP projects (extends python.json)
+│   ├── rust.json             # Rust/Cargo crate updates
 │   └── terraform-tofu.json   # Terraform/OpenTofu providers
 ├── examples/                 # Real-world configuration examples
 ├── docs/                     # Documentation
@@ -58,8 +61,7 @@ pip install rumdl
 rumdl check .
 ```
 
-Note: The repo has pre-existing markdown lint errors in docs/preset-management.md and README.md.
-Only fix lint errors in files you modify.
+Markdown lint should pass before commit. If lint fails, fix the reported files before committing.
 
 ## Making Changes
 
@@ -93,18 +95,19 @@ Only fix lint errors in files you modify.
 - `matchDatasources: ["docker"]` - Matches Docker image dependencies
 - `matchManagers: ["github-actions"]` - Matches specific package manager
 - `automerge: true` - Auto-merges via PR (default behavior)
-- `automergeType: "branch"` - Merges to branch only, PR stays open
+- `automergeType: "branch"` - Creates a Renovate branch without opening a PR first; if checks pass,
+  Renovate automerges it into the base branch and opens a PR only as fallback
 - `dependencyDashboardApproval: true` - Requires manual approval via dashboard
 
 ### Configuration Inheritance
 
-Repositories extend presets using this syntax:
+Repositories extend the base preset and any optional presets using this syntax:
 
 ```jsonc
 {
   "extends": [
-    "local>basher83/renovate-config",                    // Base preset
-    "local>basher83/renovate-config//presets/python.json" // Optional preset
+    "local>basher83/renovate-config",
+    "local>basher83/renovate-config//presets/python.json"
   ]
 }
 ```
@@ -129,13 +132,9 @@ If pre-commit fails, run the validation commands above to identify the issue.
 - Bash scripts use `set -euo pipefail`
 - Use `rg` instead of `grep` in scripts
 
-## Trust These Instructions
+## Preset Scope
 
-These instructions have been validated against the repository. Trust them and only perform
-additional searches if:
-
-- The information appears incomplete for your specific task
-- Validation commands fail with unexpected errors
-- You need to understand a specific preset's behavior not covered here
-
-Refer to `docs/preset-management.md` for detailed automerge strategy and preset philosophy.
+`default.json` globally includes `github-actions-security.json` and `mise.json`. Python runtime caps
+belong in stack-specific presets such as `python-mcp.json` and `ansible.json`, not in the global
+`mise.json` preset. Refer to `docs/preset-management.md` for detailed automerge strategy and preset
+philosophy.

@@ -1,15 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "mise preset - automerge most tooling; cap Python at 3.13.x",
+  "description": "mise preset - automerge mise-managed development tool updates",
   "packageRules": [
     {
-      "description": "Cap mise python to 3.13.x (block 3.14+)",
-      "matchManagers": ["mise"],
-      "matchPackageNames": ["python"],
-      "allowedVersions": "<3.14.0"
-    },
-    {
-      "description": "Automerge all mise tool updates (excluding the python cap via rule above)",
+      "description": "Automerge mise tool updates",
       "matchManagers": ["mise"],
       "automerge": true,
       "groupName": "mise tools"

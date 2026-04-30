@@ -7,7 +7,7 @@ Instructions for AI coding agents working in this repository.
 Configuration-only repository containing centralized Renovate presets for dependency management.
 No runtime code - only JSON configuration files validated against Renovate's schema.
 
-- **Primary files**: `default.json` (base preset), `presets/*.json` (optional presets)
+- **Primary files**: `default.json` (base preset), `presets/*.json` (global and optional presets)
 - **Validation**: `renovate-config-validator --strict` is the quality gate
 - **No tests**: Schema validation replaces traditional testing
 
@@ -43,10 +43,11 @@ Success: `Config validated successfully`.
 renovate-config/
 ├── default.json              # Base preset - ALL repos inherit this
 ├── renovate.json             # This repo's own config (dogfooding)
-├── presets/                  # Optional presets extended per-project
+├── presets/                  # Shared presets, some global and some optional
+│   ├── github-actions-security.json, mise.json
 │   ├── python.json, python-mcp.json, docker.json
-│   ├── ansible.json, mise.json, terraform-tofu.json
-│   └── github-actions-security.json
+│   ├── ansible.json, rust.json, terraform-tofu.json
+│   └── kubernetes.json
 ├── examples/                 # Real-world configuration examples
 └── docs/                     # Documentation and reference material
 ```
@@ -109,7 +110,7 @@ matchPackageNames: ["/^pattern/", "exact-name"]  # Regex or exact
 
 ```text
 automerge: true                    # Auto-merge via PR (default)
-automergeType: "branch"            # Branch-only, PR stays open
+automergeType: "branch"            # Create branch first, merge passing branch without PR
 dependencyDashboardApproval: true  # Require manual approval
 pinDigests: true                   # Pin to SHA digests
 allowedVersions: "<3.14.0"         # Version constraints
@@ -120,8 +121,8 @@ groupName: "..."                   # Group updates together
 
 ```text
 config:best-practices + workarounds:all
-    └── default.json (extends built-ins, includes global presets)
-        └── Repository renovate.json (extends default + optional presets)
+    └── default.json (extends built-ins plus github-actions-security.json and mise.json)
+        └── Repository renovate.json (extends default plus optional presets)
 ```
 
 Extension syntax:
@@ -142,6 +143,9 @@ Digest updates, patch updates, dev/test minor updates, non-critical Docker patch
 
 **Risky (no automerge or require approval)**:
 Major updates, security-sensitive Actions, critical Docker images, Terraform majors
+
+Python runtime caps belong in stack-specific presets such as `python-mcp.json` and `ansible.json`,
+not in the global `mise.json` preset.
 
 ## Validation
 

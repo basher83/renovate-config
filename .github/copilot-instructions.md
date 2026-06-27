@@ -32,7 +32,7 @@ renovate-config/
 ├── examples/                 # Real-world configuration examples
 ├── docs/                     # Documentation
 │   ├── preset-management.md  # Guidelines for preset organization
-│   └── offical-docs/         # Renovate reference documentation
+│   └── official-docs/         # Renovate reference documentation
 ├── mise.toml                 # Task runner configuration
 ├── .pre-commit-config.yaml   # Pre-commit hooks
 ├── .rumdl.toml               # Markdown linter configuration

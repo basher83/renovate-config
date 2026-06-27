@@ -6,7 +6,7 @@ Generated: 2026-04-28 | Commit: d833dc1
 
 ## Scope
 
-This audit checked the repository-owned, user-facing documentation against the current tree and against Renovate validation output. The audited docs were `README.md`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `docs/preset-management.md`, and the JSON examples in `examples/`. The copied Renovate reference material under `docs/offical-docs/` was treated as external reference content and was not audited as a local claim surface.
+This audit checked the repository-owned, user-facing documentation against the current tree and against Renovate validation output. The audited docs were `README.md`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`, `docs/preset-management.md`, and the JSON examples in `examples/`. The copied Renovate reference material under `docs/official-docs/` was treated as external reference content and was not audited as a local claim surface.
 
 The main evidence sources were `default.json`, `presets/*.json`, `examples/*.json`, `mise.toml`, `.pre-commit-config.yaml`, the current filesystem inventory, `mise run validate-renovate-root`, `mise run validate-renovate-presets`, `npx --yes --package renovate -- renovate-config-validator --strict examples/*.json`, and `mise run markdown-lint`.
 

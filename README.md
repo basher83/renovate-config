@@ -77,7 +77,7 @@ Python runtime caps are intentionally stack-specific and live in `python-mcp.jso
 
 - [Preset Management Strategy](./docs/preset-management.md) – Guidelines for creating and organizing
   presets, including the automerge mental model
-- [Official Renovate Docs](./docs/offical-docs/) – Reference documentation mirrors
+- [Official Renovate Docs](./docs/official-docs/) – Reference documentation mirrors
 - [Configuration Examples](./examples/) – Real-world configuration examples
 
 ---

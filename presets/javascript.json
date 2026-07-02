@@ -1,0 +1,60 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "JavaScript/TypeScript (npm & Bun) preset - auto-merges patches, groups linters, test tools, and type definitions",
+  "extends": [":preserveSemverRanges"],
+  "packageRules": [
+    {
+      "description": "Auto-merge JavaScript patch updates (PR merge)",
+      "matchCategories": ["js"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Auto-merge JavaScript dev dependency minor updates (PR merge)",
+      "matchCategories": ["js"],
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor"],
+      "automerge": true
+    },
+    {
+      "description": "Group & auto-merge JavaScript test dependencies (PR merge)",
+      "matchCategories": ["js"],
+      "matchPackageNames": [
+        "/^vitest/",
+        "/^@vitest/",
+        "jest",
+        "/^@jest/",
+        "ts-jest",
+        "mocha",
+        "chai",
+        "playwright",
+        "/^@playwright/"
+      ],
+      "groupName": "JavaScript test dependencies",
+      "automerge": true
+    },
+    {
+      "description": "Group & auto-merge JavaScript linting and dev tools (PR merge)",
+      "matchCategories": ["js"],
+      "matchPackageNames": [
+        "/^eslint/",
+        "/^@eslint/",
+        "/^@typescript-eslint/",
+        "prettier",
+        "/^@biomejs/",
+        "typescript",
+        "tsx",
+        "tsup"
+      ],
+      "groupName": "JavaScript linters and dev tools",
+      "automerge": true
+    },
+    {
+      "description": "Group & auto-merge TypeScript type definitions (PR merge)",
+      "matchCategories": ["js"],
+      "matchPackageNames": ["/^@types/"],
+      "groupName": "JavaScript type definitions",
+      "automerge": true
+    }
+  ]
+}

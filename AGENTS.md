@@ -47,7 +47,7 @@ renovate-config/
 │   ├── github-actions-security.json, mise.json
 │   ├── python.json, python-mcp.json, docker.json
 │   ├── ansible.json, rust.json, terraform-tofu.json
-│   └── kubernetes.json
+│   └── kubernetes.json, javascript.json
 ├── examples/                 # Real-world configuration examples
 └── docs/                     # Documentation and reference material
 ```
@@ -146,6 +146,7 @@ and `mise.json`. Optional presets are project-specific and extended explicitly p
 - `docker.json` — Digest pinning, auto-merge patches/digests, approval for critical images
 - `kubernetes.json` — Kubernetes manifests, Helm charts, Kustomize, and Talhelper updates
 - `rust.json` — Auto-merges patches, groups ecosystem crates (Tokio, Serde, observability), approval for critical majors
+- `javascript.json` — Auto-merges patches, groups linters, test tools, and TypeScript type definitions (npm & Bun)
 - `github-actions-security.json` — Groups updates, auto-merges digests/patches/minor
 - `mise.json` — Groups and auto-merges mise-managed development tool updates
 - `ansible.json` — Ansible collection/role updates with an Ansible-specific mise Python cap

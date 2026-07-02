@@ -136,6 +136,21 @@ Extension syntax:
 }
 ```
 
+## Presets
+
+Global presets are included by `default.json` and apply to every repo: currently `github-actions-security.json`
+and `mise.json`. Optional presets are project-specific and extended explicitly per repository.
+
+- `python.json` — Auto-merges patches, groups linters, test tools, and type stubs
+- `python-mcp.json` — MCP projects with Python version constraints (extends `python.json`)
+- `docker.json` — Digest pinning, auto-merge patches/digests, approval for critical images
+- `kubernetes.json` — Kubernetes manifests, Helm charts, Kustomize, and Talhelper updates
+- `rust.json` — Auto-merges patches, groups ecosystem crates (Tokio, Serde, observability), approval for critical majors
+- `github-actions-security.json` — Groups updates, auto-merges digests/patches/minor
+- `mise.json` — Groups and auto-merges mise-managed development tool updates
+- `ansible.json` — Ansible collection/role updates with an Ansible-specific mise Python cap
+- `terraform-tofu.json` — Terraform/OpenTofu provider and module rules
+
 ## Automerge Philosophy
 
 **Safe (automerge: true)**:
@@ -170,5 +185,7 @@ Canonical: <https://docs.renovatebot.com/>
 - [Config overview](https://docs.renovatebot.com/config-overview/)
 - [Configuration options](https://docs.renovatebot.com/configuration-options/)
 - [Config validation](https://docs.renovatebot.com/config-validation/)
+- [Dependency pinning](https://docs.renovatebot.com/dependency-pinning/)
+- [How Renovate works](https://docs.renovatebot.com/key-concepts/how-renovate-works/)
 - [Presets](https://docs.renovatebot.com/key-concepts/presets/)
 - [Automerge](https://docs.renovatebot.com/key-concepts/automerge/)

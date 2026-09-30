@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "0772f522390e",
+  "strategy": "manual-commit",
+  "branch": "bb/ren-1-create-github-issue-thr_yk6wgrwbfc",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "presets/kubernetes.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/07/72f522390e/0/metadata.json",
+      "transcript": "/07/72f522390e/0/full.jsonl",
+      "compact_transcript": "/07/72f522390e/0/transcript.jsonl",
+      "content_hash": "/07/72f522390e/0/content_hash.txt",
+      "prompt": "/07/72f522390e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 23279,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1114880,
+    "output_tokens": 4627,
+    "api_call_count": 11,
+    "subagent_tokens_complete": true
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "0772f522390e",
+  "session_id": "01a0efeb-fb5f-7572-8595-2b4a31ac36b5",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-30T01:52:50.330056Z",
+  "branch": "bb/ren-1-create-github-issue-thr_yk6wgrwbfc",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "presets/kubernetes.json"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "d9f1b0d235b1",
+  "checkpoint_transcript_start": 331,
+  "transcript_lines_at_start": 331,
+  "compact_transcript_start": 42,
+  "token_usage": {
+    "input_tokens": 23279,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1114880,
+    "output_tokens": 4627,
+    "api_call_count": 11,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-30T01:52:50.305387Z",
+    "agent_lines": 7,
+    "agent_removed": 7,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 7,
+    "total_lines_changed": 14,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 7,
+      "agent_lines_removed": 7
+    }
+  ]
+}

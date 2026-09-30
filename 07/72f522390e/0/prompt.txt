@@ -1,1 +1,3 @@
-commit what we got them lets handle the kubernetes.json
+New comment on task REN-3 from You: Looks good, commit, lets pr the batch
+
+Treat this as updated context for your work on this task; reply via bb tasks comment REN-3 when relevant.

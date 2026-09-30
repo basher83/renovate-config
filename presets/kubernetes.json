@@ -2,18 +2,18 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Kubernetes preset - manages K8s manifests, Helm charts, Kustomize, Talhelper, with security-first approach",
   "kubernetes": {
-    "fileMatch": [
-      "/k8s/.+\\.ya?ml$/",
-      "/kubernetes/.+\\.ya?ml$/",
-      "/manifests/.+\\.ya?ml$/",
-      "/deploy/.+\\.ya?ml$/"
+    "managerFilePatterns": [
+      "/(^|/)k8s/.+\\.ya?ml$/",
+      "/(^|/)kubernetes/.+\\.ya?ml$/",
+      "/(^|/)manifests/.+\\.ya?ml$/",
+      "/(^|/)deploy/.+\\.ya?ml$/"
     ]
   },
   "customManagers": [
     {
       "customType": "regex",
       "description": "Update Talos version in talconfig.yaml (Talhelper)",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/)talconfig\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -25,7 +25,7 @@
     {
       "customType": "regex",
       "description": "Update Kubernetes version in talconfig.yaml (Talhelper)",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/)talconfig\\.ya?ml$/"
       ],
       "matchStrings": [

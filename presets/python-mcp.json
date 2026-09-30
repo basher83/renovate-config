@@ -6,13 +6,12 @@
   ],
   "packageRules": [
     {
-      "description": "Cap Python runtime to 3.13.x (MCP SDK doesn't support 3.14 yet)",
+      "description": "Cap Docker Python runtime to 3.13.x (MCP SDK doesn't support 3.14 yet)",
       "matchPackageNames": [
         "python"
       ],
       "matchDatasources": [
-        "docker",
-        "github-tags"
+        "docker"
       ],
       "allowedVersions": "<=3.13"
     },
@@ -21,7 +20,7 @@
       "matchManagers": [
         "mise"
       ],
-      "matchPackageNames": [
+      "matchDepNames": [
         "python"
       ],
       "allowedVersions": "<3.14.0"

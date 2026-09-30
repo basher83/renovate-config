@@ -1,0 +1,98 @@
+# REN-1 · Create github issue
+
+## Description
+
+Title: fix(presets): Python cap rules for mise never match (matchPackageNames vs packageName)
+
+## Problem
+
+The rules meant to hold mise-managed Python below 3.14 do not fire. `basher83/Zammad-MCP#306` is Renovate proposing `python 3.13.14 → 3.14.7` in `mise.toml` on a repo that extends `presets/python-mcp.json` and also carries its own `matchPackageNames: ["python"]` rule. The `requires-python` cap in `pyproject.toml` has held, so the failure is specific to the mise entries.
+
+## Cause (from Renovate source)
+
+`lib/modules/manager/mise/upgradeable-tooling.ts` defines the `python` tool as:
+
+```ts
+python: {
+  config: {
+    packageName: 'python/cpython',
+    datasource: GithubTagsDatasource.id,
+    extractVersion: '^v(?<version>\\S+)',
+  },
+},
+```
+
+and `lib/modules/manager/mise/extract.ts` builds the dependency with `depName: getConfiguredDepName(config) ?? name`, where `name` is the key in `mise.toml`. So for `python = "3.13.14"`:
+
+| field | value |
+| --- | --- |
+| `depName` | `python` |
+| `packageName` | `python/cpython` |
+| `datasource` | `github-tags` |
+
+`packageRules.matchPackageNames` compares against `packageName` only ("Use this field to match against the `packageName` field", [configuration-options.md](http://configuration-options.md); `lib/util/package-rules/package-names.ts`). Matching is an exact case-insensitive glob (`minimatch` with `nocase`), so `"python"` never equals `"python/cpython"`.
+
+## Affected rules
+
+- `presets/python-mcp.json`, rule "Cap Python runtime to 3.13.x": `matchPackageNames: ["python"]` with `matchDatasources: ["docker", "github-tags"]`. The `github-tags` half (mise) cannot match; the `docker` half is fine only if a `python` image is what the docker manager reports as `packageName`.
+- `presets/python-mcp.json`, rule "Cap Python runtime to &lt;3.14.0 when managed via mise": `matchManagers: ["mise"]` + `matchPackageNames: ["python"]`. Never matches.
+- `presets/ansible.json`, "Cap mise-managed Python to &lt;3.14.0": same shape, same bug.
+- Consumer repos that copied the pattern locally (Zammad-MCP `renovate.json` has one) are broken the same way and become redundant once the preset is fixed.
+
+## Fix
+
+Match on `depName`, which mise sets to the tool key, or on the real `packageName`:
+
+```json
+{
+  "description": "Cap Python runtime to <3.14.0 when managed via mise (MCP SDK doesn't support 3.14 yet)",
+  "matchManagers": ["mise"],
+  "matchDepNames": ["python"],
+  "allowedVersions": "<3.14.0"
+}
+```
+
+or `"matchPackageNames": ["python/cpython"]`. Apply the same change to the `github-tags` case of the first rule and to `ansible.json`. `matchDepNames` is documented as "the same as `matchPackageNames` except it matches against `depName` instead of `packageName`", and the mise manager docs page itself uses `matchDepNames` in its `packageRules` example.
+
+## Verification
+
+After the preset change, tick the rebase box on `basher83/Zammad-MCP#306` (or close it and let the immortal PR recreate). It should come back with only the `uv 0.12.20 → 0.12.21` bump and no Python change.
+
+Sources: `renovatebot/renovate@main` at `lib/modules/manager/mise/upgradeable-tooling.ts`, `lib/modules/manager/mise/extract.ts`, `lib/util/package-rules/package-names.ts`, `lib/util/string-match.ts`, `docs/usage/configuration-options.md`.
+
+## Project context
+
+- Name: Renovate
+- Linked bb project: proj_z8qcdxhzhe
+
+## Sub-tasks
+
+- REN-3 · After issue is created handle the issue by working it after verifying claims (todo)
+
+## Attachments
+
+None.
+
+## Recent comments
+
+### You · system · 2026-09-30T01:08:49.071Z
+
+Due date changed to 2026-09-29 by You
+
+## Report-back contract
+
+You are working on task REN-1. Use the bb tasks CLI: comment substantive updates (bb tasks comment REN-1 --body ...), attach result artifacts, set status when done (bb tasks update REN-1 --status in_review) or explain blockage in a comment. Your thread is already attached to the task.
+
+---
+
+New comment on task REN-1 from You: continue with [REN-3](bbtask://REN-3)
+
+Treat this as updated context for your work on this task; reply via bb tasks comment REN-1 when relevant.
+
+---
+
+What's the fix for the NPM warning?
+
+---
+
+Okay let's update and add that to both renovate validation tasks in mise toml

@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "4fe9f49e362b",
+  "strategy": "manual-commit",
+  "branch": "bb/ren-1-create-github-issue-thr_yk6wgrwbfc",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "mise.toml",
+    "presets/ansible.json",
+    "presets/python-mcp.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/4f/e9f49e362b/0/metadata.json",
+      "transcript": "/4f/e9f49e362b/0/full.jsonl",
+      "compact_transcript": "/4f/e9f49e362b/0/transcript.jsonl",
+      "content_hash": "/4f/e9f49e362b/0/content_hash.txt",
+      "prompt": "/4f/e9f49e362b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 95300,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2456320,
+    "output_tokens": 11422,
+    "api_call_count": 39,
+    "subagent_tokens_complete": true
+  }
+}

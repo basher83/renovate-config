@@ -64,9 +64,11 @@ run = "rumdl fmt ."
 
 [tasks.validate-renovate-root]
 description = "Validate Renovate configuration"
+tools = { node = "24.11.1" }
 run = "npx --yes --package renovate -- renovate-config-validator --strict default.json renovate.json"
 
 [tasks.validate-renovate-presets]
 description = "Validate Renovate presets"
+tools = { node = "24.11.1" }
 dir = "presets"
 run = "npx --yes --package renovate -- renovate-config-validator --strict *.json"

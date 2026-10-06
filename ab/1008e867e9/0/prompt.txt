@@ -1,0 +1,556 @@
+# AGENTS.md instructions for /Users/basher8383/3I/lab/renovate-config
+
+<INSTRUCTIONS>
+# AGENTS.md
+
+Instructions for AI coding agents working in this repository.
+
+## Repository Overview
+
+Configuration-only repository containing centralized Renovate presets for dependency management.
+No runtime code - only JSON configuration files validated against Renovate's schema.
+
+- **Primary files**: `default.json` (base preset), `presets/*.json` (global and optional presets)
+- **Validation**: `renovate-config-validator --strict` is the quality gate
+- **No tests**: Schema validation replaces traditional testing
+
+## Commands
+
+```bash
+mise run validate-renovate-root      # Validate default.json, renovate.json
+mise run validate-renovate-presets   # Validate all presets/*.json files
+mise run pre-commit-run              # Run all pre-commit hooks
+mise run markdown-lint               # Lint markdown files
+mise run markdown-fix                # Fix markdown formatting
+```
+
+### Direct Validation
+
+```bash
+# Validate specific file
+npx --yes --package renovate -- renovate-config-validator --strict default.json
+
+# Validate single preset
+npx --yes --package renovate -- renovate-config-validator --strict presets/python.json
+
+# Validate all presets (from presets/ directory)
+cd presets && npx --yes --package renovate -- renovate-config-validator --strict *.json
+```
+
+First run downloads renovate (~60s). Ignore npm deprecation warnings.
+Success: `Config validated successfully`.
+
+## File Structure
+
+```text
+renovate-config/
+├── default.json              # Base preset - ALL repos inherit this
+├── renovate.json             # This repo's own config (dogfooding)
+├── presets/                  # Shared presets, some global and some optional
+│   ├── github-actions-security.json, mise.json
+│   ├── python.json, python-mcp.json, docker.json
+│   ├── ansible.json, rust.json, terraform-tofu.json
+│   └── kubernetes.json, javascript.json
+├── examples/                 # Real-world configuration examples
+└── docs/                     # Documentation and reference material
+```
+
+## JSON Formatting
+
+### Required Structure
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Brief description of preset purpose",
+  "packageRules": []
+}
+```
+
+### Key Ordering
+
+`$schema` → `description` → `extends` → top-level options → `packageRules`
+
+### Formatting Rules
+
+- 2-space indentation, no trailing commas (standard JSON)
+- Files end with single newline
+- Short arrays on single line: `["mise"]`
+- Multi-item arrays: one item per line
+- Every `packageRule` must have a `description` field
+
+### PackageRule Example
+
+```json
+{
+  "description": "Auto-merge Python patch updates (PR merge)",
+  "matchCategories": ["python"],
+  "matchUpdateTypes": ["patch"],
+  "automerge": true
+}
+```
+
+## Naming Conventions
+
+**Files**: Lowercase with hyphens (`python-mcp.json`, `github-actions-security.json`)
+**Groups**: Title case (`"Python test dependencies"`, `"Terraform Providers (Minor)"`)
+**Labels**: Lowercase, hyphenated (`"renovate"`, `"github-actions"`)
+
+## Renovate Concepts
+
+### Matchers
+
+```text
+matchCategories: ["python"]              # All Python packages
+matchDatasources: ["docker"]             # Docker images
+matchManagers: ["mise", "github-actions"] # Package managers
+matchUpdateTypes: ["digest", "patch", "minor", "major"]
+matchDepTypes: ["devDependencies", "provider", "module"]
+matchPackageNames: ["/^pattern/", "exact-name"]  # Regex or exact
+```
+
+### Actions
+
+```text
+automerge: true                    # Auto-merge via PR (default)
+automergeType: "branch"            # Create branch first, merge passing branch without PR
+dependencyDashboardApproval: true  # Require manual approval
+pinDigests: true                   # Pin to SHA digests
+allowedVersions: "<3.14.0"         # Version constraints
+groupName: "..."                   # Group updates together
+```
+
+## Configuration Inheritance
+
+```text
+config:best-practices + workarounds:all
+    └── default.json (extends built-ins plus github-actions-security.json and mise.json)
+        └── Repository renovate.json (extends default plus optional presets)
+```
+
+Extension syntax:
+
+```json
+{
+  "extends": [
+    "local>basher83/renovate-config",
+    "local>basher83/renovate-config//presets/python.json"
+  ]
+}
+```
+
+## Presets
+
+Global presets are included by `default.json` and apply to every repo: currently `github-actions-security.json`
+and `mise.json`. Optional presets are project-specific and extended explicitly per repository.
+
+- `python.json` — Auto-merges patches, groups linters, test tools, and type stubs
+- `python-mcp.json` — MCP projects with Python version constraints (extends `python.json`)
+- `docker.json` — Digest pinning, auto-merge patches/digests, approval for critical images
+- `kubernetes.json` — Kubernetes manifests, Helm charts, Kustomize, and Talhelper updates
+- `rust.json` — Auto-merges patches, groups ecosystem crates (Tokio, Serde, observability), approval for critical majors
+- `javascript.json` — Auto-merges patches, groups linters, test tools, and TypeScript type definitions (npm & Bun)
+- `github-actions-security.json` — Groups updates, auto-merges digests/patches/minor
+- `mise.json` — Groups and auto-merges mise-managed development tool updates
+- `ansible.json` — Ansible collection/role updates with an Ansible-specific mise Python cap
+- `terraform-tofu.json` — Terraform/OpenTofu provider and module rules
+
+## Automerge Philosophy
+
+**Safe (automerge: true)**:
+Digest updates, patch updates, dev/test minor updates, non-critical Docker patches
+
+**Risky (no automerge or require approval)**:
+Major updates, security-sensitive Actions, critical Docker images, Terraform majors
+
+Python runtime caps belong in stack-specific presets such as `python-mcp.json` and `ansible.json`,
+not in the global `mise.json` preset.
+
+## Validation
+
+Always validate before committing:
+
+```bash
+mise run validate-renovate-root && mise run validate-renovate-presets
+```
+
+Common errors: missing `$schema`, invalid matcher values, bad regex syntax, trailing commas
+
+## Writing Style
+
+- Fenced code blocks: always specify language, surround with blank lines
+- Lists: surround with blank lines
+- Scripts: use `rg` instead of `grep`, bash uses `set -euo pipefail`
+
+## Reference
+
+Canonical: <https://docs.renovatebot.com/>
+
+- [Config overview](https://docs.renovatebot.com/config-overview/)
+- [Configuration options](https://docs.renovatebot.com/configuration-options/)
+- [Config validation](https://docs.renovatebot.com/config-validation/)
+- [Dependency pinning](https://docs.renovatebot.com/dependency-pinning/)
+- [How Renovate works](https://docs.renovatebot.com/key-concepts/how-renovate-works/)
+- [Presets](https://docs.renovatebot.com/key-concepts/presets/)
+- [Automerge](https://docs.renovatebot.com/key-concepts/automerge/)
+
+</INSTRUCTIONS>
+
+---
+
+<environment_context>
+  <cwd>/Users/basher8383/3I/lab/renovate-config</cwd>
+  <shell>zsh</shell>
+  <current_date>2026-10-06</current_date>
+  <timezone>America/New_York</timezone>
+  <filesystem><workspace_roots><root>/Users/basher8383/3I/lab/renovate-config</root></workspace_roots><permission_profile type="disabled"><file_system type="unrestricted" /></permission_profile></filesystem>
+</environment_context>
+
+---
+
+$using-entire I need to find the reason that all these *.md files in root of bundle/references/ are there. Wheres the decision that put them there vs sources/ at repo root?
+
+---
+
+<skill>
+<name>using-entire</name>
+<path>/Users/basher8383/.agents/skills/using-entire/SKILL.md</path>
+---
+name: using-entire
+description: >
+  Use as the FIRST action on any research, investigation, or
+  codebase-understanding request — "research X", "investigate X", "look into
+  X", "dig into X", "search X", "explore X", "understand X", "why is this like
+  this" — before Glob, Grep, or Read. Recorded intent lives in Entire
+  checkpoints on the server, not in local files, so an empty or unfamiliar
+  working copy is not a reason to skip it. Routes to the right Entire sub-skill
+  (search, recall, explain, what-happened, replay, teach, review,
+  session-handoff).
+---
+
+# Using Entire
+
+Your default when exploring or understanding code should be: **read the
+recorded intent, don't guess.**
+
+Entire checkpoints capture the prompts, transcripts, and decisions behind every
+agent-driven change. When you need to understand why code exists or how a module
+evolved, look up the checkpoint history first. Only fall back to inference from
+code structure when no history is available — and label that explicitly.
+
+## When This Skill Activates
+
+Use this skill whenever the task involves:
+
+- A request phrased as "research X", "investigate X", "look into X", "dig into
+  X", or "find out how X works"
+- Exploring or understanding an unfamiliar module or file
+- Preparing to refactor, extend, or debug code you didn't write
+- Answering "why is this like this?" or "what was the intent?"
+- Doing pre-work research before making changes
+- Any codebase exploration where historical context would help
+
+For a research- or investigate-shaped request, the very first action is an
+`entire search` via the `search` skill. Do not open source files or grep first;
+the recorded history says what was tried and why, and code reads come after to
+confirm it.
+
+Do **not** use this skill for simple, well-understood edits where you already
+have full context (e.g. "add a comment to line 5").
+
+## First Step: Check Repository Status
+
+Before diving into specific lookups, check whether Entire is available and
+the repository has checkpoint history:
+
+```bash
+entire status
+```
+
+This tells you whether Entire is enabled, which git hooks are installed, whether
+the metadata branch is initialized, and any active sessions on the current
+branch.
+
+## Scenario Routing
+
+When this skill activates, determine which sub-skill best fits the user's need:
+
+| Scenario | Typical user expressions | Delegate to |
+|----------|------------------------|-------------|
+| Code block provenance | "why is this like this" / "wtf is going on" / "what happened at src/auth.ts:42" / "tell me why this changed" | `what-happened` |
+| Research or investigate a topic | "research X" / "investigate X" / "look into X" / "dig into X" / "what do we know about X" | `search` first, then this skill's exploration flow if needed |
+| Find prior work | "has anyone done X before" / "search past work for rate limiting" / "find the previous implementation" | `search` |
+| Recall a task playbook | "have we done this before" / "recall how we did X" / "how did we do this last time" | `recall` |
+| Replay feature history | "replay <feature>" / "walk me through how X was built" / "show me the journey of Y" | `replay` |
+| Teach a repo topic | "teach me <topic>" / "how does <topic> work in this repo" / "give me a lesson on X" | `teach` |
+| Understand original intent | "explain this function" / "explain parseConfig" / "what was the intent behind src/auth.ts" | `explain` |
+| Generate a dispatch / summary | "summarize recent work" / "generate a dispatch" / "what was accomplished this week" | run `entire dispatch` directly |
+| Code review with intent context | "review these changes" / "review this branch" / "audit before merging" | `review` |
+| Hand off to another agent | "hand off this session" / "continue in another agent" / "pick up the codex session" | `session-handoff` |
+| Convert session to skill | "turn this into a skill" / "make a skill from this session" | `session-to-skill` |
+| Link session to other repos | "link session to other repos" / "attach session to the foo repo" | `session-crosslink` |
+| General exploration | "understand this module" / "explore how auth works" / "help me understand the codebase" | _(self — see below)_ |
+
+If the scenario clearly maps to a sub-skill, delegate entirely to that skill's
+workflow. Do not duplicate their steps here.
+
+## General Exploration Flow
+
+When no specific sub-skill fits — e.g. the user asks to "understand this
+module" or "explore how auth works" — use this flow:
+
+1. **Identify key files** in the target area (entry points, main types, core
+   functions).
+
+2. **Check for checkpoint coverage** on each key file:
+
+```bash
+git log --format='%H %s' -5 -- <file>
+```
+
+Look for `Entire-Checkpoint:` trailers in the commit bodies:
+
+```bash
+git log --format='%H %b' -5 -- <file> | grep -B1 'Entire-Checkpoint:'
+```
+
+3. **Read intent for covered commits** — extract the checkpoint ID from the
+   trailer, then use JSON output for non-interactive consumption:
+
+```bash
+entire checkpoint explain --checkpoint <checkpoint-id> --json --no-pager
+```
+
+If you only have a commit hash (not a checkpoint ID), use:
+
+```bash
+entire checkpoint explain --commit <sha> --no-pager
+```
+
+4. **Synthesize**: combine the recorded intent (from checkpoints) with the
+   current code structure to build a comprehensive understanding.
+
+5. **Report** your findings, clearly distinguishing:
+   - Facts backed by checkpoint transcripts (label as "recorded intent")
+   - Observations inferred from code alone (label as "inferred from code")
+
+## AI Agent Usage Notes
+
+When running Entire commands from an agent subprocess:
+
+- **Always pass `--json`** for commands that support it and might prompt
+  interactively. `--json` implies non-interactive output.
+- **Always pass `--no-pager`** to prevent pager activation in subprocess
+  contexts.
+- **Always specify `--checkpoint <id>` or `--commit <sha>`** for
+  `entire checkpoint explain` — without a locator, the command falls back to an
+  interactive picker.
+
+## When No Checkpoints Exist
+
+If the target code predates Entire or has no checkpoint coverage:
+
+1. Say explicitly: "No Entire checkpoint history is available for this code."
+2. Proceed with standard code understanding (read source, check git log, trace
+   call sites).
+3. Label all explanations as "inferred from code — not backed by recorded
+   intent."
+4. If the user wants deeper history, suggest `search` with related keywords —
+   there may be checkpoints on related work even if the specific file isn't
+   directly covered.
+
+## Transparency Principle
+
+Always make it clear whether your answer comes from:
+
+- **Checkpoint-backed history** — you read the actual session transcript and
+  know the developer's stated intent
+- **Code inference** — you analyzed the code structure and are reasoning about
+  probable intent
+
+Never present inferred intent as if it were recorded fact. The core value of
+this workflow is that distinction.
+
+## References
+
+For a deeper understanding of Entire's capabilities beyond what the sub-skills
+cover, consult these resources:
+
+- **CLI help**: run `entire help` to see all available commands and flags
+- **Documentation**: https://docs.entire.io/llms.txt — AI-friendly
+  documentation index following the [llms.txt standard](https://llmstxt.org),
+  designed to be consumed directly by LLMs and coding agents
+
+</skill>
+
+---
+
+you are in it, look at local checkouts and worktrees
+
+---
+
+good that narrows the conflict here well. So my pov of what happened; I was working with that agent to establish govenence here in this repo and I directed the agent to greenfield as an example for its enforcement of frontmatter and how it specfically using python code to enforce it. That was my intention. If you look at my comments around the quote of mine you find pointing to index.md in greenfield that may be more clear
+
+---
+
+yup and totally conceed it was a lack of communication on my part, but hey thats what pr review is for and thats why i spotted it today and now here we are. So good news is that my process is working. And now I can properly address it. So on that note, what I was to enforce is the seperation as seen in ~/3I/lab/personal-computing/blob/main/bundles/_repo/governance.md
+
+---
+
+precisly! And that which you just correctly infered IS the gap that Greenfield had. And honestly in the back of my mind when i told that agent to look in greenfiled for the examples i was trying to show i knew it was a risk due to a pattern match and my vague instructions. So I'm not suprised at all I guess is what I'm getting at and own the result. But again I see this as a good thing, lesson learned. So what I see here is not only the boundries you correctly surfaced but also the need to define referances/ which would explain why that prior agent simply adopted it wholesale from greenfield because I had not defined it
+
+---
+
+https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md this is the answer this is the spec I am following
+
+---
+
+yes we are on the same page, totally aligned so far here. Oh wait that agent already added bundle/references/okf-spec.md which is .... ironic.
+
+---
+
+agreed on it belonging in sources/ BUT only if it meets the criteria to be there. So yes it's misplaced but the actual question is "is this file currently misplaced AND is it required to be a source/ for the bundle/ to assert from?"
+
+---
+
+So this is actually solved easily here. Firt step we need to make sure this repos current bundle specifies the evaluation criteria and sets the proper boundries and deffinitions as we have just worked through and I have helped to clarify my intent on. That's the first move. Then all of those md files in the root of references/ get moved into sources/evaluate/ and thats the whole thing solved with a proper folder name that contains the data and says precisly its status. sources to evaluate and decide what to act on
+
+---
+
+ok well you may have just introduced a new violation "it's index records ...." is it confromant with the SPEC.md for okf?
+
+---
+
+And that is proof of why generators/ exists
+
+---
+
+the correction also must include explict instructions for agents to never modify an index.md directly IF it is governed by the bundle
+
+---
+
+Ok better. but mise needs to be the interface and an agent should never even run a tool call aimed at an index.md once it's configured properly. What I mean is that the index.md in the bundle must auto update at some boundry prior to a push. Look heres the referances use $opensrc these repos are already registered. look at the boundries in these, where does the agent work? what does it touch? what is deterministic? those are the questions to review when looking at GoogleCloudPlatform/open-knowledge-format/src/reference_agent and langchain-ai/openwiki/src
+
+---
+
+<skill>
+<name>opensrc</name>
+<path>/Users/basher8383/.agents/skills/opensrc/SKILL.md</path>
+---
+name: opensrc
+description: Fetch dependency source code to give AI agents deeper implementation context. Use when the agent needs to understand how a library works internally, read source code for a package, fetch implementation details for a dependency, or explore how an npm/PyPI/crates.io package is built. Triggers include "fetch source for", "read the source of", "how does X work internally", "get the implementation of", "opensrc path", or any task requiring access to dependency source code beyond types and docs.
+allowed-tools: Bash(opensrc:*)
+---
+
+# Source Code Fetching with opensrc
+
+Fetches dependency source code so agents can read implementations, not just types. Clones repositories at the correct version tag and caches them globally at `~/.opensrc/`.
+
+## Core Pattern
+
+```bash
+rg "parse" $(opensrc path zod)
+cat $(opensrc path zod)/src/types.ts
+find $(opensrc path zod) -name "*.test.ts"
+```
+
+`opensrc path <pkg>` prints the absolute path to cached source. If not cached, it fetches automatically. Progress goes to stderr, path to stdout, so `$(opensrc path ...)` works in subshells.
+
+## Fetching Source Code
+
+```bash
+opensrc path zod
+opensrc path pypi:requests
+opensrc path crates:serde
+opensrc path facebook/react
+
+# Multiple packages at once
+opensrc path zod react next
+opensrc path pypi:requests pypi:flask
+opensrc path crates:serde crates:tokio
+
+# Specific versions
+opensrc path zod@3.22.0
+opensrc path pypi:flask@3.0.0
+opensrc path owner/repo@v1.0.0
+opensrc path owner/repo#main
+```
+
+### Version Resolution
+
+For npm packages, opensrc auto-detects the installed version from lockfiles (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`). Use `--cwd` to resolve from a different project:
+
+```bash
+opensrc path zod --cwd /path/to/project
+```
+
+For PyPI and crates.io, explicit versions or latest are used. For repos, use `@ref` or `#ref` to pin a branch, tag, or commit.
+
+## Managing the Cache
+
+Source is cached globally at `~/.opensrc/` (override with `OPENSRC_HOME`).
+
+```bash
+opensrc list                     # show all cached sources
+opensrc list --json              # JSON output
+
+opensrc remove zod               # remove a package
+opensrc remove facebook/react    # remove a repo
+
+opensrc clean                    # remove everything
+opensrc clean --npm              # only npm packages
+opensrc clean --pypi             # only PyPI packages
+opensrc clean --crates           # only crates.io packages
+opensrc clean --packages         # all packages, keep repos
+opensrc clean --repos            # all repos, keep packages
+```
+
+## When to Fetch Source
+
+Fetch source when you need to:
+- Understand internal behavior that types don't reveal
+- Debug unexpected library behavior
+- Learn patterns from well-known implementations
+- Verify how a function handles edge cases
+
+Don't fetch source for simple API usage questions that docs or types can answer.
+
+</skill>
+
+---
+
+now heres the enforcement, review openwiki/src/okf/*
+
+---
+
+yes precisely, that is the discintion we need here and that is arguably the loudest signal an agent should see in any repo I want to enforce this contract upon. So just bigger picture here is we are refining this process, contract, boundry, authority model here is this repo precisly because it's small and contained AND because of how consequential this repo is. The endstate is this repo will be the embodyment of an exemplar for all my other repos. Because this repo literally managaes dependancies for all of my repos. Once I am able to lock down the entire concept here it can be that exemplar for every other repo to emulate. Thats my big picture here
+
+---
+
+yes, excatly that. and i suppose it's taken some frictin for me to properly assert my intention here and honestly it just became clear to me just now. So lets make it happen. We need to capture this in docs too obviously and that seems the natural first step to me. The convergence I have just had does no good only in this chat. Lets review the bundle/ concept docs and see where they gaps are compared to what I just described. surface the gaps propose remediations and I'll give feedback
+
+---
+
+doc responsabilities - concur that nails it. All those gaps a good I agree. And it highlights a part we are missing the log.md from OKF and bundle root. Thats what holds the trail not the concept docs thats a boundry to define too. and that also speaks to openwikis claims functionality for how part of that lifecycle operates. I see the human acceptance at the PR acceptance layer for some context there
+
+---
+
+<send_user_message_question_reply>
+[{"answer":"Merge of the PR by the operator","question":"For the human acceptance boundary, which PR event should count as acceptance of the reviewed governance or knowledge change?","questionItemId":"[\"request_user_input_async\",\"call_d01d83ecb706411a83706422882afe98\",0]"}]
+</send_user_message_question_reply>
+
+---
+
+awesome. sounds like we are newrly ready to update the pr 123. Any other loose ends you see before we do that?
+
+---
+
+good call lets do a fix plan
+
+---
+
+agreed, looks good to me lets do it
+
+---
+
+awesome, looks good lets send it

@@ -1,0 +1,91 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "ab1008e867e9",
+  "session_id": "01a11266-0a59-79b3-9afb-a4e1d18137be",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-06T20:09:38.937461Z",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 20,
+  "files_touched": [
+    ".pre-commit-config.yaml",
+    "AGENTS.md",
+    "README.md",
+    "bundle/decisions.md",
+    "bundle/enforcement.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/index.md",
+    "bundle/log.md",
+    "bundle/preset-management.md",
+    "bundle/references/2026-10-06-adoption-rulings.md",
+    "bundle/references/2026-10-06-review-reconciliation.md",
+    "bundle/references/2026-10-06-slice-1-rulings.md",
+    "bundle/references/2026-10-06-source-captures.md",
+    "bundle/references/agent-working-policy-draft.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/lint_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py",
+    "bundle/references/generators/generate_indexes.py",
+    "bundle/references/greenfield-evidence-boundary.md",
+    "bundle/references/greenfield-framework.md",
+    "bundle/references/greenfield-lifecycle-and-revision.md",
+    "bundle/references/index.md",
+    "bundle/references/okf-spec.md",
+    "bundle/references/shared-agent-policy-repository-review.md",
+    "mise.toml",
+    "sources/evaluate/2026-10-06-adoption-rulings.md",
+    "sources/evaluate/2026-10-06-exemplar-intent.md",
+    "sources/evaluate/2026-10-06-remediation-receipt.json",
+    "sources/evaluate/2026-10-06-review-reconciliation.md",
+    "sources/evaluate/2026-10-06-slice-1-rulings.md",
+    "sources/evaluate/2026-10-06-source-captures.md",
+    "sources/evaluate/agent-working-policy-draft.md",
+    "sources/evaluate/greenfield-evidence-boundary.md",
+    "sources/evaluate/greenfield-framework.md",
+    "sources/evaluate/greenfield-lifecycle-and-revision.md",
+    "sources/evaluate/index.md",
+    "sources/evaluate/okf-spec.md",
+    "sources/evaluate/shared-agent-policy-repository-review.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "be34279b5e38",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 319116,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 10786176,
+    "output_tokens": 49172,
+    "api_call_count": 97
+  },
+  "session_metrics": {
+    "turn_count": 20
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-06T20:09:38.860833Z",
+    "agent_lines": 4068,
+    "agent_removed": 25,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 4068,
+    "total_lines_changed": 4093,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 806,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "sources/basher83-repo-inventory.csv": 93,
+        "sources/renovate-dependency-review.md": 374,
+        "sources/repo-dependency-map.csv": 95,
+        "sources/shared-agent-policy-repository-review.md": 244
+      }
+    }
+  ]
+}

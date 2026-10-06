@@ -1,16 +1,16 @@
 ---
 type: Enforcement Contract
 title: Repository enforcement
-description: Agent and code ownership, mise interfaces, lifecycle boundaries, failure responses, and demonstrated coverage.
+description: This contract defines agent and code ownership, mise interfaces, lifecycle boundaries, and enforcement coverage.
 status: draft
-tags: [renovate, governance, enforcement]
+tags: [governance, enforcement]
 generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
   - id: local-contract
-    resource: governance.md
+    resource: /governance.md
     title: Local purpose, authority, and knowledge boundaries
   - id: local-decisions
-    resource: decisions.md
+    resource: /decisions.md
     title: Recorded implementation decisions
   - id: openwiki
     resource: https://github.com/langchain-ai/openwiki/tree/main/src/okf
@@ -22,10 +22,10 @@ sources:
 
 # Repository enforcement
 
-This candidate defines the enforcement model for the [local operating contract](governance.md).
+This candidate defines the enforcement model for the [local operating contract](/governance.md).
 Current index controls are implemented; the additional ownership and reconciliation mechanisms below are
 proposals awaiting review. No Claims service, metadata repair engine, or PR acceptance projector is installed.
-Implementation history belongs in [log.md](log.md); decisions and their scope live in the decision
+Implementation history belongs in [log.md](/log.md); decisions and their scope live in the decision
 owner.[^local-contract]
 
 ## Ownership and permitted writes
@@ -46,6 +46,12 @@ in order to make an unrelated content change pass.
 | Root `log.md` | Record factual scoped events with pointers; never invent acceptance | Validate log structure; proposed lifecycle append mechanism | Structural check; automated event projection absent |
 | Machinery and mise tasks | Edit only in an authorized tooling task | Execute declared deterministic operations | Current index workflow implemented |
 
+The [formatting conventions](/formatting.md#use-the-accepted-tag-vocabulary) own the locked tags,
+[single-sentence metadata](/formatting.md#use-documented-fields-in-a-consistent-order),
+[resource distinction](/formatting.md#distinguish-resource-binding-from-derivation), and
+[accepted log labels](/formatting.md#record-scoped-history). Checks enforce vocabulary, sentence shape,
+paths, and history structure; human review evaluates sentence meaning and asset binding.
+
 ## Mise is the repository interface
 
 Agents invoke governed operations through mise, not individual implementation scripts or output paths.
@@ -57,7 +63,7 @@ mise run bundle:test
 mise run bundle:lint
 ```
 
-Finalization regenerates `bundle/index.md`, `bundle/references/index.md`, and `sources/evaluate/index.md`,
+Finalization regenerates every bundle directory index and `sources/evaluate/index.md`,
 then checks concepts, source joins, paths, index drift, and ten capture pins. A separate pre-commit mise task
 lints authored documents and generated navigation; exact exclusions preserve imported capture bytes.
 The generator's output derives

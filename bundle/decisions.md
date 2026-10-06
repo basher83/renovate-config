@@ -1,11 +1,17 @@
 ---
 type: Decision Record
 title: Renovate-config prospective decisions
-description: Material decisions with authority, scope, rationale, implementation state, and revisit conditions.
-tags: [renovate, governance, decisions]
+description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
+tags: [governance]
 status: stable
 generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
+  - id: review-verdicts
+    resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
+    title: Operator verdicts on local OKF extensions and locked vocabulary
+  - id: exemplar-intent
+    resource: ../sources/evaluate/2026-10-06-exemplar-intent.md
+    title: Operator clarification of exemplar purpose and acceptance
   - id: slice-1-scope
     resource: ../sources/evaluate/2026-10-06-slice-1-rulings.md
     title: Slice 1 scope and formatting rulings, 2026-10-06
@@ -15,19 +21,35 @@ sources:
     title: Local adoption walkthrough choices
     author: codex_agent/GPT 6.1 Sol
   - id: local-contract
-    resource: governance.md
+    resource: /governance.md
     title: Local operating contract
 ---
 
 # Renovate-config prospective decisions
 
-**Standing: maintained decision rationale.** Root [log.md](log.md) owns the chronological trail.
+**Standing: maintained decision rationale.** Root [log.md](/log.md) owns the chronological trail.
 This record preserves material choices, authority, scope, and supersession; it does not reconstruct
 approval for existing preset rules or turn a journal entry into an acceptance receipt.
 
 For each material decision, record the question and prior position, outcome, authority, effective scope,
 rationale, evidence, implementation and verification state, and revisit or supersession conditions.
 Keep routine maintenance records proportionate. Preserve prior rationale when superseding an entry.
+
+## 2026-10-06 — D012: Apply reviewed local OKF extensions
+
+- **Question and prior position:** Root concepts used repository-identity tags, fragment descriptions, and
+  document-relative in-bundle links; four tool directories lacked generated indexes.
+- **Outcome: authorized correction.** Apply the operator's PR rules in the owning formatting concept,
+  update current documents, and extend deterministic generation and validation to the complete hierarchy.
+- **Authority and date:** Operator verdicts in [PR #123](https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492)
+  and the linked resource, provenance, and cross-link comments on 2026-10-06; requested implementation in this session.[^review-verdicts]
+- **Effective scope:** Concept descriptions, tags, derivation joins, in-bundle paths, logs, generator, checker,
+  lint coverage, regression fixtures, and agent guidance. Imported captures and dependency JSON stay unchanged.
+- **Rationale:** Owning concepts state local extensions; deterministic code implements structural checks.
+  Resource binding and sentence meaning require semantic review rather than manufactured metadata assertions.
+- **Implementation state:** Prepared for review. Pre-commit remains the configured finalization boundary;
+  an outgoing-revision guard is not implemented. New vocabulary or log labels need human acceptance via PR.
+- **Revisit condition:** Accepted changes to vocabulary, hierarchy, or lifecycle boundaries require matching tooling.
 
 ## 2026-10-06 — D011: Reconcile the complete pre-commit boundary
 
@@ -53,7 +75,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
 - **Outcome: agreed documentation direction.** The operator concurred with the gap review and document
   responsibilities, then identified root `log.md` as the chronological trail outside concept bodies.
 - **Authority and date:** Operator feedback in this review on 2026-10-06; a
-  [participant-authored source record](../sources/evaluate/2026-10-06-exemplar-intent.md) captures the scope.
+  [participant-authored source record](../sources/evaluate/2026-10-06-exemplar-intent.md) captures the scope.[^exemplar-intent]
 - **Purpose:** Demonstrate the model in this small but consequential repository before proposing reuse elsewhere.
 - **Effective scope:** Draft purpose and ownership revisions, a dedicated enforcement concept, log conventions,
   and the minimal structural support needed to validate the new reserved log. Metadata repair, Claims deployment,
@@ -101,7 +123,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   the operator intended examples of frontmatter conventions and deterministic Python enforcement. No separate
   comparison of `bundle/references/` with root `sources/` established that placement.
 - **Outcome: adapted.** Define sources, research, knowledge, and OKF references in the
-  [operating contract](governance.md#knowledge-layers-and-source-evaluation), including evaluation and promotion
+  [operating contract](/governance.md#knowledge-layers-and-source-evaluation), including evaluation and promotion
   criteria. Move every root Markdown file from `bundle/references/` into `sources/evaluate/`.
 - **Authority and date:** Direct operator instruction in this review on 2026-10-06: establish the criteria and
   boundaries first, then move those files to a directory that records sources awaiting evaluation and action.
@@ -135,7 +157,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   caveat replaces the earlier formatting deferral for these three files only. The operator selected full
   preparation over contract-only or principles-first work, and adoption later over waiting to draft or
   proceeding to adoption before the governance results.
-- **Evidence pointers:** [Candidate contract](governance.md), [preset-management guide](preset-management.md),
+- **Evidence pointers:** [Candidate contract](/governance.md), [preset-management guide](/preset-management.md),
   [agent entry point](../AGENTS.md), [human entry point](../README.md), and the Docs vault's
   `renovate-config/slice-1-governance-plan.md`. That saved plan predates this walkthrough's OKF scope adjustment;
   it remains a proposal, not an adoption receipt.
@@ -154,7 +176,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   pass used an undocumented `sha256` source field, then a CLI-version producer label and expanded mappings.
 - **Outcome: adapted.** Use documented OKF fields, keep abbreviated hash references in the body, and apply
   greenfield's compact frontmatter house style with harness/model attribution. Give these rules their own
-  owner in [formatting.md](formatting.md), with the other entry points linking to it.
+  owner in [formatting.md](/formatting.md), with the other entry points linking to it.
 - **Authority and date:** Operator direction on 2026-10-06: do not invent fields because the schema permits
   them; follow the greenfield governance trail for formatting; these rules need their own document.
 - **Effective scope:** The Slice 1 bundle documents and their navigation. Keep ordinary Markdown bodies
@@ -274,9 +296,11 @@ present; the note does not disable loading or authorize deletion.
 This content assessment supports the operator's D004 retention selection. A later reviewed deletion decision can
 identify what must be preserved first; this adoption does not delete either file.
 
-The [local contract](governance.md) defines the adopted authority and verification boundaries reflected
-in this record.[^local-contract] [Formatting guidance](formatting.md) owns the metadata style.
+The [local contract](/governance.md) defines the adopted authority and verification boundaries reflected
+in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the metadata style.
 
+[^review-verdicts]: Operator PR instructions on descriptions, index coverage, logs, tags, and the linked earlier rules.
+[^exemplar-intent]: Participant-authored summary of operator direction and the selected PR-merge acceptance boundary.
 [^slice-1-scope]: Participant-authored capture of the operator's Slice 1 directions, 2026-10-06.
 [^adoption-rulings]: Participant-authored operator choices for the revised candidate; including final acceptance.
 [^local-contract]: Adopted renovate-config operating contract.

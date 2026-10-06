@@ -37,12 +37,17 @@ Agents must never issue direct filesystem, editor, shell, or script tool calls t
 Agents author permitted source and concept documents; deterministic code owns index files. Do not manually
 create, edit, repair, reorder, or regenerate an individual index. Use the repository's mise interface:
 `mise run bundle:finalize` finalizes the complete declared scope; `mise run bundle:check` checks it.
-The governed indexes are `bundle/index.md`, `bundle/references/index.md`, and `sources/evaluate/index.md`.
+The governed indexes are every bundle directory's `index.md` plus `sources/evaluate/index.md`.
 The configured pre-commit hook automatically calls `mise run bundle:finalize`, before commit and therefore
 before ordinary publication of that commit. If generation modifies files, the hook stops the commit so the
 generated diff can be reviewed and included before retrying. Do not bypass the hook to publish stale outputs.
 Index files provide navigation; governance semantics belong in their owning documents.
 See [index ownership](bundle/formatting.md#generate-governed-indexes).
+
+Bundle concepts use only the accepted tags `governance`, `enforcement`, `formatting`, and `presets`.
+Descriptions are single complete sentences; in-bundle links begin with `/`. Logs use only `**Update**`,
+`**Creation**`, and `**Deprecation**` as leading labels. Follow the [owning formatting rules](bundle/formatting.md)
+for binding versus derivation, provenance, and the human PR acceptance needed to extend vocabulary.
 
 ## Change protocol and authority
 

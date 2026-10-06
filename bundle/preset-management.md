@@ -1,8 +1,8 @@
 ---
 type: Playbook
 title: Preset Management Strategy
-description: Technical guidance for implementing authorized shared-preset decisions and verifying their effects.
-tags: [renovate, presets, playbook]
+description: This guide applies the operating contract to preset changes, consumer evidence, and validation.
+tags: [presets]
 status: draft
 generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
@@ -10,7 +10,7 @@ sources:
     resource: "https://github.com/basher83/renovate-config/blob/e06380002719988d6654aad293eee9ee295fc0d2/docs/preset-management.md"
     title: Preset guide before the focused move
   - id: local-contract
-    resource: governance.md
+    resource: /governance.md
     title: Local operating contract
 ---
 
@@ -18,10 +18,10 @@ sources:
 
 **Standing: proposed revision of the maintained technical guide.** Prior acceptance is recorded in the
 trail and decisions; this candidate adds the ownership model. This guide implements authorized outcomes;
-it does not select dependency policy. Read [AGENTS.md](../AGENTS.md), the [local operating contract](governance.md),
-and the [decision record](decisions.md). Existing JSON remains operative;
+it does not select dependency policy. Read [AGENTS.md](../AGENTS.md), the [local operating contract](/governance.md),
+and the [decision record](/decisions.md). Existing JSON remains operative;
 the examples and broad risk categories below do not authorize preset or consumer changes.[^local-contract]
-Use [bundle document formatting](formatting.md) for metadata and provenance style.
+Use [bundle document formatting](/formatting.md) for metadata and provenance style.
 
 This document outlines the standard operating procedures (SOP) for creating and managing Renovate presets
 in the shared configuration repository. It adapts the prior guide at the revision identified in
@@ -75,10 +75,10 @@ Examples:
 
 ## Apply the ownership and lifecycle contract
 
-Read [repository enforcement](enforcement.md) before implementation. Agents author authorized preset JSON,
+Read [repository enforcement](/enforcement.md) before implementation. Agents author authorized preset JSON,
 consumer evidence, and permitted concept changes. Repository code owns generated outputs; mise is the
-interface for finalization and checks. Record the change trail in root [log.md](log.md), and record material
-policy rationale and authority in [decisions.md](decisions.md), rather than adding a running history here.
+interface for finalization and checks. Record the change trail in root [log.md](/log.md), and record material
+policy rationale and authority in [decisions.md](/decisions.md), rather than adding a running history here.
 
 A PR review concerns the concrete dependency-policy result and its consumer consequences. Human acceptance,
 structural checks, consumer evidence, merge, and publication retain their separate meanings; operator PR merge is the
@@ -326,7 +326,7 @@ When implementing an authorized promotion from optional to global:
 - [ ] Record the material decision, implementation state, and actual verification limits in `decisions.md`.
 
 Schema acceptance, matching diagnostics, and a pilot result establish different claims. See the
-[contract's verification guidance](governance.md#6-verification-and-its-limits). Publication remains a separate
+[contract's verification guidance](/governance.md#6-verification-and-its-limits). Publication remains a separate
 action requiring approval of the concrete result.
 
 ---
@@ -354,3 +354,7 @@ action requiring approval of the concrete result.
 
 [^local-contract]: Adopted renovate-config operating contract; separate publication approval remains required.
 [^prior-guide]: Preset-management guide at renovate-config revision e06380002719988d6654aad293eee9ee295fc0d2.
+
+Apply the [accepted tags](/formatting.md#use-the-accepted-tag-vocabulary),
+[bundle cross-links](/formatting.md#use-bundle-absolute-cross-links), and
+[history conventions](/formatting.md#record-scoped-history) when documenting a preset change.

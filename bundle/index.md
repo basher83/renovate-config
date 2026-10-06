@@ -4,16 +4,18 @@ okf_version: "0.2"
 
 # Repository knowledge
 
-* [Renovate-config prospective decisions](decisions.md) - Material decisions with authority, scope, rationale, implementation state, and revisit conditions.
-* [Repository enforcement](enforcement.md) - Agent and code ownership, mise interfaces, lifecycle boundaries, failure responses, and demonstrated coverage.
-* [Bundle document formatting](formatting.md) - Local OKF frontmatter style, provenance pointers, and verification boundaries for bundle documents.
-* [Renovate-config operating contract](governance.md) - Local exemplar purpose, authority, knowledge boundaries, and the division between agents and repository code.
-* [Preset Management Strategy](preset-management.md) - Technical guidance for implementing authorized shared-preset decisions and verifying their effects.
+## Concepts
 
-## References
+* [Renovate-config prospective decisions](/decisions.md) - This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
+* [Repository enforcement](/enforcement.md) - This contract defines agent and code ownership, mise interfaces, lifecycle boundaries, and enforcement coverage.
+* [Bundle document formatting](/formatting.md) - This framework defines local OKF metadata, provenance, navigation, and history conventions.
+* [Renovate-config operating contract](/governance.md) - This contract defines the exemplar purpose, authority, knowledge boundaries, and agent and code responsibilities.
+* [Preset Management Strategy](/preset-management.md) - This guide applies the operating contract to preset changes, consumer evidence, and validation.
 
-* [References](references/index.md) - Supporting tools and first-class reference concepts; pending evidence lives outside the bundle.
+## Directories
+
+* [References](/references/index.md) - Generated navigation for this directory.
 
 ## History
 
-* [Change log](log.md) - Chronological changes and lifecycle events.
+* [Change log](/log.md) - Chronological changes to this scope.

@@ -55,17 +55,47 @@ class VerificationHistoryTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
 
+    def test_bundle_vocabulary_rejects_unaccepted_tags_and_allows_no_tags(self):
+        self.fm["tags"] = ["renovate"]
+        with self.assertRaisesRegex(ValueError, "accepted vocabulary"):
+            checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+        self.fm.pop("tags")
+        checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+
+    def test_bundle_description_requires_single_sentence_shape(self):
+        for description in ("A fragment", "First sentence. Second sentence."):
+            with self.subTest(description=description):
+                self.fm["description"] = description
+                with self.assertRaisesRegex(ValueError, "single-sentence"):
+                    checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+
+    def test_resource_binding_is_distinct_from_derivation_and_checks_paths(self):
+        self.fm["resource"] = "/governance.md"
+        checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+        self.fm["resource"] = "governance.md"
+        with self.assertRaisesRegex(ValueError, "bundle-absolute"):
+            checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+
 
 class HistoryTests(unittest.TestCase):
     def test_log_is_not_a_concept_and_dates_are_newest_first(self):
         with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
             log = Path(directory) / "log.md"
-            log.write_text("# History\n\n## 2026-10-06\n\n* Change\n\n## 2026-10-05\n\n* Prior change\n")
+            log.write_text("# History\n\n## 2026-10-06\n\n* **Update**: Change\n\n## 2026-10-05\n\n* **Creation**: Prior change\n")
             checker.history(log)
             for text in ("---\ntype: History\n---\n\n## 2026-10-06\n",
                          "# History\n\n## October 6\n", "# History\n\n## 2026-10-05\n\n## 2026-10-06\n"):
                 with self.subTest(text=text):
                     log.write_text(text)
+                    with self.assertRaises(ValueError):
+                        checker.history(log)
+
+    def test_log_rejects_unaccepted_labels_and_nested_lists(self):
+        with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
+            log = Path(directory) / "log.md"
+            for entry in ("* **Validation**: Change", "* Change", "* **Update**: Change\n  * Nested"):
+                with self.subTest(entry=entry):
+                    log.write_text("# History\n\n## 2026-10-06\n\n" + entry + "\n")
                     with self.assertRaises(ValueError):
                         checker.history(log)
 
@@ -134,6 +164,37 @@ class CaptureHeaderTests(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(repair.returncode, 0, repair.stdout + repair.stderr)
         self.assertEqual(index.read_bytes(), original)
+        self.assertEqual(self.run_checker().returncode, 0)
+
+    def test_relative_in_bundle_cross_link_is_rejected(self):
+        file = self.bundle / "governance.md"
+        file.write_text(file.read_text().replace("](/formatting.md)", "](formatting.md)"))
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("in-bundle path must be bundle-absolute", result.stdout)
+
+    def test_root_log_is_required(self):
+        (self.bundle / "log.md").unlink()
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("missing required root history", result.stdout)
+
+    def test_new_directory_requires_generated_navigation_and_preserves_description(self):
+        directory = self.bundle / "references/nested"
+        directory.mkdir()
+        fm, _ = checker.document(self.bundle / "governance.md")
+        fm["sources"] = []
+        concept = directory / "example.md"
+        concept.write_text("---\n" + checker.yaml.safe_dump(fm, sort_keys=False) + "---\n\n# Example\n")
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("references/nested/index.md: derived index drift", result.stdout)
+        generator = BUNDLE / "references/generators/generate_indexes.py"
+        subprocess.run([sys.executable, "-B", str(generator), str(self.bundle), "--write"],
+                       capture_output=True, text=True, check=True)
+        index = (directory / "index.md").read_text()
+        self.assertFalse(index.startswith("---"))
+        self.assertIn("(/references/nested/example.md) - " + fm["description"], index)
         self.assertEqual(self.run_checker().returncode, 0)
 
     def test_body_fidelity_is_still_enforced(self):

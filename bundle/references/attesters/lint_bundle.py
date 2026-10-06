@@ -14,8 +14,8 @@ from check_bundle import SNAPSHOTS
 
 
 def lint(root: Path) -> int:
-    indexes = {Path("bundle/index.md"), Path("bundle/references/index.md"),
-               Path("sources/evaluate/index.md")}
+    indexes = {path.relative_to(root) for path in (root / "bundle").rglob("index.md")}
+    indexes.add(Path("sources/evaluate/index.md"))
     captures = {Path("sources/evaluate") / name for name in SNAPSHOTS if name.endswith(".md")}
     authored = {Path("AGENTS.md"), Path("README.md")}
     for directory in ("bundle", "sources/evaluate", ".github"):

@@ -1,11 +1,14 @@
 ---
 type: Operating Contract
 title: Renovate-config operating contract
-description: Local exemplar purpose, authority, knowledge boundaries, and the division between agents and repository code.
-tags: [renovate, governance]
+description: This contract defines the exemplar purpose, authority, knowledge boundaries, and agent and code responsibilities.
+tags: [governance]
 status: draft
 generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
+  - id: okf-spec
+    resource: ../sources/evaluate/okf-spec.md
+    title: Consulted opensrc-cached OKF v0.2 specification
   - id: exemplar-intent
     resource: ../sources/evaluate/2026-10-06-exemplar-intent.md
     title: Operator clarification of exemplar purpose and documentation responsibilities
@@ -25,7 +28,7 @@ sources:
     title: Shared-policy review reconciliation
     author: codex_agent/GPT 6.1 Sol
   - id: formatting-rules
-    resource: formatting.md
+    resource: /formatting.md
     title: Bundle document formatting
     author: codex_agent/GPT 6.1 Sol
 ---
@@ -55,18 +58,18 @@ Agents author within the task's authorized scope. Repository code owns designate
 reconciles those outputs at defined lifecycle boundaries, and verifies the persisted result. Passing checks
 does not grant authority to adopt policy, manufacture verification, commit, or publish.
 
-[Repository enforcement](enforcement.md) names current and proposed ownership, the mise interface, failure
+[Repository enforcement](/enforcement.md) names current and proposed ownership, the mise interface, failure
 responses, and evidence. Agents may not directly target code-owned outputs or change their owning machinery
 as a workaround. Changing that machinery is a separate authorized task.
 
 ## Documentation ownership
 
 - This concept owns purpose, authority, knowledge boundaries, source evaluation, and promotion requirements.
-- [Enforcement](enforcement.md) owns artifact/field ownership, deterministic lifecycle operations, and coverage.
-- [Formatting](formatting.md) owns permitted authoring conventions; it does not assign implementation authority.
-- [Decisions](decisions.md) retains questions, selected outcomes, authority, scope, rationale, and supersession.
-- [Preset management](preset-management.md) applies the contract to authorized dependency changes and consumers.
-- Root [log.md](log.md) carries the chronological change and lifecycle trail under OKF §9. Entries point to
+- [Enforcement](/enforcement.md) owns artifact/field ownership, deterministic lifecycle operations, and coverage.
+- [Formatting](/formatting.md) owns permitted authoring conventions; it does not assign implementation authority.
+- [Decisions](/decisions.md) retains questions, selected outcomes, authority, scope, rationale, and supersession.
+- [Preset management](/preset-management.md) applies the contract to authorized dependency changes and consumers.
+- Root [log.md](/log.md) carries the chronological change and lifecycle trail under OKF §9. Entries point to
   concepts, decisions, and evidence; concept bodies hold current knowledge rather than a running activity journal.
 - Indexes are derived navigation, owned by the generator. They do not hold policy or acceptance semantics.
 
@@ -111,12 +114,16 @@ Python checks; borrowing those mechanisms does not adopt its evidence-containmen
 The format authority is the [OKF
 specification](https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md).
 Its `sources` field permits internal or external derivation material (§5.1), and path-valued fields permit URLs
-and relative paths (§6.2). It does not require a locally captured copy of every cited source.
+and relative paths (§6.2). It does not require a locally captured copy of every cited source.[^okf-spec]
+
+Local extensions for [resource binding](/formatting.md#distinguish-resource-binding-from-derivation),
+[tags](/formatting.md#use-the-accepted-tag-vocabulary), [cross-links](/formatting.md#use-bundle-absolute-cross-links),
+and [history](/formatting.md#record-scoped-history) belong to the formatting concept.
 
 ### Index ownership
 
 Agents must never issue direct tool calls targeting an `index.md` governed by this bundle. The
-[formatting guidance](formatting.md#generate-governed-indexes) names the owning generator and its explicit
+[formatting guidance](/formatting.md#generate-governed-indexes) names the owning generator and its explicit
 outputs, including the intake index outside the bundle. Agents author permitted inputs; repository code
 finalizes indexes through mise at the pre-commit boundary, then checks for drift. Indexes provide navigation; this
 contract owns layer definitions and evaluation criteria.
@@ -201,7 +208,7 @@ dependency-policy selection, consumer rollout, or enforcement project.
 
 ## 4. Adoption and decision history
 
-Record material decisions prospectively in [decisions.md](decisions.md): the question and prior position,
+Record material decisions prospectively in [decisions.md](/decisions.md): the question and prior position,
 accepted/adapted/deferred/rejected outcome, authority, date, effective scope, rationale, evidence pointers,
 implementation and verification state, and revisit or supersession conditions.
 
@@ -209,8 +216,8 @@ Routine maintenance needs proportionate rationale. Do not reconstruct approval f
 Preserve superseded rationale when decisions change. Git records the edit; a concise decision entry explains
 its meaning without requiring reconstruction of the full conversation.
 
-Historical adoption and subsequent adaptations are linked from [log.md](log.md) and recorded with their
-scope in [decisions.md](decisions.md). Issue #122 and dependency-policy selection remain separate workstreams.
+Historical adoption and subsequent adaptations are linked from [log.md](/log.md) and recorded with their
+scope in [decisions.md](/decisions.md). Issue #122 and dependency-policy selection remain separate workstreams.
 
 ### Human acceptance at the PR boundary
 
@@ -219,8 +226,8 @@ Record the PR URL, merged revision, merge actor, timestamp, and accepted scope. 
 markers cannot substitute for that attributable event. Unmerged work remains a candidate; later changes
 are outside the prior merge's acceptance until accepted in their own scope.
 
-Root [log.md](log.md) records the acceptance event and links to its evidence. Material policy choices retain
-rationale in [decisions.md](decisions.md). The merge is also a publication event on its target branch;
+Root [log.md](/log.md) records the acceptance event and links to its evidence. Material policy choices retain
+rationale in [decisions.md](/decisions.md). The merge is also a publication event on its target branch;
 applicable approval must precede that action. It does not authorize consumer edits or adoption elsewhere.
 
 PR acceptance does not implicitly verify every claim, accept unevaluated sources, or create a human `verified`
@@ -268,7 +275,7 @@ entry points were checked. Do not install tools or broaden machinery merely to t
 
 ## 7. Enforcement and current coverage
 
-The contract defines required behavior; [enforcement.md](enforcement.md) distinguishes implemented controls
+The contract defines required behavior; [enforcement.md](/enforcement.md) distinguishes implemented controls
 from proposed ones. Index finalization and structural validation are configured through mise at pre-commit.
 Metadata reconciliation, promotion/acceptance projection, and stronger publication checks remain proposals.
 No installed hook prevents every bypass or proves factual accuracy. Coverage claims require receipts for the
@@ -285,12 +292,13 @@ The shared source remains unadopted. This contract states the local application 
 makes provenance inspectable without requiring access to the vault.
 
 The operator selected OKF v0.2 formatting for the Slice 1 bundle documents.[^local-scope]
-[Bundle document formatting](formatting.md) owns the field ordering, actor style, source attribution, draft
+[Bundle document formatting](/formatting.md) owns the field ordering, actor style, source attribution, draft
 standing, and verification guidance. It identifies the cached specification and local house-style references,
 including their provenance limits. Current enforcement coverage is recorded separately.[^formatting-rules]
 
 [^exemplar-intent]: Participant-authored record of operator clarification in this review; operator selected PR merge
     as acceptance; machine projection remains unimplemented.
+[^okf-spec]: Consulted cached specification, preserved in pending evaluation; the upstream link identifies its origin.
 [^review-rulings]: Participant-authored adoption walkthrough record, including the operator's final acceptance.
 [^review-reconciliation]: Reconciliation of the completed review, including reported-evidence limits and deferred work.
 [^shared-draft]: Captured Agent Working Policy — Draft, with original body hash identified above.

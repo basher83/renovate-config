@@ -75,7 +75,7 @@ run = "npx --yes --package renovate -- renovate-config-validator --strict *.json
 
 # === Bundle finalization: deterministic outputs owned by code ===
 [tasks."bundle:generate"]
-description = "Regenerate the three governed indexes from document metadata"
+description = "Regenerate all governed directory indexes from document metadata"
 tools = { uv = "0.12.3" }
 run = "uv run --script bundle/references/generators/generate_indexes.py --write"
 

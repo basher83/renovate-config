@@ -1,5 +1,7 @@
 # Sources to evaluate
 
+## Pending records
+
 * [Local adoption walkthrough choices, 2026-10-06](2026-10-06-adoption-rulings.md) - Participant-authored record of the operator's choices for the revised local contract.
 * [Exemplar intent and ownership boundaries, 2026-10-06](2026-10-06-exemplar-intent.md) - Participant-authored record of the operator's clarified purpose and documentation boundaries.
 * [Shared-policy review reconciliation, 2026-10-06](2026-10-06-review-reconciliation.md) - Local dispositions of the completed cross-repository governance review and its evidence limits.

@@ -29,6 +29,8 @@ FIELDS = {
     "type", "title", "description", "resource", "tags", "status", "sources",
     "usage_window", "generated", "verified", "stale_after",
 }
+TAGS = {"governance", "enforcement", "formatting", "presets"}
+LOG_LABELS = {"Update", "Creation", "Deprecation"}
 SOURCE_FIELDS = {"id", "resource", "title", "author", "usage_count", "last_modified", "usage_window"}
 ACTOR = re.compile(r"(?:[a-z][a-z0-9_-]*_agent/\S[^\r\n]*|human:\S+|process:\S+)\Z")
 SNAPSHOTS = {
@@ -109,6 +111,18 @@ def target(bundle: Path, origin: Path, resource: str) -> Path | None:
     return (bundle / decoded.lstrip("/") if decoded.startswith("/") else origin.parent / decoded).resolve()
 
 
+def local_target(bundle: Path, file: Path, resource: str) -> Path | None:
+    """Resolve local paths within the repository and enforce bundle-absolute references."""
+    resolved = target(bundle, file, resource)
+    if resolved is not None:
+        if not resolved.is_relative_to(bundle.parent) or not resolved.exists():
+            raise ValueError(f"local path must resolve inside this repository: {resource}")
+        if (file.is_relative_to(bundle) and resolved.is_relative_to(bundle)
+                and not urlsplit(resource).path.startswith("/")):
+            raise ValueError(f"in-bundle path must be bundle-absolute: {resource}")
+    return resolved
+
+
 def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: datetime) -> None:
     if set(fm) - FIELDS:
         raise ValueError(f"undocumented frontmatter fields: {sorted(set(fm) - FIELDS)}")
@@ -117,8 +131,19 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
             raise ValueError(f"{key} must be a nonempty single-line string")
     if fm["status"] not in {"draft", "stable", "deprecated"}:
         raise ValueError("unknown lifecycle status")
-    if not isinstance(fm.get("tags"), list) or not all(isinstance(t, str) and t.strip() for t in fm["tags"]):
+    tags = fm.get("tags", [])
+    if not isinstance(tags, list) or not all(isinstance(t, str) and t.strip() for t in tags):
         raise ValueError("tags must be a list of nonempty strings")
+    if file.is_relative_to(bundle):
+        if set(tags) - TAGS:
+            raise ValueError(f"tags outside accepted vocabulary: {sorted(set(tags) - TAGS)}")
+        description = fm["description"]
+        if not re.fullmatch(r".+[.!?]", description) or re.search(r"[.!?]\s+\S", description):
+            raise ValueError("description must have single-sentence punctuation; meaning requires human review")
+    if "resource" in fm:
+        if not isinstance(fm["resource"], str) or not fm["resource"].strip():
+            raise ValueError("resource must be a nonempty URL/path")
+        local_target(bundle, file, fm["resource"])
     if "usage_window" in fm:
         window(fm["usage_window"], now)
     generated = fm.get("generated")
@@ -151,9 +176,10 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
         ids.add(source["id"])
         if "author" in source:
             actor(source["author"])
-        resolved = target(bundle, file, source["resource"])
-        if resolved is not None and (not resolved.exists() or not resolved.is_relative_to(bundle.parent)):
-            raise ValueError(f"source must resolve inside this repository: {source['resource']}")
+        try:
+            local_target(bundle, file, source["resource"])
+        except ValueError as error:
+            raise ValueError(f"source must resolve inside this repository using bundle-absolute paths: {source['resource']}") from error
         if "last_modified" in source:
             timestamp(source["last_modified"], now)
         if "usage_count" in source and (isinstance(source["usage_count"], bool) or
@@ -169,9 +195,7 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
     if ids != uses or set(definitions) != uses:
         raise ValueError(f"source/footnote join mismatch: sources={sorted(ids)}, uses={sorted(uses)}")
     for resource in re.findall(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)", clean):
-        resolved = target(bundle, file, resource)
-        if resolved is not None and not resolved.exists():
-            raise ValueError(f"broken local link: {resource}")
+        resolved = local_target(bundle, file, resource)
         fragment = unquote(urlsplit(resource).fragment)
         if resolved is not None and fragment and resolved.suffix == ".md":
             headings = re.findall(r"^#{1,6}\s+(.+)$", resolved.read_text(encoding="utf-8"), re.M)
@@ -180,7 +204,7 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
                 raise ValueError(f"broken local anchor: {resource}")
 
 
-def history(file: Path) -> None:
+def history(file: Path, bundle: Path | None = None) -> None:
     """Validate the reserved OKF log structure without treating it as a concept."""
     text = file.read_text(encoding="utf-8")
     if text.startswith("---\n"):
@@ -195,10 +219,17 @@ def history(file: Path) -> None:
         dates.append(datetime.strptime(heading, "%Y-%m-%d").date())
     if dates != sorted(set(dates), reverse=True):
         raise ValueError("log dates must be unique and newest first")
+    entries = re.findall(r"^[*+-] (.+)$", text, re.M)
+    if not entries:
+        raise ValueError("log needs prose entries")
+    for entry in entries:
+        label = re.match(r"\*\*([^*]+)\*\*", entry)
+        if not label or label[1] not in LOG_LABELS:
+            raise ValueError("log entry must begin with an accepted bold label")
+    if re.search(r"^[ \t]+[*+-] |^\d+\. ", text, re.M):
+        raise ValueError("log entries must form a flat list")
     for resource in re.findall(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)", text):
-        resolved = target(file.parent, file, resource)
-        if resolved is not None and not resolved.exists():
-            raise ValueError(f"broken log pointer: {resource}")
+        local_target(bundle or file.parent, file, resource)
 
 
 def main() -> int:
@@ -212,6 +243,8 @@ def main() -> int:
         now = datetime.fromisoformat(args.now.replace("Z", "+00:00")) if args.now else datetime.now(timezone.utc)
         if now.tzinfo is None:
             raise ValueError("--now needs an explicit UTC offset")
+        if not (bundle / "log.md").is_file():
+            errors.append("log.md: missing required root history")
         for name, (mode, expected) in SNAPSHOTS.items():
             file = (bundle / "references" / name if name.startswith("upstream-code/")
                     else bundle.parent / "sources/evaluate" / name)
@@ -235,7 +268,7 @@ def main() -> int:
                         raise ValueError("subdirectory index must not carry frontmatter")
                     continue
                 if file.name == "log.md":
-                    history(file)
+                    history(file, bundle)
                     continue
                 fm, body = document(file)
                 if not isinstance(fm.get("type"), str) or not fm["type"].strip():
@@ -269,7 +302,7 @@ def main() -> int:
     for error in errors:
         print(f"ERROR: {error}")
     if not errors:
-        print(f"OK: metadata, source joins, local paths, three governed indexes, and {len(SNAPSHOTS)} pinned captures")
+        print(f"OK: metadata, source joins, local paths, all governed directory indexes, and {len(SNAPSHOTS)} pinned captures")
         print("LIMIT: captured links retain original source context; no factual accuracy or adoption authenticated")
     return int(bool(errors))
 

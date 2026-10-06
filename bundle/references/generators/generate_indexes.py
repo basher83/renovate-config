@@ -3,15 +3,16 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyyaml==6.0.3"]
 # ///
-"""Generate the three governed indexes; default to a read-only drift check.
+"""Generate every governed directory index; default to a read-only drift check.
 
 Adapted from greenfield's generate_indexes.py: titles and descriptions come
 from frontmatter, entry order is sorted by filename, and --write is explicit.
-This version owns bundle/index.md, bundle/references/index.md, and the repository
+This version owns every bundle directory index and the repository
 intake sources/evaluate/index.md; it imports no learning types or enforcement.
 """
 
 import argparse
+import ast
 import difflib
 import re
 from pathlib import Path
@@ -26,7 +27,7 @@ TOOLING = {
 }
 
 
-def entries(directory: Path) -> dict[str, str]:
+def entries(directory: Path, bundle: Path | None = None) -> dict[str, str]:
     result = {}
     for file in sorted(directory.glob("*.md")):
         if file.name in {"index.md", "log.md"}:
@@ -41,52 +42,62 @@ def entries(directory: Path) -> dict[str, str]:
         for key in ("type", "title", "description"):
             if not isinstance(fm.get(key), str) or not fm[key].strip() or "\n" in fm[key]:
                 raise ValueError(f"{file}: {key} must be a nonempty single-line string")
-        result[file.name] = f"* [{fm['title']}]({file.name}) - {fm['description']}"
+        link = "/" + file.relative_to(bundle).as_posix() if bundle else file.name
+        result[file.name] = f"* [{fm['title']}]({link}) - {fm['description']}"
     return result
+
+
+def directories(bundle: Path) -> list[Path]:
+    """Discover the hierarchy while excluding Python's transient bytecode cache."""
+    return [bundle, *sorted(path for path in bundle.rglob("*")
+                           if path.is_dir() and "__pycache__" not in path.relative_to(bundle).parts)]
 
 
 def render(bundle: Path) -> dict[Path, str]:
     if not (bundle / "formatting.md").is_file():
         raise ValueError(f"{bundle}: expected this repository's formatting.md")
-    for file in bundle.rglob("*.md"):
-        if file.parent not in {bundle, bundle / "references"}:
-            raise ValueError(f"{file}: concept directory outside the declared index scope")
-    root_items = entries(bundle)
-    root_index = bundle / "index.md"
-    root = '---\nokf_version: "0.2"\n---\n\n# Repository knowledge\n\n'
-    root += "\n".join(root_items[name] for name in sorted(root_items))
-    root += ("\n\n## References\n\n* [References](references/index.md) - Supporting tools and first-class "
-             "reference concepts; pending evidence lives outside the bundle.\n")
-    if (bundle / "log.md").is_file():
-        root += "\n## History\n\n* [Change log](log.md) - Chronological changes and lifecycle events.\n"
-    refs = bundle / "references"
-    items = entries(refs)
-    reference_index = refs / "index.md"
-    order = sorted(items)
-    reference = "# References\n\n"
-    if items:
-        reference += "## Reference concepts\n\n"
-        reference += "\n".join(items[name] for name in order) + "\n\n"
-    reference += "## Tooling\n\n"
-    for name, description in TOOLING.items():
-        directory = refs / name
-        scripts = sorted(p.name for p in directory.glob("*.py"))
-        if not scripts:
-            raise ValueError(f"{directory}: expected at least one Python script")
-        reference += f"* [{name.title()}]({name}/) - {description}: {', '.join(scripts)}.\n"
-    originals = sorted(p.name for p in (refs / "upstream-code").glob("*.py.txt"))
-    if not originals:
-        raise ValueError("expected captured upstream source code")
-    reference += ("* [Upstream source code](upstream-code/) - Verbatim Python source snapshots, "
-                  f"retained as evidence: {', '.join(originals)}.\n")
+    outputs = {}
+    for directory in directories(bundle):
+        heading = "Repository knowledge" if directory == bundle else directory.name.replace("-", " ").title()
+        text = '---\nokf_version: "0.2"\n---\n\n' if directory == bundle else ""
+        text += f"# {heading}\n\n"
+        concepts = entries(directory, bundle)
+        if concepts:
+            text += "## Concepts\n\n" + "\n".join(concepts[name] for name in sorted(concepts)) + "\n\n"
+        children = [child for child in sorted(directory.iterdir())
+                    if child.is_dir() and child.name != "__pycache__"]
+        if children:
+            text += "## Directories\n\n"
+            for child in children:
+                link = "/" + (child / "index.md").relative_to(bundle).as_posix()
+                description = TOOLING.get(child.name, "Generated navigation for this directory")
+                text += f"* [{child.name.replace('-', ' ').title()}]({link}) - {description}.\n"
+            text += "\n"
+        artifacts = [file for file in sorted(directory.iterdir()) if file.is_file() and file.suffix != ".md"]
+        if artifacts:
+            text += "## Supporting artifacts\n\n"
+            for file in artifacts:
+                if file.suffix == ".py":
+                    doc = ast.get_docstring(ast.parse(file.read_text(encoding="utf-8")))
+                    description = doc.splitlines()[0] if doc else "Supporting Python tool."
+                else:
+                    description = "Preserved source capture." if file.name.endswith(".py.txt") else "Supporting artifact."
+                link = "/" + file.relative_to(bundle).as_posix()
+                text += f"* [{file.name}]({link}) - {description}\n"
+            text += "\n"
+        if (directory / "log.md").is_file():
+            link = "/" + (directory / "log.md").relative_to(bundle).as_posix()
+            text += f"## History\n\n* [Change log]({link}) - Chronological changes to this scope.\n\n"
+        if not concepts and not children and not artifacts and not (directory / "log.md").is_file():
+            text += "## Contents\n\nNo concepts or supporting artifacts are present.\n"
+        outputs[directory / "index.md"] = text.rstrip() + "\n"
     intake = bundle.parent / "sources/evaluate"
     if not intake.is_dir():
         raise ValueError(f"{intake}: expected pending-evaluation directory")
-    intake_index = intake / "index.md"
-    intake_items = entries(intake)
-    pending = "# Sources to evaluate\n\n"
-    pending += "\n".join(intake_items[name] for name in sorted(intake_items)) + "\n"
-    return {root_index: root, reference_index: reference, intake_index: pending}
+    items = entries(intake)
+    outputs[intake / "index.md"] = ("# Sources to evaluate\n\n## Pending records\n\n" +
+                                     "\n".join(items[name] for name in sorted(items)) + "\n")
+    return outputs
 
 
 def main() -> int:
@@ -94,7 +105,7 @@ def main() -> int:
     parser.add_argument("bundle", nargs="?", type=Path, default=DEFAULT_BUNDLE)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="check without writing (default)")
-    mode.add_argument("--write", action="store_true", help="write only the three declared indexes")
+    mode.add_argument("--write", action="store_true", help="write the complete governed index scope")
     args = parser.parse_args()
     try:
         drift = False

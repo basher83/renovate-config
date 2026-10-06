@@ -1,0 +1,57 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "3df38bd65eb5",
+  "session_id": "01a11266-0a59-79b3-9afb-a4e1d18137be",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-06T21:48:07.711034Z",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "bundle/log.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "75a792d7e662",
+  "checkpoint_transcript_start": 1242,
+  "transcript_lines_at_start": 1242,
+  "compact_transcript_start": 177,
+  "token_usage": {
+    "input_tokens": 7281,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1037568,
+    "output_tokens": 2955,
+    "api_call_count": 8
+  },
+  "session_metrics": {
+    "turn_count": 30
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-06T21:48:07.626885Z",
+    "agent_lines": 569,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 569,
+    "total_lines_changed": 569,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 806,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "sources/basher83-repo-inventory.csv": 93,
+        "sources/renovate-dependency-review.md": 374,
+        "sources/repo-dependency-map.csv": 95,
+        "sources/shared-agent-policy-repository-review.md": 244
+      }
+    }
+  ]
+}

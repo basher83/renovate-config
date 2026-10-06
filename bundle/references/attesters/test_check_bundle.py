@@ -90,6 +90,14 @@ class HistoryTests(unittest.TestCase):
                     with self.assertRaises(ValueError):
                         checker.history(log)
 
+    def test_log_rejects_entry_before_first_date_heading(self):
+        with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
+            log = Path(directory) / "log.md"
+            log.write_text("# History\n\n* **Update**: Undated change\n\n"
+                           "## 2026-10-06\n\n* **Creation**: Dated change\n")
+            with self.assertRaisesRegex(ValueError, "before a dated group"):
+                checker.history(log)
+
     def test_log_rejects_unaccepted_labels_and_nested_lists(self):
         with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
             log = Path(directory) / "log.md"

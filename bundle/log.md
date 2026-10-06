@@ -2,6 +2,9 @@
 
 ## 2026-10-06
 
+* **Update**: Corrected history validation to process date headings and entries in document order and
+  reject entries before the first dated group. The new regression reproduced the gap before the fix;
+  this follow-up run passed all nineteen regressions, including that ordering case.
 * **Update**: Applied operator PR verdicts on descriptions, locked tags, resource binding, provenance,
   bundle-absolute links, accepted history labels, and complete generated index coverage.
   [Decision D012](/decisions.md#2026-10-06--d012-apply-reviewed-local-okf-extensions) records authority and scope.

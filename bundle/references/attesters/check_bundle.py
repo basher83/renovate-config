@@ -209,23 +209,27 @@ def history(file: Path, bundle: Path | None = None) -> None:
     text = file.read_text(encoding="utf-8")
     if text.startswith("---\n"):
         raise ValueError("log must not carry concept frontmatter")
-    headings = re.findall(r"^## (.+)$", text, re.M)
-    if not headings:
-        raise ValueError("log needs ISO date headings")
     dates = []
-    for heading in headings:
-        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", heading):
-            raise ValueError("log date headings must use YYYY-MM-DD")
-        dates.append(datetime.strptime(heading, "%Y-%m-%d").date())
+    entry_count = 0
+    for line in text.splitlines():
+        if line.startswith("## "):
+            heading = line[3:]
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", heading):
+                raise ValueError("log date headings must use YYYY-MM-DD")
+            dates.append(datetime.strptime(heading, "%Y-%m-%d").date())
+        elif entry := re.match(r"^[*+-] (.+)$", line):
+            if not dates:
+                raise ValueError("log entry appears before a dated group")
+            label = re.match(r"\*\*([^*]+)\*\*", entry[1])
+            if not label or label[1] not in LOG_LABELS:
+                raise ValueError("log entry must begin with an accepted bold label")
+            entry_count += 1
+    if not dates:
+        raise ValueError("log needs ISO date headings")
     if dates != sorted(set(dates), reverse=True):
         raise ValueError("log dates must be unique and newest first")
-    entries = re.findall(r"^[*+-] (.+)$", text, re.M)
-    if not entries:
+    if not entry_count:
         raise ValueError("log needs prose entries")
-    for entry in entries:
-        label = re.match(r"\*\*([^*]+)\*\*", entry)
-        if not label or label[1] not in LOG_LABELS:
-            raise ValueError("log entry must begin with an accepted bold label")
     if re.search(r"^[ \t]+[*+-] |^\d+\. ", text, re.M):
         raise ValueError("log entries must form a flat list")
     for resource in re.findall(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)", text):

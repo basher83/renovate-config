@@ -1,0 +1,93 @@
+Repo,Language,Created,What it says it is
+.github,—,2025-07-09,Shared GitHub workflows.
+.github-private,—,2025-12-02,"Write-up of a Copilot prompt-engineering experiment (""The Emotional Journey of Copilot"").*"
+3I-commons,—,2026-03-16,Work that crosses domain boundaries in the 3I system.
+adversarial-review,Python,2026-09-09,"Reproduction of the ""Adversarial Review"" agentic code-review paper (ICML 2026).*"
+agent-skills-factory,Python,2026-06-05,Personal factory for producing and developing agent skills.*
+agent-vault-design,HTML,2026-05-29,Design workspace for the agent-vault Claude Code plugin before it ships.
+agentic-engineering,—,2026-03-20,Captures the mental model behind agentic engineering practice.
+andromeda-orchestration (archived),Jinja,2025-07-22,"Ansible homelab automation on Consul, Nomad, and Vault over Proxmox.*"
+arscontexta,—,2026-02-24,Ars Contexta knowledge and context system (private working tree).*
+arscontexta-1 (fork),Shell,2026-04-01,"Claude Code plugin that builds a personal markdown ""second brain"" from conversation."
+assets,HTML,2025-06-06,Central store for GitHub images and visual assets.
+automation-scripts,Shell,2025-06-08,Bash automation scripts for DevOps and sysadmin tasks.*
+autonomous-agent-systems,Shell,2026-05-05,Notes and scripts on autonomous agent systems.*
+basher83,—,2025-06-04,GitHub profile README.*
+blake-os-bootstrap,—,2026-05-18,Bootstrap for a personal workflow system built with Claude Cowork.
+cisco-config-parser,Python,2024-01-05,Personal collection of finished scripts and projects.
+claude-dev,Python,2025-12-28,Personal curation of Claude Code components.*
+claude-trace-daemon,JavaScript,2026-06-12,Local telemetry pipeline that captures Claude Code tool use on macOS.*
+claw-code (fork),Rust,2026-04-01,"Fork of a hugely starred AI coding-agent harness, being rewritten in Rust."
+clawd-workspace,JavaScript,2026-01-21,Workspace and spec bundle for clawd/range work.*
+crucible,—,2026-04-10,Metrics and logs telemetry store under Phoenix for the 3I stack.
+docker,Shell,2025-06-03,"Modular Docker Compose setup for self-hosted services (""Deployarr"").*"
+docs,Shell,2025-06-06,Personal docs and notes for projects and the homelab.
+domain-chassis,Python,2026-02-17,"Shared operating method for all domains: gates, session context, document review."
+dotfiles,Shell,2025-04-06,Personal dotfiles.*
+dynamic-proxmox,Python,2025-05-19,Ansible dynamic inventory for Proxmox VE clusters.*
+eidos,Shell,2026-04-10,Spec-driven development plugin (Reverse Ralph project).
+factory-dev,TypeScript,2026-06-10,Trial ground testing whether Dippin pipelines should be adopted across 3I.*
+forge-doctrine,Shell,2026-02-12,"Claude Code plugin for iterative autonomous AI development (""Ralph Wiggum"" loop)."
+forge-pi,TypeScript,2026-04-30,Research target: reverse-engineering the pi-mono coding agent for forge methodology.
+forgeflare,Rust,2026-02-08,"Rust coding agent built on Claude, shipped as a single binary.*"
+forgeflare-hooks,Rust,2026-02-14,Forgeflare variant with a programmable hook system for steering the agent.*
+forgelens,Shell,2026-03-12,ForgeLens tooling stub for the forge projects (README is nearly empty).*
+github-actions,—,2025-06-09,Reusable GitHub Actions workflows for basher83 repos.
+Hallowbranch-Restore,TypeScript,2026-01-12,Family photo restoration.
+Hashtopolis-agent,Dockerfile,2024-11-03,Containerized Hashtopolis agent (README is heading only).*
+hello-komodo,Shell,2025-09-30,Ansible repo that manages Komodo.
+Hercules-Power-Templates,Shell,2025-09-19,Bash scripts that create Proxmox VM templates.
+human-thinking,Python,2026-07-02,Workspace for human-plus-agent reasoning skills and workflows.
+IaC_homelab,HCL,2025-03-19,Learning project for infrastructure as code.
+lab-operations,Python,2026-08-11,Coordinates lab-wide operations across repos for humans and agents.
+lab-polish,—,2026-03-29,"Lab domain plugin, companion to workshop-polish.*"
+latent-space,TypeScript,2026-04-10,Claude Agent SDK workflows for repeatable codebase analysis.*
+linux-hosts,TypeScript,2026-09-15,"Setup, lifecycle, and recovery of general-purpose Linux hosts in the Lab."
+llm-observability-stack,Python,2026-05-23,Hand-maintained research corpus and handbook on LLM agent telemetry.*
+lunar-claude,Python,2025-10-23,Personal Claude Code configuration.
+lunar-research,Shell,2025-12-10,Claude Code plugin for multi-agent research with a synthesizer agent.
+mothership-gitops,TypeScript,2026-01-04,GitOps manifests for the talos-prod-01 Kubernetes cluster.
+nanny,TypeScript,2026-04-10,"""The dumb task loop for smart agents.""*"
+nanny-rs-via-pi-goal,—,2026-05-09,Empty placeholder for a nanny task-loop variant.*
+nanny-rs-via-pi-until-done,Rust,2026-05-09,Rust nanny task-loop experiment built via pi.*
+omni-infra-provider-proxmox (fork),Go,2026-01-03,Proxmox infrastructure provider for Sidero Omni.
+Omni-Scale,Shell,2025-12-27,Deploys Sidero Omni (Kubernetes management) behind Tailscale with Auth0 login.
+openprose-workflows,Python,2026-07-05,OpenProse operator workflows kept in git.*
+otn-security-study,—,2026-04-24,Study notes on OTN security.*
+personal-computing,Python,2026-06-12,"Registry of personal devices, configs, restore steps, and troubleshooting history."
+personal-learning,—,2026-07-31,"Personal learning notes and knowledge management, including agentic engineering."
+pi-dev-config,TypeScript,2026-05-27,"Workspace for developing pi, using pi."
+pi-paneworks,—,2026-05-18,Pi pane/workspace experiments.*
+pi-upstream-crew,Python,2026-05-16,Pi agent crew that runs evaluations of an upstream corpus.*
+prompting-eval-workbench,Python,2026-06-17,Workbench for engineering and evaluating prompts and agent workflows.*
+Proxmox-OpenAPI,JavaScript,2025-06-10,OpenAPI specs for Proxmox VE and Proxmox Backup Server.
+"ProxmoxMCP (fork, archived)",Python,2025-05-10,MCP server for Proxmox.
+ProxSyncBox (fork),Python,2025-08-24,"Desktop app that syncs Proxmox VMs, containers, and nodes into NetBox."
+radiant-filament,Python,2025-12-14,CLI tool for Google Gemini Deep Research.*
+renovate-config,TypeScript,2025-11-22,Personal Renovate dependency-update presets.
+research-polish,Python,2026-03-09,"Research domain plugin: skills, MCP connectors, research records.*"
+research-ralph,Shell,2026-03-22,"""Ralph Wiggum"" agent loop adapted for autonomous research."
+research-ralph-apparatus,Shell,2026-04-30,Support tooling for research-ralph autonomous research loops.
+research-ralph-template,Shell,2026-03-22,Starter template for new research-ralph investigations.
+reverse-ralph-apparatus,Shell,2026-04-30,"Shared runtime (loop script, hooks, settings) for reverse-Ralph extraction loops.*"
+reverse-ralph-runner,TypeScript,2026-04-25,Small verifier that checks reverse-Ralph specs against fixtures.*
+reverse_engineer_ralph,—,2026-03-30,Reverse-engineering the Ralph agent loop.*
+rr-hook-presence,Python,2026-04-02,Reverse-Ralph hook-presence experiments.*
+rr-prose-backpressure,JavaScript,2026-05-01,Reverse-Ralph research materials on prose backpressure.*
+scalr-hashistack,HCL,2025-06-28,"Packer, Terraform, and cloud-init workflow for HashiStack VMs via Scalr.*"
+scalr-policy,Open Policy Agent,2025-05-14,Scalr policies enforcing Terraform conventions and best practices.*
+searchmark,—,2026-09-05,Empty OpenResearch project scaffold.*
+skill-creator,Python,2026-03-30,"Harness for building skills, with hooks enforcing each workflow phase.*"
+Sombrero-Edge-Control,Shell,2025-08-29,Terraform for the IaC control-node VM.
+ssh-config,—,2025-09-13,"Personal SSH configuration, including 1Password SSH integration.*"
+Supernova-MicroK8s-Infra,HCL,2025-08-29,Terraform and Ansible for a MicroK8s cluster.
+tailnet-microservices,Rust,2026-02-06,Single-binary Rust services with built-in Tailscale networking.
+the-agent-toolshed,—,2026-05-18,"Tools, prompts, and experiments for agentic workflows (3I workshop)."
+The-Mothership-Homelab,—,2025-05-14,Infrastructure as code to automate and document the homelab.*
+the-range,Python,2026-02-28,"Infrastructure for evaluating context engineering with paired, measured tests."
+TheMothership,Python,2026-01-16,Personal Obsidian vault.
+Triangulum-Prime,HCL,2025-10-07,"Main homelab Terraform repo, integrated with Scalr."
+Virgo-Core,HCL,2025-10-11,"Integration of Proxmox, NetBox, and PowerDNS."
+workshop-polish,TypeScript,2026-02-22,Workshop domain plugin built on domain-chassis.*
+workshop-wiki,TypeScript,2026-10-04,Workshop knowledge base and project-management governance.
+Zammad-MCP,Python,2025-07-06,"MCP server letting AI assistants work with Zammad tickets, users, and orgs."

@@ -246,6 +246,14 @@ def main() -> int:
         pending = bundle.parent / "sources/evaluate"
         if not (pending / "index.md").is_file():
             errors.append("sources/evaluate/index.md: missing pending-evaluation navigation")
+        for file in sorted(pending.rglob("*.md")):
+            if file.name == "index.md" or file.relative_to(pending).as_posix() in SNAPSHOTS:
+                continue
+            try:
+                fm, body = document(file)
+                authored_metadata(bundle, file, fm, body, now)
+            except (OSError, TypeError, ValueError, yaml.YAMLError) as error:
+                errors.append(f"{file.relative_to(bundle.parent)}: {error}")
         for name in SNAPSHOTS:
             if not name.startswith("upstream-code/") and (bundle / "references" / name).exists():
                 errors.append(f"references/{name}: raw capture belongs outside the knowledge bundle")

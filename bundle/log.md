@@ -2,6 +2,10 @@
 
 ## 2026-10-06
 
+* **Review correction**: Extended the checker to validate authored pending-evaluation Markdown with the same
+  metadata, source-pointer, and footnote checks as concepts, excluding pinned captures by `SNAPSHOTS` paths.
+  Added regressions for broken source pointers and unmatched footnotes that leave index metadata unchanged;
+  all eleven regressions passed, along with bundle checks and authored Markdown lint.
 * **Remediation preparation**: Reconciled capture-preserving hook exclusions, added complete authored-document
   lint through mise, and isolated the source-escape regression fixture inside its owned temporary directory.
   [D011](decisions.md#2026-10-06--d011-reconcile-the-complete-pre-commit-boundary) records authority and scope.

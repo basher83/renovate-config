@@ -91,6 +91,23 @@ class CaptureHeaderTests(unittest.TestCase):
         result = self.run_checker()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_authored_pending_record_rejects_broken_source_pointer(self):
+        file = self.bundle.parent / "sources/evaluate/2026-10-06-review-reconciliation.md"
+        file.write_text(file.read_text().replace("resource: shared-agent-policy-repository-review.md",
+                                                "resource: missing-review.md"))
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("2026-10-06-review-reconciliation.md: source must resolve", result.stdout)
+        self.assertNotIn("derived index drift", result.stdout)
+
+    def test_authored_pending_record_rejects_unmatched_footnote(self):
+        file = self.bundle.parent / "sources/evaluate/2026-10-06-exemplar-intent.md"
+        file.write_text(file.read_text() + "\nUnmatched evidence.[^missing]\n")
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("2026-10-06-exemplar-intent.md: source/footnote join mismatch", result.stdout)
+        self.assertNotIn("derived index drift", result.stdout)
+
     def test_pending_evidence_cannot_return_to_bundle(self):
         shutil.copyfile(self.bundle.parent / "sources/evaluate/okf-spec.md",
                         self.bundle / "references/okf-spec.md")

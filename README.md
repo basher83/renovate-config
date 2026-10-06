@@ -83,7 +83,7 @@ Python runtime caps are intentionally stack-specific and live in `python-mcp.jso
 
 ## Documentation
 
-- [Repository Knowledge](./bundle/index.md) – Local guidance and captured references
+- [Repository Knowledge](./bundle/index.md) – Local knowledge and supporting tools
 - [Bundle Document Formatting](./bundle/formatting.md) – Local OKF frontmatter and provenance style
 - [Preset Management Strategy](./bundle/preset-management.md) – Guidelines for creating and organizing
   presets, including the automerge mental model

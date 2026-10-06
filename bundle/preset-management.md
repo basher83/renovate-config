@@ -3,8 +3,8 @@ type: Playbook
 title: Preset Management Strategy
 description: Technical guidance for implementing authorized shared-preset decisions and verifying their effects.
 tags: [renovate, presets, playbook]
-status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T07:49:37Z }
+status: draft
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
   - id: prior-guide
     resource: "https://github.com/basher83/renovate-config/blob/e06380002719988d6654aad293eee9ee295fc0d2/docs/preset-management.md"
@@ -16,7 +16,8 @@ sources:
 
 # Preset Management Strategy
 
-**Standing: maintained technical guide, accepted with Slice 1.** This guide implements authorized outcomes;
+**Standing: proposed revision of the maintained technical guide.** Prior acceptance is recorded in the
+trail and decisions; this candidate adds the ownership model. This guide implements authorized outcomes;
 it does not select dependency policy. Read [AGENTS.md](../AGENTS.md), the [local operating contract](governance.md),
 and the [decision record](decisions.md). Existing JSON remains operative;
 the examples and broad risk categories below do not authorize preset or consumer changes.[^local-contract]
@@ -71,6 +72,20 @@ Examples:
 > Python runtime caps are handled in stack-specific presets (`python-mcp.json`, `ansible.json`).
 
 ---
+
+## Apply the ownership and lifecycle contract
+
+Read [repository enforcement](enforcement.md) before implementation. Agents author authorized preset JSON,
+consumer evidence, and permitted concept changes. Repository code owns generated outputs; mise is the
+interface for finalization and checks. Record the change trail in root [log.md](log.md), and record material
+policy rationale and authority in [decisions.md](decisions.md), rather than adding a running history here.
+
+A PR review concerns the concrete dependency-policy result and its consumer consequences. Human acceptance,
+structural checks, consumer evidence, merge, and publication retain their separate meanings; operator PR merge is the
+human acceptance
+event for the reviewed change; it does not automatically verify every claim. Shared behavior changes require
+representative consumer
+evidence or the explicit exception defined by the operating contract, followed by applicable publication approval.
 
 ## Implementation Pattern
 

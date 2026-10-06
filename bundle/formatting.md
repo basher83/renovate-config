@@ -3,22 +3,22 @@ type: Framework
 title: Bundle document formatting
 description: Local OKF frontmatter style, provenance pointers, and verification boundaries for bundle documents.
 tags: [renovate, governance, formatting]
-status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T07:49:37Z }
+status: draft
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
   - id: okf-spec
-    resource: references/okf-spec.md
+    resource: ../sources/evaluate/okf-spec.md
     title: Open Knowledge Format v0.2 specification
   - id: greenfield-framework
-    resource: references/greenfield-framework.md
+    resource: ../sources/evaluate/greenfield-framework.md
     title: Learnings Framework
     author: claude_agent/Fable 5
   - id: greenfield-lifecycle
-    resource: references/greenfield-lifecycle-and-revision.md
+    resource: ../sources/evaluate/greenfield-lifecycle-and-revision.md
     title: Lifecycle and revision
     author: claude_agent/Fable 5
   - id: greenfield-evidence
-    resource: references/greenfield-evidence-boundary.md
+    resource: ../sources/evaluate/greenfield-evidence-boundary.md
     title: Evidence boundary
     author: claude_agent/Fable 5
   - id: local-decisions
@@ -38,10 +38,9 @@ sources:
 
 # Bundle document formatting
 
-**Standing: maintained local formatting guidance, accepted with Slice 1.** This document owns formatting
-for the local bundle. The operator accepted it alongside the [operating contract](governance.md), without
-claiming a human content-verification event. It changes no dependency policy and installs no enforcement.
-The decision record identifies the acceptance and its scope.[^local-decisions]
+**Standing: proposed revision of local formatting guidance.** This concept owns authoring conventions.
+[Enforcement](enforcement.md) owns artifact and field responsibilities, mise operations, and coverage.
+The [trail](log.md) and decision record preserve prior acceptance and subsequent changes.[^local-decisions]
 
 ## Use documented fields in a consistent order
 
@@ -61,9 +60,12 @@ Keep source revisions and abbreviated hash references in the body.[^local-decisi
 ## Identify the producing harness and model
 
 Write `generated` as an inline mapping, using the house actor form `<harness_agent>/<Model Name>` and an ISO
-8601 datetime with an explicit UTC offset. The actor for this preparation is `codex_agent/GPT 6.1 Sol`, based
-on this thread's recorded `gpt-6.1-sol` model selection. A CLI version or document revision does not substitute
-for that model attribution. Update `generated.at` when the content meaningfully changes.[^greenfield-framework]
+8601 datetime with an explicit UTC offset. Use the actual producing harness and model. A CLI version or document
+revision does not substitute
+for that model attribution. The current workflow still requires authored generation metadata; code-owned
+reconciliation is a proposal
+in [enforcement](enforcement.md#ownership-and-permitted-writes), not an implemented stamp
+service.[^greenfield-framework]
 
 ```yaml
 generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T05:56:55Z }
@@ -74,8 +76,8 @@ generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T05:56:55Z }
 Agent-created candidates start with `status: draft` and no `verified` entry. Absence of `verified` means
 unverified. Passing lint, schema checks, or agent review does not supply a human verification event or adopt
 policy. Record an actual operator verification only when it occurred; do not infer it from agreement with a
-formatting choice. Generation, verification, and adoption remain separate claims. Historical verification events may predate
-the latest generation; they do not claim that a later revision was reverified.[^greenfield-lifecycle][^okf-spec]
+formatting choice. Generation, verification, and adoption remain separate claims. Historical verification events may
+predate the latest generation; they do not claim that a later revision was reverified.[^greenfield-lifecycle][^okf-spec]
 
 ## Point to evidence and attribute claims
 
@@ -93,11 +95,15 @@ hash references beside the corresponding body reference, not in invented frontma
 
 The OKF source above is a local capture of the opensrc-cached v0.2 specification, SHA-256 prefix
 `26aa5da02927`; upstream was not refreshed for this check.[^okf-spec] The greenfield sources are also captured
-locally. [References](references/index.md) provides navigation, and the
-[capture record](references/2026-10-06-source-captures.md) identifies their origins, preservation method,
+locally. [Sources to evaluate](../sources/evaluate/index.md) provides intake navigation, and the
+[capture record](../sources/evaluate/2026-10-06-source-captures.md) identifies their origins, preservation method,
 and historical scope. The operator directions have an authored session record; it is not a verbatim transcript.
 
-References contain evidence, while this document owns the local formatting rules. Preserve imported bodies
+Raw captures and authored evidence records await evaluation in `sources/evaluate/`; this document owns local
+formatting rules. Apply the [knowledge layers and evaluation
+criteria](governance.md#knowledge-layers-and-source-evaluation).
+OKF's optional `references/` convention represents material as first-class bundle concepts; it does not require
+source ingestion into the bundle. Greenfield's evidence-containment rule is not adopted here. Preserve imported bodies
 verbatim; put corrections or local interpretations in a successor note or the consuming guidance.
 Source metadata retained in a capture describes its original context, not local policy adoption.
 
@@ -107,9 +113,29 @@ Check parseable YAML, documented field names and shapes, actor attribution, time
 footnotes. Lint the actual edited files using the scoped invocation in [AGENTS.md](../AGENTS.md). Schema
 acceptance alone does not establish provenance accuracy, operator verification, or policy adoption.
 
+## Generate governed indexes
+
+Agents must never issue a direct tool call targeting a bundle-governed `index.md`. Agents work on permitted
+concepts and source records; deterministic finalization owns indexes. No per-index edit, repair, or regeneration
+command is part of the agent interface. The repository interface is mise.
+
+The generator owns `bundle/index.md`, `bundle/references/index.md`, and `sources/evaluate/index.md`.
+It derives labels and descriptions from document metadata and sorts entries by filename. Prior index content
+is not an input to entry ordering. The intake follows the OKF §8 listing convention without promoting its sources.
+Governance semantics remain in the operating contract.
+
+```bash
+mise run bundle:finalize
+mise run bundle:check
+mise run bundle:test
+```
+
+[Enforcement](enforcement.md#lifecycle-boundaries) owns the finalization and commit boundary. This concept
+specifies index authoring conventions only; agents never repair generated navigation directly.
+
 ## Use standalone deterministic checks
 
-The operator accepted standalone scripts with Slice 1, expanding the earlier documentation-only scope.
+The decision record identifies the authorized checker and generator scope.
 They implement three bounded patterns: metadata and source joins, derived index equality, and byte-faithful
 capture comparison. Greenfield's type taxonomy, prose bans, complete directory tree, and installed enforcement
 are not imported.[^local-decisions][^upstream-checker][^upstream-generator][^upstream-review-ingest]
@@ -118,24 +144,25 @@ Run from the repository root; each tool also accepts an explicit path and resolv
 its own location:
 
 ```bash
-uv run --script bundle/references/generators/generate_indexes.py --check
-uv run --script bundle/references/attesters/check_bundle.py
+mise run bundle:check
 ```
 
-Both commands are read-only by default. Use the generator's explicit `--write` to update only the two scoped
-indexes. Their entries derive titles and descriptions from frontmatter and preserve the existing entry order.
+Checking is read-only. Finalization regenerates only the three governed indexes before checking them.
+Their entries derive titles and descriptions from frontmatter and use deterministic filename ordering.
 The checker validates the declared metadata, source and footnote joins, local links, derived indexes, and the
-ten pinned captures. Body-mode captures have locally authored headers, which receive metadata validation;
-their imported bodies retain the original source joins and link context. Raw captures preserve original
-metadata as part of their pinned bytes rather than reinterpret its historical scope.
+ten pinned captures. Markdown captures are checked in `sources/evaluate/`, outside concept validation;
+code snapshots remain at their existing paths. Fidelity checks preserve evidence during this correction;
+they do not decide source admission, retention, or promotion. Source metadata is not validated as current
+bundle standing. Imported bodies retain their original source joins and link context.
 
 The two YAML-reading scripts declare Python 3.11+ and PyYAML 6.0.3. Dependency resolution is separate from
 the checks; use an existing compatible environment or resolve the declared script dependency when authorized.
-Focused regression checks use temporary fixtures and preserve verification history, reject invalid authored
-capture headers, and retain imported-body fidelity. Run them in the same compatible environment:
+Focused regression checks use temporary fixtures and preserve verification history, reject evidence copied
+back into the bundle, bound local source paths to the repository, and retain imported-body fidelity.
+Run them in the same compatible environment:
 
 ```bash
-uv run --script bundle/references/attesters/test_check_bundle.py
+mise run bundle:test
 ```
 
 The source-capture tool uses Python's standard library:
@@ -150,8 +177,7 @@ Creation requires `--out`; body-mode creation also requires `--frontmatter`. Exi
 overwritten. An optional `--sha256` pins the input before creation or comparison. These checks prove fidelity
 to an identified source, not that its claims are true or that policy was accepted.
 
-The bundle and references indexes provide navigation. No linter configuration, hook, CI rule, or mise task is
-changed. These are standalone tools; an automated blocking gate has not been installed.
+See [enforcement](enforcement.md) for the mise interface, current coverage, and the remaining direct capture-tool gap.
 
 [^local-decisions]: Operator formatting direction and local adoption recorded in the decision log, D002 and D005.
 [^okf-spec]: Captured OKF v0.2 specification, §§4–7 and 11; original body hash identified above.
@@ -159,5 +185,5 @@ changed. These are standalone tools; an automated blocking gate has not been ins
 [^greenfield-lifecycle]: Captured greenfield lifecycle and revision, draft and operator-verification boundary.
 [^greenfield-evidence]: Captured greenfield evidence boundary, containment and source addressability.
 [^upstream-checker]: Captured greenfield checker, adapted for this bundle's metadata and capture boundaries.
-[^upstream-generator]: Captured greenfield generator, adapted for the two declared indexes.
+[^upstream-generator]: Captured greenfield generator, adapted for the declared indexes.
 [^upstream-review-ingest]: Captured greenfield ingest transform, preserving bytes and refusing existing outputs.

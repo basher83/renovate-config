@@ -3,12 +3,12 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyyaml==6.0.3"]
 # ///
-"""Generate this bundle's two indexes; default to a read-only drift check.
+"""Generate the three governed indexes; default to a read-only drift check.
 
 Adapted from greenfield's generate_indexes.py: titles and descriptions come
-from frontmatter, existing entry order is retained, and --write is explicit.
-This version owns only the bundle root and references/; it imports no learning
-types, directory taxonomy, or repository enforcement.
+from frontmatter, entry order is sorted by filename, and --write is explicit.
+This version owns bundle/index.md, bundle/references/index.md, and the repository
+intake sources/evaluate/index.md; it imports no learning types or enforcement.
 """
 
 import argparse
@@ -19,11 +19,6 @@ from pathlib import Path
 import yaml
 
 DEFAULT_BUNDLE = Path(__file__).resolve().parents[2]
-ENTRY = re.compile(r"^\* \[[^\]]+\]\(([^)]+)\) - .*$", re.M)
-SNAPSHOTS = {
-    "agent-working-policy-draft.md", "shared-agent-policy-repository-review.md", "okf-spec.md", "greenfield-framework.md",
-    "greenfield-lifecycle-and-revision.md", "greenfield-evidence-boundary.md",
-}
 TOOLING = {
     "attesters": "Deterministic bundle checks",
     "generators": "Derived index generation and drift checks",
@@ -50,12 +45,6 @@ def entries(directory: Path) -> dict[str, str]:
     return result
 
 
-def ordered(index: Path, items: dict[str, str]) -> list[str]:
-    prior = ENTRY.findall(index.read_text(encoding="utf-8")) if index.exists() else []
-    names = list(dict.fromkeys(name for name in prior if name in items))
-    return names + sorted(set(items) - set(names))
-
-
 def render(bundle: Path) -> dict[Path, str]:
     if not (bundle / "formatting.md").is_file():
         raise ValueError(f"{bundle}: expected this repository's formatting.md")
@@ -65,18 +54,20 @@ def render(bundle: Path) -> dict[Path, str]:
     root_items = entries(bundle)
     root_index = bundle / "index.md"
     root = '---\nokf_version: "0.2"\n---\n\n# Repository knowledge\n\n'
-    root += "\n".join(root_items[name] for name in ordered(root_index, root_items))
-    root += ("\n\n## References\n\n* [References](references/index.md) - Captured source documents "
-             "and authored session records, with origins and fidelity limits.\n")
+    root += "\n".join(root_items[name] for name in sorted(root_items))
+    root += ("\n\n## References\n\n* [References](references/index.md) - Supporting tools and first-class "
+             "reference concepts; pending evidence lives outside the bundle.\n")
+    if (bundle / "log.md").is_file():
+        root += "\n## History\n\n* [Change log](log.md) - Chronological changes and lifecycle events.\n"
     refs = bundle / "references"
     items = entries(refs)
     reference_index = refs / "index.md"
-    order = ordered(reference_index, items)
-    reference = "# References\n\n## Source snapshots\n\n"
-    reference += "\n".join(items[name] for name in order if name in SNAPSHOTS)
-    reference += "\n\n## Session records\n\n"
-    reference += "\n".join(items[name] for name in order if name not in SNAPSHOTS)
-    reference += "\n\n## Tooling\n\n"
+    order = sorted(items)
+    reference = "# References\n\n"
+    if items:
+        reference += "## Reference concepts\n\n"
+        reference += "\n".join(items[name] for name in order) + "\n\n"
+    reference += "## Tooling\n\n"
     for name, description in TOOLING.items():
         directory = refs / name
         scripts = sorted(p.name for p in directory.glob("*.py"))
@@ -88,7 +79,14 @@ def render(bundle: Path) -> dict[Path, str]:
         raise ValueError("expected captured upstream source code")
     reference += ("* [Upstream source code](upstream-code/) - Verbatim Python source snapshots, "
                   f"retained as evidence: {', '.join(originals)}.\n")
-    return {root_index: root, reference_index: reference}
+    intake = bundle.parent / "sources/evaluate"
+    if not intake.is_dir():
+        raise ValueError(f"{intake}: expected pending-evaluation directory")
+    intake_index = intake / "index.md"
+    intake_items = entries(intake)
+    pending = "# Sources to evaluate\n\n"
+    pending += "\n".join(intake_items[name] for name in sorted(intake_items)) + "\n"
+    return {root_index: root, reference_index: reference, intake_index: pending}
 
 
 def main() -> int:
@@ -96,7 +94,7 @@ def main() -> int:
     parser.add_argument("bundle", nargs="?", type=Path, default=DEFAULT_BUNDLE)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="check without writing (default)")
-    mode.add_argument("--write", action="store_true", help="write only the two declared indexes")
+    mode.add_argument("--write", action="store_true", help="write only the three declared indexes")
     args = parser.parse_args()
     try:
         drift = False

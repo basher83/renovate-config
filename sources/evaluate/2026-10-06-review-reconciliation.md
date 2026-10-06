@@ -38,7 +38,7 @@ needed to select the local contract rules and is not captured here.
 
 The operator's choices are recorded separately in the [walkthrough record](2026-10-06-adoption-rulings.md).[^rulings]
 At reconciliation, the contract remained draft pending explicit acceptance. The operator subsequently
-accepted candidate `33e5e1f29df4`; [D005](../decisions.md#2026-10-06--d005-adopt-slice-1-locally) records local adoption.
+accepted candidate `33e5e1f29df4`; [D005](../../bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records local adoption.
 
 ## Deferred beyond Slice 1
 

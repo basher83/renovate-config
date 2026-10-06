@@ -109,8 +109,7 @@ def target(bundle: Path, origin: Path, resource: str) -> Path | None:
     return (bundle / decoded.lstrip("/") if decoded.startswith("/") else origin.parent / decoded).resolve()
 
 
-def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: datetime,
-                      *, check_body: bool = True) -> None:
+def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: datetime) -> None:
     if set(fm) - FIELDS:
         raise ValueError(f"undocumented frontmatter fields: {sorted(set(fm) - FIELDS)}")
     for key in ("type", "title", "description", "status"):
@@ -153,8 +152,8 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
         if "author" in source:
             actor(source["author"])
         resolved = target(bundle, file, source["resource"])
-        if resolved is not None and (not resolved.exists() or not resolved.is_relative_to(bundle)):
-            raise ValueError(f"source must resolve inside this bundle: {source['resource']}")
+        if resolved is not None and (not resolved.exists() or not resolved.is_relative_to(bundle.parent)):
+            raise ValueError(f"source must resolve inside this repository: {source['resource']}")
         if "last_modified" in source:
             timestamp(source["last_modified"], now)
         if "usage_count" in source and (isinstance(source["usage_count"], bool) or
@@ -162,10 +161,6 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
             raise ValueError("source usage_count must be an integer")
         if "usage_window" in source:
             window(source["usage_window"], now)
-    if not check_body:
-        # Locally authored capture headers are checked; imported bodies keep
-        # their original source joins and link context, attested by byte pins.
-        return
     clean = re.sub(r"^```.*?^```\s*$", "", body, flags=re.M | re.S)
     definitions = re.findall(r"^\[\^([^\]]+)\]:", clean, re.M)
     uses = set(re.findall(r"\[\^([^\]]+)\](?!:)", clean))
@@ -185,6 +180,27 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
                 raise ValueError(f"broken local anchor: {resource}")
 
 
+def history(file: Path) -> None:
+    """Validate the reserved OKF log structure without treating it as a concept."""
+    text = file.read_text(encoding="utf-8")
+    if text.startswith("---\n"):
+        raise ValueError("log must not carry concept frontmatter")
+    headings = re.findall(r"^## (.+)$", text, re.M)
+    if not headings:
+        raise ValueError("log needs ISO date headings")
+    dates = []
+    for heading in headings:
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", heading):
+            raise ValueError("log date headings must use YYYY-MM-DD")
+        dates.append(datetime.strptime(heading, "%Y-%m-%d").date())
+    if dates != sorted(set(dates), reverse=True):
+        raise ValueError("log dates must be unique and newest first")
+    for resource in re.findall(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)", text):
+        resolved = target(file.parent, file, resource)
+        if resolved is not None and not resolved.exists():
+            raise ValueError(f"broken log pointer: {resource}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("bundle", nargs="?", type=Path, default=DEFAULT_BUNDLE)
@@ -197,7 +213,8 @@ def main() -> int:
         if now.tzinfo is None:
             raise ValueError("--now needs an explicit UTC offset")
         for name, (mode, expected) in SNAPSHOTS.items():
-            file = bundle / "references" / name
+            file = (bundle / "references" / name if name.startswith("upstream-code/")
+                    else bundle.parent / "sources/evaluate" / name)
             raw = file.read_bytes()
             if mode == "body":
                 end = raw.find(b"\n---\n", 4)
@@ -205,7 +222,7 @@ def main() -> int:
                     raise ValueError(f"{name}: malformed capture separator")
                 raw = raw[end + 6:]
             if hashlib.sha256(raw).hexdigest() != expected:
-                errors.append(f"references/{name}: pinned {mode} capture bytes changed")
+                errors.append(f"{file.relative_to(bundle.parent)}: pinned {mode} capture bytes changed")
         for file in sorted(bundle.rglob("*.md")):
             rel = file.relative_to(bundle)
             try:
@@ -218,30 +235,33 @@ def main() -> int:
                         raise ValueError("subdirectory index must not carry frontmatter")
                     continue
                 if file.name == "log.md":
-                    raise ValueError("logs are outside this slice's declared tooling scope")
+                    history(file)
+                    continue
                 fm, body = document(file)
                 if not isinstance(fm.get("type"), str) or not fm["type"].strip():
                     raise ValueError("type must be nonempty")
-                if file.parent == bundle / "references" and file.name in SNAPSHOTS:
-                    if SNAPSHOTS[file.name][0] == "body":
-                        authored_metadata(bundle, file, fm, body, now, check_body=False)
-                    continue
                 authored_metadata(bundle, file, fm, body, now)
             except (OSError, TypeError, ValueError, yaml.YAMLError) as error:
                 errors.append(f"{rel}: {error}")
+        pending = bundle.parent / "sources/evaluate"
+        if not (pending / "index.md").is_file():
+            errors.append("sources/evaluate/index.md: missing pending-evaluation navigation")
+        for name in SNAPSHOTS:
+            if not name.startswith("upstream-code/") and (bundle / "references" / name).exists():
+                errors.append(f"references/{name}: raw capture belongs outside the knowledge bundle")
         spec = importlib.util.spec_from_file_location(
             "bundle_indexes", DEFAULT_BUNDLE / "references/generators/generate_indexes.py")
         generator = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(generator)
         for index, expected in generator.render(bundle).items():
             if not index.exists() or index.read_text(encoding="utf-8") != expected:
-                errors.append(f"{index.relative_to(bundle)}: derived index drift")
+                errors.append(f"{index.relative_to(bundle.parent)}: derived index drift")
     except (OSError, TypeError, ValueError, yaml.YAMLError) as error:
         errors.append(str(error))
     for error in errors:
         print(f"ERROR: {error}")
     if not errors:
-        print(f"OK: metadata, source joins, local paths, both indexes, and {len(SNAPSHOTS)} pinned captures")
+        print(f"OK: metadata, source joins, local paths, three governed indexes, and {len(SNAPSHOTS)} pinned captures")
         print("LIMIT: captured links retain original source context; no factual accuracy or adoption authenticated")
     return int(bool(errors))
 

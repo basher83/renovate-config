@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyyaml==6.0.3"]
 # ///
-"""Regression checks for verification history and authored capture headers.
+"""Regression checks for verification history, source separation, and capture fidelity.
 
 Fixtures live in temporary directories; repository files are never changed.
 Run with the same compatible environment as check_bundle.py.
@@ -56,16 +56,32 @@ class VerificationHistoryTests(unittest.TestCase):
                     checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
 
 
+class HistoryTests(unittest.TestCase):
+    def test_log_is_not_a_concept_and_dates_are_newest_first(self):
+        with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
+            log = Path(directory) / "log.md"
+            log.write_text("# History\n\n## 2026-10-06\n\n* Change\n\n## 2026-10-05\n\n* Prior change\n")
+            checker.history(log)
+            for text in ("---\ntype: History\n---\n\n## 2026-10-06\n",
+                         "# History\n\n## October 6\n", "# History\n\n## 2026-10-05\n\n## 2026-10-06\n"):
+                with self.subTest(text=text):
+                    log.write_text(text)
+                    with self.assertRaises(ValueError):
+                        checker.history(log)
+
+
 class CaptureHeaderTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="bundle-check-regression-")
         self.addCleanup(self.temp.cleanup)
-        root = Path(self.temp.name)
+        root = Path(self.temp.name) / "repository"
+        root.mkdir()
         self.bundle = root / "bundle"
         shutil.copytree(BUNDLE, self.bundle)
         for name in ("AGENTS.md", "README.md"):
             shutil.copyfile(BUNDLE.parent / name, root / name)
         shutil.copytree(BUNDLE.parent / ".github", root / ".github")
+        shutil.copytree(BUNDLE.parent / "sources", root / "sources")
 
     def run_checker(self):
         return subprocess.run([sys.executable, "-B", str(CHECKER), str(self.bundle),
@@ -75,33 +91,36 @@ class CaptureHeaderTests(unittest.TestCase):
         result = self.run_checker()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_invalid_authored_headers_are_rejected_without_changing_body(self):
-        mutations = (
-            ("type: Reference\n", "type: Reference\nsha256: invented-field\n", "undocumented"),
-            ("by: codex_agent/GPT 6.1 Sol", "by: fictional-author", "actor must"),
-            ("status: draft", "status: invented-standing", "lifecycle"),
-            ("status: draft", "status: draft\nstatus: stable", "duplicate YAML key"),
-        )
-        for name, (mode, _) in checker.SNAPSHOTS.items():
-            if mode != "body":
-                continue
-            file = self.bundle / "references" / name
-            original = file.read_bytes()
-            original_body = original[original.find(b"\n---\n", 4) + 6:]
-            for before, after, message in mutations:
-                with self.subTest(capture=name, mutation=message):
-                    changed = original.replace(before.encode(), after.encode(), 1)
-                    self.assertNotEqual(changed, original)
-                    self.assertEqual(changed[changed.find(b"\n---\n", 4) + 6:], original_body)
-                    file.write_bytes(changed)
-                    result = self.run_checker()
-                    self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
-                    self.assertIn(f"references/{name}:", result.stdout)
-                    self.assertIn(message, result.stdout)
-                    file.write_bytes(original)
+    def test_pending_evidence_cannot_return_to_bundle(self):
+        shutil.copyfile(self.bundle.parent / "sources/evaluate/okf-spec.md",
+                        self.bundle / "references/okf-spec.md")
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("raw capture belongs outside", result.stdout)
+
+    def test_source_pointer_cannot_escape_repository(self):
+        fm, body = checker.document(self.bundle / "governance.md")
+        fm["sources"][0]["resource"] = "../../outside.md"
+        (self.bundle.parent.parent / "outside.md").write_text("outside repository")
+        with self.assertRaisesRegex(ValueError, "inside this repository"):
+            checker.authored_metadata(self.bundle, self.bundle / "governance.md", fm, body, NOW)
+
+    def test_intake_index_drift_is_detected_and_regeneration_repairs_it(self):
+        index = self.bundle.parent / "sources/evaluate/index.md"
+        original = index.read_bytes()
+        index.write_bytes(original + b"\nUnowned status explanation.\n")
+        result = self.run_checker()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("sources/evaluate/index.md: derived index drift", result.stdout)
+        generator = BUNDLE / "references/generators/generate_indexes.py"
+        repair = subprocess.run([sys.executable, "-B", str(generator), str(self.bundle), "--write"],
+                                capture_output=True, text=True)
+        self.assertEqual(repair.returncode, 0, repair.stdout + repair.stderr)
+        self.assertEqual(index.read_bytes(), original)
+        self.assertEqual(self.run_checker().returncode, 0)
 
     def test_body_fidelity_is_still_enforced(self):
-        file = self.bundle / "references" / "okf-spec.md"
+        file = self.bundle.parent / "sources/evaluate/okf-spec.md"
         file.write_bytes(file.read_bytes() + b"\nChanged imported content.\n")
         result = self.run_checker()
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)

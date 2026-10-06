@@ -1,24 +1,27 @@
 ---
 type: Operating Contract
 title: Renovate-config operating contract
-description: Adopted local rules for authority, bounded work, decisions, evidence, and verification.
+description: Local exemplar purpose, authority, knowledge boundaries, and the division between agents and repository code.
 tags: [renovate, governance]
-status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T07:38:55Z }
+status: draft
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
+  - id: exemplar-intent
+    resource: ../sources/evaluate/2026-10-06-exemplar-intent.md
+    title: Operator clarification of exemplar purpose and documentation responsibilities
   - id: shared-draft
-    resource: references/agent-working-policy-draft.md
+    resource: ../sources/evaluate/agent-working-policy-draft.md
     title: Agent Working Policy — Draft
   - id: local-scope
-    resource: references/2026-10-06-slice-1-rulings.md
+    resource: ../sources/evaluate/2026-10-06-slice-1-rulings.md
     title: Slice 1 scope and formatting rulings, 2026-10-06
     author: codex_agent/GPT 6.1 Sol
   - id: review-rulings
-    resource: references/2026-10-06-adoption-rulings.md
+    resource: ../sources/evaluate/2026-10-06-adoption-rulings.md
     title: Local adoption walkthrough choices
     author: codex_agent/GPT 6.1 Sol
   - id: review-reconciliation
-    resource: references/2026-10-06-review-reconciliation.md
+    resource: ../sources/evaluate/2026-10-06-review-reconciliation.md
     title: Shared-policy review reconciliation
     author: codex_agent/GPT 6.1 Sol
   - id: formatting-rules
@@ -29,15 +32,47 @@ sources:
 
 # Renovate-config operating contract
 
-**Standing: adopted local operating contract.** On 2026-10-06, the operator accepted revised Slice 1
-candidate `33e5e1f29df4` for renovate-config. The [adoption decision](decisions.md#2026-10-06--d005-adopt-slice-1-locally)
-records scope, authority, and remaining publication work.[^review-rulings]
+**Standing: documentation candidate extending the adopted local contract.** Existing decisions retain their
+recorded scope. This revision captures the operator's clarified intent and proposes the remaining lifecycle
+and enforcement model for review. It does not select dependency policy or authorize publication.
 
-This is the canonical local contract. It is readable without the Docs vault and applies only to renovate-config.
-The shared policy and other repositories retain their own standing. The completed shared-policy review is
-reconciled in the [review record](references/2026-10-06-review-reconciliation.md).[^review-reconciliation]
-The operator's preparation directions established the local bundle and its boundaries.[^local-scope]
-Adoption does not authorize a commit, publication, or dependency-policy change. Existing JSON remains operative.
+## Purpose and completion boundary
+
+Renovate-config is the bounded proving ground for a repository-held process, contract, knowledge boundary,
+and authority model. Its small configuration surface makes the model practical to refine; its shared presets
+make dependency-policy changes consequential for consumers. The intended end state is a working local exemplar
+that other repositories can evaluate and emulate through their own explicit adoption decisions.[^exemplar-intent]
+
+The exemplar must demonstrate that instructions, implementation, persisted output, and acceptance evidence
+agree. Documenting a rule or passing one check is not completion. Before proposing reuse elsewhere, identify
+owners and authorized write surfaces; exercise finalization and rejection/repair paths; verify persisted results;
+record human acceptance of the reviewed revision; and report remaining bypasses and unsupported claims.
+These acceptance conditions are a proposed completion model, not evidence that the exemplar is complete.
+
+## Governing division of work
+
+Agents author within the task's authorized scope. Repository code owns designated structure and metadata,
+reconciles those outputs at defined lifecycle boundaries, and verifies the persisted result. Passing checks
+does not grant authority to adopt policy, manufacture verification, commit, or publish.
+
+[Repository enforcement](enforcement.md) names current and proposed ownership, the mise interface, failure
+responses, and evidence. Agents may not directly target code-owned outputs or change their owning machinery
+as a workaround. Changing that machinery is a separate authorized task.
+
+## Documentation ownership
+
+- This concept owns purpose, authority, knowledge boundaries, source evaluation, and promotion requirements.
+- [Enforcement](enforcement.md) owns artifact/field ownership, deterministic lifecycle operations, and coverage.
+- [Formatting](formatting.md) owns permitted authoring conventions; it does not assign implementation authority.
+- [Decisions](decisions.md) retains questions, selected outcomes, authority, scope, rationale, and supersession.
+- [Preset management](preset-management.md) applies the contract to authorized dependency changes and consumers.
+- Root [log.md](log.md) carries the chronological change and lifecycle trail under OKF §9. Entries point to
+  concepts, decisions, and evidence; concept bodies hold current knowledge rather than a running activity journal.
+- Indexes are derived navigation, owned by the generator. They do not hold policy or acceptance semantics.
+
+The decision record remains a deliberate record of rationale, not a replacement chronological journal.
+A log entry does not itself adopt policy or prove a claim. Corrections to history are explicit entries;
+prior events and superseded rationale remain discoverable.
 
 ## Repository responsibilities
 
@@ -54,6 +89,61 @@ This repository provides shared Renovate configuration to repositories extending
 Location does not establish authority, truth, freshness, or adoption. Moving a guide to `bundle/` does not
 approve its recommendations. Existing JSON is operative configuration; missing decision provenance is a gap
 to report, not permission to invent historical approval or alter behavior.
+
+## Knowledge layers and source evaluation
+
+This repository separates raw evidence, provisional synthesis, and maintained knowledge. The operator clarified
+this boundary during review on 2026-10-06. Greenfield supplies examples of frontmatter conventions and deterministic
+Python checks; borrowing those mechanisms does not adopt its evidence-containment or directory rules.
+
+- **Sources:** Root `sources/` holds raw material, captures, observations, and records. A citation does not turn
+  a source into a concept or require copying it into the bundle.
+- **Research:** Root `research/` holds provisional analysis and synthesis across identified sources. Research
+  is subject to evaluation and does not establish adopted policy.
+- **Knowledge:** `bundle/` holds maintained, reusable concepts. Knowledge enters through deliberate promotion
+  with a recorded outcome, rationale, evidence, and applicable operator authority. Promotion leaves sources intact.
+- **References:** Under OKF v0.2 §6.3, `bundle/references/` conventionally holds external material, run instructions,
+  or code represented as first-class concepts and supporting executable artifacts. The name is optional. Ordinary
+  Markdown files there are concepts, except reserved `index.md` and `log.md` (§3.1). Raw evidence and provisional
+  analysis belong outside the bundle; being cited is not an admission criterion. Standalone tools remain supporting
+  machinery and do not establish the standing of the material they inspect.
+
+The format authority is the [OKF
+specification](https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md).
+Its `sources` field permits internal or external derivation material (§5.1), and path-valued fields permit URLs
+and relative paths (§6.2). It does not require a locally captured copy of every cited source.
+
+### Index ownership
+
+Agents must never issue direct tool calls targeting an `index.md` governed by this bundle. The
+[formatting guidance](formatting.md#generate-governed-indexes) names the owning generator and its explicit
+outputs, including the intake index outside the bundle. Agents author permitted inputs; repository code
+finalizes indexes through mise at the pre-commit boundary, then checks for drift. Indexes provide navigation; this
+contract owns layer definitions and evaluation criteria.
+
+### Pending evaluation
+
+[`sources/evaluate/`](../sources/evaluate/index.md) is intake for sources to evaluate and decide what to act on.
+Placement records pending evaluation only. It does not establish truth, necessity, acceptance, or promotion.
+Preserved frontmatter describes the source's original context, even when it says `stable` or records verification;
+that metadata does not grant local standing. Prior citations record historical use, not a completed evaluation.
+
+Evaluate each item before deciding its retained role or using it to support a new bundle assertion:
+
+1. Identify the local question or claim it could support, and whether it contributes relevant evidence.
+2. Establish origin, version or capture date, fidelity, credibility, and limits. Distinguish observations,
+   operator directions, agent interpretations, and proposals; do not infer authority from an authored record.
+3. Decide whether the assertion needs this particular artifact. Determine whether a direct upstream citation,
+   an existing source, or a retained local snapshot best supports it. Misplacement alone does not justify retention.
+4. Assess reusable value, duplication, freshness, and consistency with the local boundary and adopted decisions.
+   A source's conventions do not become local policy through citation or copying.
+5. Record the outcome and rationale: retain as a source with a named role and destination; investigate or synthesize
+   in `research/`; propose an augmentation or new concept through promotion; reject; or defer with a revisit condition.
+   Identify affected assertions and pointers. Removal or changes to adopted policy require applicable authority.
+
+Promotion is a separate decision from source retention. A retained source need not become knowledge, and a concept
+can cite an external source without a local mirror. Evaluation and structural checks do not authenticate operator
+approval or factual accuracy. These are governing instructions; no automated evaluation or promotion gate is installed.
 
 ## 1. Authority and intent
 
@@ -119,12 +209,24 @@ Routine maintenance needs proportionate rationale. Do not reconstruct approval f
 Preserve superseded rationale when decisions change. Git records the edit; a concise decision entry explains
 its meaning without requiring reconstruction of the full conversation.
 
-The operator accepted the full local Slice 1 after review reconciliation, rather than adopting a minimal
-pilot. This acceptance applies to this repository's operating guidance and standalone supporting tools;
-shared adoption and enforcement remain separate decisions.[^review-rulings] The separate cross-repository
-Renovate review informs later dependency decisions. Issue
-[#122](https://github.com/basher83/renovate-config/issues/122) remains paused and unresolved; this adoption
-does not select its runner or tool-update policy.
+Historical adoption and subsequent adaptations are linked from [log.md](log.md) and recorded with their
+scope in [decisions.md](decisions.md). Issue #122 and dependency-policy selection remain separate workstreams.
+
+### Human acceptance at the PR boundary
+
+Human acceptance is **merge of the PR by the operator** for the reviewed governance or knowledge change.
+Record the PR URL, merged revision, merge actor, timestamp, and accepted scope. Checks and agent-authored
+markers cannot substitute for that attributable event. Unmerged work remains a candidate; later changes
+are outside the prior merge's acceptance until accepted in their own scope.
+
+Root [log.md](log.md) records the acceptance event and links to its evidence. Material policy choices retain
+rationale in [decisions.md](decisions.md). The merge is also a publication event on its target branch;
+applicable approval must precede that action. It does not authorize consumer edits or adoption elsewhere.
+
+PR acceptance does not implicitly verify every claim, accept unevaluated sources, or create a human `verified`
+event. Those statements require their own evidence and scope. Automated or indirect merges must not be
+reported as operator acceptance without a separately selected authority rule. A future projector may consume
+merge evidence, but no PR/Claims projection is implemented here.[^exemplar-intent]
 
 ## 5. Change discipline and publication
 
@@ -164,18 +266,19 @@ For documentation-only work, inspect actual linter coverage. The current umbrell
 cover `bundle/` or AGENTS and excludes `.github`. Use a supported scoped invocation before claiming that edited
 entry points were checked. Do not install tools or broaden machinery merely to turn an unavailable check green.
 
-## 7. Enforcement limits
+## 7. Enforcement and current coverage
 
-This contract is guidance, not a verified blocking mechanism. Standalone documentation and capture checks are
-accepted supporting tools, but no CI, hooks, branch rules, or automated blocking mechanism is installed.
-Distinguish written instructions, reporting signals, blocking checks, and verified installations.
-Future enforcement needs an adopted requirement and an observed repository need; evaluate it separately after use.
+The contract defines required behavior; [enforcement.md](enforcement.md) distinguishes implemented controls
+from proposed ones. Index finalization and structural validation are configured through mise at pre-commit.
+Metadata reconciliation, promotion/acceptance projection, and stronger publication checks remain proposals.
+No installed hook prevents every bypass or proves factual accuracy. Coverage claims require receipts for the
+specific revision and environment; documented commands do not establish execution.
 
 ## Source revision and formatting
 
-This contract applies the [captured Agent Working Policy — Draft](references/agent-working-policy-draft.md),
+This contract applies the [captured Agent Working Policy — Draft](../sources/evaluate/agent-working-policy-draft.md),
 read from the Repository Contracts and Policy Docs vault on 2026-10-06, SHA-256 prefix
-`290537172062`.[^shared-draft] The [capture record](references/2026-10-06-source-captures.md) identifies the
+`290537172062`.[^shared-draft] The [capture record](../sources/evaluate/2026-10-06-source-captures.md) identifies the
 origin and exact-body comparison.
 
 The shared source remains unadopted. This contract states the local application in full; its local capture
@@ -184,10 +287,12 @@ makes provenance inspectable without requiring access to the vault.
 The operator selected OKF v0.2 formatting for the Slice 1 bundle documents.[^local-scope]
 [Bundle document formatting](formatting.md) owns the field ordering, actor style, source attribution, draft
 standing, and verification guidance. It identifies the cached specification and local house-style references,
-including their provenance limits. No OKF runtime or enforcement has been installed here.[^formatting-rules]
+including their provenance limits. Current enforcement coverage is recorded separately.[^formatting-rules]
 
+[^exemplar-intent]: Participant-authored record of operator clarification in this review; operator selected PR merge
+    as acceptance; machine projection remains unimplemented.
 [^review-rulings]: Participant-authored adoption walkthrough record, including the operator's final acceptance.
 [^review-reconciliation]: Reconciliation of the completed review, including reported-evidence limits and deferred work.
-[^local-scope]: Participant-authored capture of the operator's Slice 1 directions, 2026-10-06.
 [^shared-draft]: Captured Agent Working Policy — Draft, with original body hash identified above.
+[^local-scope]: Participant-authored capture of the operator's Slice 1 directions, 2026-10-06.
 [^formatting-rules]: Adopted local bundle document formatting reference.

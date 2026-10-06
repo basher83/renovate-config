@@ -28,16 +28,16 @@ sources:
     title: Evidence boundary
     author: claude_agent/Fable 5
   - id: upstream-checker
-    resource: upstream-code/check_bundle.py.txt
+    resource: ../../bundle/references/upstream-code/check_bundle.py.txt
     title: Greenfield bundle checker source
   - id: upstream-generator
-    resource: upstream-code/generate_indexes.py.txt
+    resource: ../../bundle/references/upstream-code/generate_indexes.py.txt
     title: Greenfield index generator source
   - id: upstream-insight-ingest
-    resource: upstream-code/ingest_agentsview_insight.py.txt
+    resource: ../../bundle/references/upstream-code/ingest_agentsview_insight.py.txt
     title: Greenfield insight ingest source
   - id: upstream-review-ingest
-    resource: upstream-code/ingest_subagent_review.py.txt
+    resource: ../../bundle/references/upstream-code/ingest_subagent_review.py.txt
     title: Greenfield review ingest source
 ---
 
@@ -59,10 +59,10 @@ Its body hash was pinned before capture and compared against the main checkout s
 | [Greenfield framework](greenfield-framework.md)[^greenfield-framework] | `/Users/basher8383/greenfield/.claude/learnings/framework.md` | Entire source file copied byte-for-byte | `7aed48800e0a` |
 | [Greenfield lifecycle](greenfield-lifecycle-and-revision.md)[^greenfield-lifecycle] | `/Users/basher8383/greenfield/.claude/learnings/framework/lifecycle-and-revision.md` | Entire source file copied byte-for-byte | `0d34c130a9f2` |
 | [Greenfield evidence boundary](greenfield-evidence-boundary.md)[^greenfield-evidence] | `/Users/basher8383/greenfield/.claude/learnings/framework/evidence-boundary.md` | Entire source file copied byte-for-byte | `af991166fb34` |
-| [Bundle checker source](upstream-code/check_bundle.py.txt)[^upstream-checker] | Greenfield `references/attesters/check_bundle.py` | Entire source file copied byte-for-byte as text evidence | `0b93a347468b` |
-| [Index generator source](upstream-code/generate_indexes.py.txt)[^upstream-generator] | Greenfield `references/generators/generate_indexes.py` | Entire source file copied byte-for-byte as text evidence | `5a9a1f2dc819` |
-| [Insight ingest source](upstream-code/ingest_agentsview_insight.py.txt)[^upstream-insight-ingest] | Greenfield `references/ingest/ingest_agentsview_insight.py` | Entire source file copied byte-for-byte as text evidence | `8d1d535dad65` |
-| [Review ingest source](upstream-code/ingest_subagent_review.py.txt)[^upstream-review-ingest] | Greenfield `references/ingest/ingest_subagent_review.py` | Entire source file copied byte-for-byte as text evidence | `49052b574b8d` |
+| [Bundle checker source](../../bundle/references/upstream-code/check_bundle.py.txt)[^upstream-checker] | Greenfield `references/attesters/check_bundle.py` | Entire source file copied byte-for-byte as text evidence | `0b93a347468b` |
+| [Index generator source](../../bundle/references/upstream-code/generate_indexes.py.txt)[^upstream-generator] | Greenfield `references/generators/generate_indexes.py` | Entire source file copied byte-for-byte as text evidence | `5a9a1f2dc819` |
+| [Insight ingest source](../../bundle/references/upstream-code/ingest_agentsview_insight.py.txt)[^upstream-insight-ingest] | Greenfield `references/ingest/ingest_agentsview_insight.py` | Entire source file copied byte-for-byte as text evidence | `8d1d535dad65` |
+| [Review ingest source](../../bundle/references/upstream-code/ingest_subagent_review.py.txt)[^upstream-review-ingest] | Greenfield `references/ingest/ingest_subagent_review.py` | Entire source file copied byte-for-byte as text evidence | `49052b574b8d` |
 
 The shared-draft source hash matches the revision used to prepare the local contract. Its original body and
 unadopted standing are preserved. The OKF source is the cached v0.2 snapshot, not a fresh upstream lookup.
@@ -80,7 +80,7 @@ captures is a different kind of evidence and states its retrospective capture bo
 
 The `.py.txt` files are preserved upstream code evidence, not the runnable local adaptations. Standalone local
 scripts live in `attesters/`, `generators/`, and `ingest/`. Their scope differs from greenfield's bundle-specific
-rules and is described in [formatting.md](../formatting.md).
+rules and is described in [formatting.md](../../bundle/formatting.md).
 
 [^governance-review]: Completed governance review; captured body fidelity does not verify its reported claims.
 [^shared-draft]: Captured shared policy draft; original body hash identified above.

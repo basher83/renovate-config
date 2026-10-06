@@ -2,6 +2,13 @@
 
 Instructions for AI coding agents working in this repository.
 
+## Governing ownership boundary
+
+Agents author within authorized scope. Repository code owns designated structure and metadata, finalizes
+those outputs at defined boundaries, and verifies persisted results. Passing checks does not grant authority
+for policy acceptance, verification, commit, or publication. Read [enforcement](bundle/enforcement.md) for
+current versus proposed ownership; never bypass a code owner or change its machinery as a workaround.
+
 ## Purpose and governing sources
 
 Configuration-only repository containing centralized Renovate presets for dependency management.
@@ -11,13 +18,31 @@ Configuration-only repository containing centralized Renovate presets for depend
 Read the [local operating contract](bundle/governance.md), the
 [prospective decision record](bundle/decisions.md), and the
 [preset-management guide](bundle/preset-management.md) for this work.
+Use root [log.md](bundle/log.md) for the chronological trail and decisions.md for material rationale.
 Use [bundle document formatting](bundle/formatting.md) for OKF metadata and provenance style.
-The [bundle index](bundle/index.md) routes to local guidance and its captured references.
-**The contract is adopted locally.** The operator accepted Slice 1 candidate `33e5e1f29df4` on 2026-10-06;
+The [bundle index](bundle/index.md) routes to local knowledge and supporting tools.
+Read the [knowledge layers and source evaluation criteria](bundle/governance.md#knowledge-layers-and-source-evaluation)
+before admitting evidence or promoting knowledge. [Sources to evaluate](sources/evaluate/index.md) are pending, not
+adopted.
+**The prior contract is adopted locally; the exemplar documentation revision is a candidate.**
+The operator accepted Slice 1 candidate `33e5e1f29df4` on 2026-10-06;
 [decision D005](bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records authority and scope. The completed
-shared-policy review is [reconciled](bundle/references/2026-10-06-review-reconciliation.md). Shared adoption and
+shared-policy review is [reconciled](sources/evaluate/2026-10-06-review-reconciliation.md). Shared adoption and
 dependency-policy selection remain separate; #122 stays paused.
 CLAUDE.md remains a symlink to this entry point.
+
+## Governed indexes
+
+Agents must never issue direct filesystem, editor, shell, or script tool calls targeting a governed `index.md`.
+Agents author permitted source and concept documents; deterministic code owns index files. Do not manually
+create, edit, repair, reorder, or regenerate an individual index. Use the repository's mise interface:
+`mise run bundle:finalize` finalizes the complete declared scope; `mise run bundle:check` checks it.
+The governed indexes are `bundle/index.md`, `bundle/references/index.md`, and `sources/evaluate/index.md`.
+The configured pre-commit hook automatically calls `mise run bundle:finalize`, before commit and therefore
+before ordinary publication of that commit. If generation modifies files, the hook stops the commit so the
+generated diff can be reviewed and included before retrying. Do not bypass the hook to publish stale outputs.
+Index files provide navigation; governance semantics belong in their owning documents.
+See [index ownership](bundle/formatting.md#generate-governed-indexes).
 
 ## Change protocol and authority
 
@@ -31,9 +56,12 @@ CLAUDE.md remains a symlink to this entry point.
 - Keep decisions and rationale discoverable; do not manufacture historical approval for operative JSON.
 - Specialist capability and tool access do not authorize consumer edits, organization changes, or new enforcement.
 
-Slice 1 adopts the local guidance and standalone supporting scripts, with captures retained as evidence. Keep preset
-JSON, dogfooding configuration, consumer workflows, CI, hooks, and mise/linter
-configuration unchanged. The operator selected retention of both Copilot documents; deletion requires a
+Slice 1 adopted local guidance and standalone supporting scripts. D007 corrects the capture placement:
+records in `sources/evaluate/` await evaluation; prior capture and citation do not establish acceptance. Keep preset
+JSON, dogfooding configuration, and consumer workflows unchanged. D009 authorizes mise index finalization;
+D011 authorizes the authored-document lint task and capture-preserving hook reconciliation.
+The operator selected retention of both Copilot documents; deletion
+requires a
 separate reviewed change. No commit or publication is authorized by adoption.
 
 ## Verification responsibilities
@@ -45,7 +73,7 @@ and environments when claiming downstream results. Branch protection and passing
 
 For documentation changes, review complete bodies, local links, metadata, and actual Markdown lint coverage.
 The current umbrella task includes `docs/*.md`, README, and WARP and excludes `.github`; it does not establish
-coverage for the new bundle or every agent entry point. Use the scoped command below for Slice 1 files.
+coverage for the bundle or every agent entry point. Use `mise run bundle:lint` for governed Markdown.
 Do not assume validation was executed from a proposed command or install tooling merely to satisfy retained examples.
 Use the [standalone bundle checks](bundle/formatting.md#use-standalone-deterministic-checks) for metadata,
 source joins, index drift, and capture fidelity. They do not establish factual accuracy or adoption.
@@ -60,27 +88,17 @@ mise run markdown-lint               # Lint files covered by .rumdl.toml
 mise run markdown-fix                # Fix files covered by .rumdl.toml
 ```
 
-### Scoped Slice 1 Markdown lint
-
-The installed rumdl supports explicit include overrides and `--no-exclude`. The MD025 override allows an
-OKF frontmatter title alongside one body heading. Check the authored Markdown files without changing
-persistent linter configuration. Imported source bodies are preserved verbatim and checked for capture fidelity
-rather than rewritten to satisfy local prose lint:
+### Governed Markdown lint
 
 ```bash
-rumdl check --no-cache --no-exclude --config 'MD025.front-matter-title = ""' --deny-config-warnings \
-  --include 'AGENTS.md,README.md,bundle/*.md,bundle/references/index.md,bundle/references/2026-*.md,.github/*.md,.github/agents/*.md' \
-  AGENTS.md README.md bundle/governance.md bundle/decisions.md bundle/preset-management.md bundle/formatting.md \
-  bundle/references/2026-10-06-slice-1-rulings.md \
-  bundle/references/2026-10-06-source-captures.md \
-  bundle/references/2026-10-06-adoption-rulings.md \
-  bundle/references/2026-10-06-review-reconciliation.md \
-  .github/copilot-instructions.md .github/agents/renovate-expert.agent.md
-
-# Derived index entries keep frontmatter descriptions byte-identical on one line.
-rumdl check --no-cache --no-exclude --config 'MD013.line-length = 240' --deny-config-warnings \
-  --include 'bundle/index.md,bundle/references/index.md' bundle/index.md bundle/references/index.md
+mise run bundle:lint
 ```
+
+This task discovers authored bundle concepts and history, authored evaluation records, AGENTS.md, README.md,
+and retained `.github` instructions. It checks generated indexes separately with a 240-character limit so
+metadata descriptions remain intact. The concept override permits an OKF frontmatter title alongside a body
+heading. Imported captures retain their bytes and are checked for fidelity rather than local prose style.
+The pre-commit pipeline runs both bundle finalization and this lint task through mise.
 
 ### Direct Validation
 
@@ -111,7 +129,8 @@ renovate-config/
 │   └── kubernetes.json, javascript.json
 ├── examples/                 # Real-world configuration examples
 ├── bundle/                   # Local contract, decisions, and preset guide
-├── sources/                  # Discovery and source material
+├── sources/                  # Source material; evaluate/ records pending evaluation
+├── research/                 # Provisional synthesis, when needed
 └── docs/                     # Historical audits and upstream reference mirrors
 ```
 

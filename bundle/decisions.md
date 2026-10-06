@@ -4,14 +4,14 @@ title: Renovate-config prospective decisions
 description: Material decisions with authority, scope, rationale, implementation state, and revisit conditions.
 tags: [renovate, governance, decisions]
 status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T07:49:37Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
 sources:
   - id: slice-1-scope
-    resource: references/2026-10-06-slice-1-rulings.md
+    resource: ../sources/evaluate/2026-10-06-slice-1-rulings.md
     title: Slice 1 scope and formatting rulings, 2026-10-06
     author: codex_agent/GPT 6.1 Sol
   - id: adoption-rulings
-    resource: references/2026-10-06-adoption-rulings.md
+    resource: ../sources/evaluate/2026-10-06-adoption-rulings.md
     title: Local adoption walkthrough choices
     author: codex_agent/GPT 6.1 Sol
   - id: local-contract
@@ -21,12 +21,100 @@ sources:
 
 # Renovate-config prospective decisions
 
-**Standing: maintained local decision record, accepted with Slice 1.** D001–D004 preserve the preparation
-history; D005 records local adoption. This document does not reconstruct approval for existing preset rules.
+**Standing: maintained decision rationale.** Root [log.md](log.md) owns the chronological trail.
+This record preserves material choices, authority, scope, and supersession; it does not reconstruct
+approval for existing preset rules or turn a journal entry into an acceptance receipt.
 
 For each material decision, record the question and prior position, outcome, authority, effective scope,
 rationale, evidence, implementation and verification state, and revisit or supersession conditions.
 Keep routine maintenance records proportionate. Preserve prior rationale when superseding an entry.
+
+## 2026-10-06 — D011: Reconcile the complete pre-commit boundary
+
+- **Question and prior position:** The index hook passed alone, but existing fixers could alter pinned capture
+  bytes, the shebang hook treated code captures as executable scripts, and Markdown coverage omitted new documents.
+- **Outcome: authorized remediation.** Preserve the ten pinned captures with exact per-hook exclusions from
+  whitespace and end-of-file rewriting, and exclude the four code captures from executable-shebang enforcement.
+  Secret detection, size, merge-conflict, syntax, and other applicable structural checks remain enabled.
+- **Authority and date:** The operator approved the fix plan on 2026-10-06. The work covers hook reconciliation,
+  a mise lint interface, fixture isolation, validation, and a replacement PR description prepared for review.
+- **Rationale:** Imported evidence must retain its recorded bytes; authored documents and generated navigation
+  need explicit complete lint coverage. The legacy Markdown hook delegates governed surfaces to `bundle:lint`.
+- **Effective scope:** Hook configuration, `bundle:lint`, agent guidance, isolated regression fixtures, and trail.
+  Preset behavior, metadata repair, Claims projection, consumer changes, commit, and publication are excluded.
+- **Implementation state:** Prepared in the worktree. Full combined hooks and boundary exercises supply the
+  validation receipt; earlier green CI applies only to the previously published PR head.
+- **Revisit condition:** New capture types or governed Markdown surfaces require coverage and preservation review.
+
+## 2026-10-06 — D010: Capture exemplar intent and separate the trail
+
+- **Question and prior position:** The bundle described local Slice 1 rules and index tooling without stating
+  the exemplar purpose or a general artifact/field ownership model.
+- **Outcome: agreed documentation direction.** The operator concurred with the gap review and document
+  responsibilities, then identified root `log.md` as the chronological trail outside concept bodies.
+- **Authority and date:** Operator feedback in this review on 2026-10-06; a
+  [participant-authored source record](../sources/evaluate/2026-10-06-exemplar-intent.md) captures the scope.
+- **Purpose:** Demonstrate the model in this small but consequential repository before proposing reuse elsewhere.
+- **Effective scope:** Draft purpose and ownership revisions, a dedicated enforcement concept, log conventions,
+  and the minimal structural support needed to validate the new reserved log. Metadata repair, Claims deployment,
+  PR acceptance projection, and publication controls remain proposals rather than implemented mechanisms.
+- **Selected acceptance boundary:** In the follow-up question, the operator selected merge of the PR by the
+  operator. Receipts must identify the PR, merged revision, actor, time, and scope. Projector implementation
+  and treatment of indirect/automated merges remain open; no human verification is inferred.
+- **Implementation state:** Documentation candidate prepared for feedback; no commit or publication authorized.
+- **Revisit condition:** Review the proposed ownership matrix and select lifecycle events before implementing them.
+
+## 2026-10-06 — D009: Finalize indexes through mise before commit
+
+- **Question and prior position:** Direct generator commands still left agents responsible for index maintenance.
+- **Outcome: adapted.** Mise is the interface. Agents must not issue direct tool calls targeting governed indexes.
+  A configured pre-commit hook calls `bundle:finalize` to generate and check all three outputs automatically.
+  Entries are sorted from metadata, without preserving order from prior index content.
+- **Authority and date:** Operator direction on 2026-10-06 requires the mise interface and automatic index updates
+  at a boundary before push, using the OKF reference agent and OpenWiki as implementation examples.
+- **Rationale:** Both examples finalize indexes after agent authoring. OpenWiki separates agent page writes from
+  deterministic index synchronization. The OKF reference agent renders indexes in code but can synthesize directory
+  descriptions with a model; this repository uses no model in generation. Finalizing before commit ensures outputs
+  can enter the reviewed commit rather than becoming uncommitted changes during push.
+- **Effective scope:** Mise tasks, one local pre-commit configuration entry, generator ordering, and guidance.
+  No automatic staging, commit, push, hook replacement, or harness-specific filesystem restriction is introduced.
+- **Implementation and verification state:** Configured in the worktree. The existing prek pre-commit shim reads
+  repository configuration. Generation changes stop commit for review and inclusion; a bypassed hook is not enforcement.
+- **Revisit condition:** Reassess if another authoring workflow needs finalization or a stronger write boundary.
+
+## 2026-10-06 — D008: Govern indexes through their generator
+
+- **Question and prior position:** The correction manually authored the intake index with status prose and
+  basename-only entries, bypassing the deterministic generator and the OKF index convention.
+- **Outcome: adapted.** Agents must never directly modify a bundle-governed `index.md`. Extend the generator
+  to own `sources/evaluate/index.md` alongside the two bundle indexes; derive titles and descriptions from
+  metadata and check all three outputs for drift. Governance semantics remain in their owning documents.
+- **Authority and date:** Direct operator instruction on 2026-10-06 requires the explicit prohibition for agents,
+  following the agreed correction to generate intake navigation.
+- **Effective scope:** Agent instructions, bundle guidance, generator, checker, and temporary regression fixtures.
+- **Implementation and verification state:** Implemented in the worktree; no commit or publication authorized.
+- **Revisit condition:** New governed indexes require an explicit generator scope and documented ownership.
+
+## 2026-10-06 — D007: Separate knowledge from sources pending evaluation
+
+- **Question and prior position:** The Slice 1 agent borrowed Greenfield's evidence-containment layout while
+  the operator intended examples of frontmatter conventions and deterministic Python enforcement. No separate
+  comparison of `bundle/references/` with root `sources/` established that placement.
+- **Outcome: adapted.** Define sources, research, knowledge, and OKF references in the
+  [operating contract](governance.md#knowledge-layers-and-source-evaluation), including evaluation and promotion
+  criteria. Move every root Markdown file from `bundle/references/` into `sources/evaluate/`.
+- **Authority and date:** Direct operator instruction in this review on 2026-10-06: establish the criteria and
+  boundaries first, then move those files to a directory that records sources awaiting evaluation and action.
+- **Effective scope:** Guidance, intake navigation, affected pointers, and standalone checker/index adaptations.
+  Existing tooling and code-snapshot directories remain in place. No individual source is accepted, rejected,
+  promoted, or selected for removal by this move. Preset behavior and installed enforcement remain unchanged.
+- **Rationale:** Misplacement does not establish a need for retention. OKF permits external sources and relative
+  pointers; its references convention does not require copying cited evidence into the bundle. Prior use and
+  preserved source metadata do not resolve pending evaluation.
+- **Implementation and verification state:** Applied in the worktree; imported captures retain their bytes.
+  Checks establish structural consistency and fidelity, not source suitability. No commit or publication is authorized.
+- **Revisit condition:** Evaluate individual records against the contract, record their outcomes, and resolve
+  future retention, research, or promotion deliberately. Earlier decisions remain historical records.
 
 ## 2026-10-06 — D001: Prepare Slice 1; defer adoption
 
@@ -75,7 +163,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
 - **Implementation and verification state:** The formatting reference is a draft, with no human verification
   claimed. Metadata, lint, and pointer checks establish their stated scope only; no enforcement is added.
 - **Remaining work and revisit condition:** The particular-record sources are now captured in
-  [references](references/index.md), with origins and fidelity limits recorded separately. Reconcile broader
+  [references](../sources/evaluate/index.md), with origins and fidelity limits recorded separately. Reconcile broader
   governance after its review arrives. An inspectable authored record does not itself authenticate approval.
 
 ## 2026-10-06 — D003: Include standalone deterministic tooling
@@ -105,10 +193,10 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   representative consumer evidence or an explicit operator exception for shared preset behavior changes.
   Retain both Copilot files for now.
 - **Authority and date:** Operator answers in the adoption walkthrough on 2026-10-06, captured in the
-  [rulings record](references/2026-10-06-adoption-rulings.md).[^adoption-rulings]
+  [rulings record](../sources/evaluate/2026-10-06-adoption-rulings.md).[^adoption-rulings]
 - **Effective scope:** Revised local candidate only. Configured bot authority, preset JSON, consumers, CI,
   hooks, and repository machinery remain unchanged. Shared-policy adoption is not included.
-- **Rationale and evidence:** The [review reconciliation](references/2026-10-06-review-reconciliation.md)
+- **Rationale and evidence:** The [review reconciliation](../sources/evaluate/2026-10-06-review-reconciliation.md)
   maps the report's recommendations to local dispositions and records unverified and deferred findings.
 - **Implementation and verification state:** The revised contract and supporting records are prepared for
   final acceptance. This decision records preparation choices, not adoption or human verification. No commit
@@ -122,7 +210,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
 - **Question and prior position:** The reconciled candidate remained draft after the preparation choices in
   D004. Final text acceptance, metadata standing, and publication were separate decisions.
 - **Outcome: accepted.** The operator selected “Adopt locally (Recommended)” for revised candidate
-  `33e5e1f29df4` on 2026-10-06. The [walkthrough record](references/2026-10-06-adoption-rulings.md)
+  `33e5e1f29df4` on 2026-10-06. The [walkthrough record](../sources/evaluate/2026-10-06-adoption-rulings.md)
   captures the question and response.[^adoption-rulings]
 - **Accepted revision:** The candidate manifest has SHA-256 prefix `33e5e1f29df4`. The full manifest and
   verification receipt were saved in BB thread storage as `slice-1-adoption-review.json`; the exact candidate

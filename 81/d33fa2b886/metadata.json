@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "81d33fa2b886",
+  "strategy": "manual-commit",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 14,
+  "files_touched": [
+    "mise.toml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/81/d33fa2b886/0/metadata.json",
+      "transcript": "/81/d33fa2b886/0/full.jsonl",
+      "compact_transcript": "/81/d33fa2b886/0/transcript.jsonl",
+      "content_hash": "/81/d33fa2b886/0/content_hash.txt",
+      "prompt": "/81/d33fa2b886/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 173586,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 7340032,
+    "output_tokens": 22996,
+    "api_call_count": 60,
+    "subagent_tokens_complete": true
+  }
+}

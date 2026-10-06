@@ -1,0 +1,221 @@
+Work on GitHub issue basher83/renovate-config#122: Decide approval policy for runner image and action-input tool updates
+
+Read the full issue and its comments first:
+  gh issue view 122 -R basher83/renovate-config --comments
+
+Issue description:
+
+## Problem and observed behavior
+
+The shared `github-actions-security.json` preset auto-merges GitHub Actions manager updates of every type once checks pass, except for a short list of security-sensitive action prefixes (`actions/checkout`, `actions/upload-artifact`, `actions/download-artifact`, `aws-actions/`, `google-github-actions/`, `azure/`, `docker/`). That rule matches on the manager, not the dependency type, so it also covers two non-action dependencies the github-actions manager extracts:
+
+- the GitHub-hosted runner label in `runs-on:` (for example `ubuntu-24.04`, dependency type `github-runner`, `github-runners` datasource);
+- tool versions passed through supported community action inputs, such as `jdx/mise-action`'s `version` input (dependency `jdx/mise`).
+
+basher83/personal-computing#35 pinned its CI runner to `ubuntu-24.04` and mise to `2026.10.2` so that setup changes arrive as reviewable Renovate PRs rather than silent drift from `ubuntu-latest` and the action's default release selection. Under the current preset, a runner bump such as `ubuntu-24.04` to `ubuntu-26.04`, and any new mise release, would auto-merge on a green run with no maintainer approval. A green `mise run ci` does not exercise everything an operating-system migration can change, so an OS jump arguably belongs with the approval-gated updates.
+
+Not yet observed: no runner-label PR has been raised by Renovate in a consuming repository, so the actual update type Renovate assigns to the runner bump has not been seen. The `github-runners` datasource documentation says it uses `docker` versioning; classifying `24.04` to `26.04` as `major` is an inference from that, not a verified result.
+
+## Proposed solution for maintainer evaluation
+
+Consider adding a rule to `presets/github-actions-security.json` that requires Dependency Dashboard approval for runner label updates, matched by dependency type rather than package name:
+
+```json
+{
+  "description": "Require approval for GitHub-hosted runner image upgrades",
+  "matchManagers": ["github-actions"],
+  "matchDepTypes": ["github-runner"],
+  "matchUpdateTypes": ["major", "minor"],
+  "automerge": false,
+  "dependencyDashboardApproval": true
+}
+```
+
+It would need to sit after the existing auto-merge rule so that it overrides it. The match keys should be checked against an actual runner PR or a Renovate dry run before relying on them.
+
+Separately, decide whether `jdx/mise` runtime updates through the action input should keep auto-merging. They are frequent, CI exercises them directly, and integrity verification stays on, so leaving them on auto-merge is a reasonable choice; gating them is the stricter alternative.
+
+These are candidate changes, not adopted decisions. The maintainer may keep the current behavior and rely on CI alone.
+
+## Evidence and verification pointers
+
+- [Shared GitHub Actions preset at 3f13ac5](https://github.com/basher83/renovate-config/blob/3f13ac535dbaa0b35c8d179acd86f5cd09cac163/presets/github-actions-security.json): the manager-wide auto-merge rule and its package-name exclusion list.
+- [Base preset at 3f13ac5](https://github.com/basher83/renovate-config/blob/3f13ac535dbaa0b35c8d179acd86f5cd09cac163/default.json): extends the GitHub Actions and mise presets.
+- [Renovate github-actions manager documentation](https://docs.renovatebot.com/modules/manager/github-actions/): runner labels in `runs-on:` and the supported community action inputs, including `jdx/mise-action` `version`.
+- [Renovate github-runners datasource documentation](https://docs.renovatebot.com/modules/datasource/github-runners/): `docker` versioning and handling of beta and deprecated runner images.
+- [GitHub runner migration announcement actions/runner-images#14748](https://github.com/actions/runner-images/issues/14748): `ubuntu-latest` moves from 24.04 to 26.04 beginning October 19, 2026.
+- basher83/personal-computing#35: the consuming change that introduced the pins.
+
+## Scope and completion
+
+Limit this issue to how the shared presets treat runner-label updates and action-input tool versions, and record the maintainer's decision. If a preset change is selected, verify it against a consuming repository (a Renovate dry run or the next runner or mise PR in basher83/personal-computing) and confirm the PR is approval-gated or auto-merged as intended. Other presets, the action SHA pinning rules, and personal-computing's workflow are outside this scope.
+
+
+Implement a fix or the requested change in this checkout. If you open a pull request, include "Fixes #122" in its body.
+
+---
+
+hold up. It wasn't a just do it. The issue says its a question. Also lets fix this while we are here: mise WARN  deprecated [setting.task_run_auto_install]: Use task.run_auto_install instead. This will be removed in mise 2027.2.0.
+
+---
+
+right because a decision here effects all my repos. which in retrospect is fair and on me. And I'm also now seeing I should have pre-empted the task. So lets pause on that issue for a moment because the bigger thing to solve is this repo first. It lacks boundaries, authority, and disciple. Again on me but we can fix that. The model to emulate here in this repo is the direction in /Users/basher8383/3I/lab/personal-computing/AGENTS.md. Follow the pointers to see what I mean. review prs 29 amd 30 there and it should be more clear what i mean. This is a read only task you may use gh cli as well. no modifications to that repo or this one yet. Let me know what you infer as to what I mean after you review those pointers
+
+---
+
+There you go, you nailed it. do me a favor and use /docs to draft a draft policy doc. but the target is any repo I have not just this one. And the audience is agents working in any repo. Abstract the core principles outlined in your inferred reply and use that as the draft daft policy doc. I have no defined naming or format convention, use what suits the task
+
+---
+
+awesome well done. Alright now lets /plan how to implement it here. This is our new goal
+
+---
+
+sry that key word triggered the thing i won't type because it pushes.
+
+---
+
+Ok I shuffeled some things around and made a new renovate-config vault that we can use to collaberate on the plan docs. Lets add your plan in there
+
+---
+
+I flipped all docs/ to bundle/. New start new identity. We will align with OKF standards for formatting but thats a later pass. The two copilot docs can be removed. I never really used them. But the better move here is keep in place for now until we evaluate any potential value within them but marked as removal. Cool so plan looks good lets deliberate slice 1. What do you propose? Make a slice one doc plan pls
+
+---
+
+Question: Don't we at least need a broad overview of all of my repos to actually create the policy here for all of them? Might not be in this first slice but I'm just thinking ahead real quick. Something I noticed. Not a task to run down currently, just a question I wanted to pose
+
+---
+
+Okay that's good. Two kinds of review: those seem pretty good. Give me a new document. We can land it in the vault here and this will be essentially the ask of what we need.
+
+I'm approaching it from the point of view of drafting it in the form of literally a prompt that I would cut and paste and drop into an agent. They would at least have enough to understand what we need, what we're looking for, and be able to identify the information we need to answer that future workstream. "What questions do we need answered?" is kind of what I'm driving at, but presented in a format a consumer could read and act on
+
+---
+
+Update @Agent prompt — Evaluate a shared working policy across repositories It's a very solid and strong starting point. Let's take out the "read the full supplied candidate" stuff. Assume the agent does not have access to this computer. I really don't think we need to point the investigating agent at reference provenance PRs and all that stuff. That's a bit too much. Don't get me wrong but I feel like it may be a little too overprescriptive. We just need answers. We don't need the agent to understand my entire philosophyContext for @Agent prompt — Evaluate a shared working policy across repositories (resolved by plugin "simple-notes"):
+
+Docs document (repository-contracts-and-policy/renovate-config/cross-repository-policy-review-agent-prompt.md):
+SHA-256: d1658d16b2ce99d4bfbc1352dccb5671e985eeeb9fbfe39d2adbd7ea08c0ac4a
+
+# Agent prompt — Evaluate a shared working policy across repositories
+
+**Standing:** Draft assignment for future use. Saving this prompt does not start the review or adopt a policy.
+**Purpose:** Identify the information and decisions needed before adopting a common agent working policy across the operator's repositories.
+
+Copy the assignment below into an agent. Supply the candidate policy and an authorized repository catalog or discovery scope with it. Vault links are convenient source pointers, but the assignment remains understandable without access to this vault.
+
+## Assignment
+
+Evaluate whether a candidate agent working policy can serve the operator's repositories, and identify where it needs repository-specific application. Perform two kinds of review: a broad inventory of the repository landscape, followed by deeper reviews of a justified representative sample.
+
+This is investigation, not implementation or adoption. Your output should answer which principles have support across the reviewed contexts, where they conflict with actual needs, what requires local decisions, and what remains unknown. Do not assume the candidate is correct or that differences between repositories are defects.
+
+### Context and candidate principles
+
+The candidate arose from a shared Renovate configuration repository: a small configuration change could alter update policy in many consuming repositories. An issue containing a proposed rule was initially treated as permission to select that policy. The operator redirected the work toward explicit authority, scope, evidence, and decision boundaries.
+
+A personal-computing registry supplied a reference application separating sources, provisional research, and canonical knowledge, with a deliberate promotion step. That application is useful evidence, not automatic authority for applications, infrastructure, research repositories, libraries, or other kinds of work.
+
+The candidate's core principles are:
+
+1. The operator owns goals, risk tolerance, and operating decisions; primary sources and observations establish empirical facts.
+2. Evidence, provisional conclusions, adopted decisions, implementation, and supporting machinery have distinct standing.
+3. Work has an authorized scope, affected surfaces, exclusions, and completion condition. Existing authorization remains usable without repeated requests.
+4. Recommendations become operative through an authorized decision, with discoverable rationale and supersession history.
+5. Verification claims are limited to what the actual checks and observations establish. Uncertainty and disagreement are valid states.
+6. Changes preserve unrelated work and expose responsibility boundaries. Preparing, adopting, implementing, and publishing can require different authority.
+7. Enforcement is proportionate to adopted requirements and demonstrated need. Written guidance, reporting signals, blocking checks, and verified installations are different things.
+
+Read the full supplied candidate before drawing conclusions. In the originating vault, it is [Agent Working Policy — Draft](../agent-working-policy-draft.md). The local [Slice 1 plan](slice-1-governance-plan.md) is an example application under deliberation, not a universal template.
+
+Reference provenance is personal-computing's [PR #29](https://github.com/basher83/personal-computing/pull/29) and [PR #30](https://github.com/basher83/personal-computing/pull/30). Inspect their relevant source contracts and discussions if you rely on their claims. Preserve the distinction between a proposed design, an accepted decision, and verified enforcement.
+
+### Authority and access boundaries
+
+Use read-only repository inspection and authorized repository metadata, history, issues, PRs, and CI results. Do not edit repositories, policy documents, machine settings, hooks, remote settings, or live services. Do not install tools, run builds or workflows with side effects, commit, push, open PRs, or contact other people. Do not start additional agents or threads without authorization.
+
+Collect only what is relevant to repository governance. Do not inspect credentials, personal home-directory content, or unrelated application data. Redact sensitive material and prefer source pointers to copying private content.
+
+First establish the authorized repository universe from an operator-provided list, project catalog, repository roots, or account scope. Do not scan the whole machine or assume every repository in an account belongs in scope. If the universe or access is unclear, ask one focused question and continue only with the known authorized subset. Make missing access and exclusions visible.
+
+Inspect applicable repository instructions before reviewing each repository. If they require actions outside this assignment's read-only scope, report the conflict rather than executing them. Distinguish the inspected checkout from the default branch and remote state. Do not fetch or modify Git state merely to make inspection convenient.
+
+### Review A: Broad inventory
+
+Build a lightweight inventory before selecting the deeper sample. Keep discovery bounded and avoid collecting a complete file tree or reading every document in every repository.
+
+Answer these questions:
+
+1. **What is the universe?** Which repositories are in scope, accessible, excluded, archived, or uncertain? Which local directories are worktrees or duplicate checkouts of the same repository? How complete is the inventory relative to the supplied catalog?
+2. **What does each repository do?** What purpose, audience, owner, activity, and operational role does it have? Describe its use before assigning categories; categories are provisional and may overlap.
+3. **How are repositories related?** Which produce shared presets, libraries, templates, workflows, tools, infrastructure definitions, or knowledge consumed elsewhere? Which relationships are verified, inferred, or unknown? What is the potential impact of changing each shared surface?
+4. **What guidance exists?** Where do humans and agents enter, where are governing decisions recorded, and are multiple instruction surfaces duplicated or conflicting? Record missing guidance without treating it as a proven failure.
+5. **Which differences matter for policy?** Which repositories involve live-state effects, deployment, external publication, sensitive data, generated output, evidence or research, multiple contributors, or substantial automation?
+
+Produce an inventory table containing repository identity and inspected revision, purpose, relevant instruction and decision pointers, shared producer/consumer relationships, governance-relevant risks, and access or evidence gaps. Do not claim an exhaustive consumer map when only declarations or examples were found.
+
+### Review B: Representative reviews
+
+Propose a sample based on the inventory, with a reason for each choice. Include materially different responsibilities and impact patterns rather than merely the most active or best-documented repositories. Reuse one repository for several patterns when justified. State what the sample does not cover; if a significant pattern has no accessible representative, retain that gap.
+
+For each selected repository, inspect current governing documents, relevant executable configuration, and a small number of recent material changes and their issue or PR discussions. Prefer examples showing real decisions, handoffs, or friction. Do not infer actual practice from AGENTS.md alone, and do not infer motive from a diff without supporting history.
+
+Answer these questions:
+
+1. **Where does authority reside?** Who selects policy and accepts work? What can an agent do under an ordinary task, and what requires a separate decision? How is authorization made discoverable? Are autonomy and approval boundaries usable in practice?
+2. **How does standing change?** Can observations, research, plans, and recommendations be distinguished from operative decisions and implementation? Where is the transition recorded? Does the candidate's separation fit this repository, or would a different application serve it better?
+3. **What bounds a unit of work?** How are scope, completion, publication, downstream changes, and newly discovered work handled? Find a concrete example where the boundary held, failed, or remains ambiguous.
+4. **Can later readers recover a decision?** Can they find the prior position, decision authority, rationale, evidence, effective scope, and superseding position? What evidence is missing, and what is merely inconvenient to navigate?
+5. **What does verification actually prove?** Trace the relevant gate to its tasks or configuration. Separate syntax, behavior, integration, consumer outcomes, and policy judgment. Distinguish declared checks from observed results and installed enforcement; record revision, environment, and observation limits.
+6. **What would the candidate improve or impede?** Identify duplication, conflicts, hidden assumptions, unnecessary ceremony, and possible constraints on legitimate autonomous work. Seek counterexamples rather than only confirmation.
+7. **What requires a local rule?** Which boundaries depend on repository purpose, ownership, contributors, consumers, release or deployment practice, or live-state risk? Which instructions belong in local application rather than shared policy?
+
+### Synthesis: Questions the operator needs answered
+
+Use the two reviews to answer:
+
+- Which candidate principles are supported across materially different contexts, and by which evidence?
+- Which principles require revision, narrower wording, or further investigation? Where are the counterexamples?
+- Which responsibilities should remain local, and how can agents discover their owners without competing policy copies?
+- What would adoption authorize, and what would still require task-specific authority?
+- How should a shared policy's canonical source, version, local application, exceptions, and supersession be discoverable? Present options and tradeoffs, not a silently selected architecture.
+- What is the smallest justified pilot or next research step? What evidence would warrant broader adoption, and what would trigger reconsideration?
+
+Classify each conclusion as a supported shared candidate, a local application candidate, a conflicting or unsupported candidate, or an open question. These are research dispositions, not adoption decisions. Recommendations to retire or replace existing guidance remain proposals.
+
+### Deliverables
+
+Return one source-backed report with:
+
+1. **Scope and coverage:** authorized universe, inspected repositories and revisions, exclusions, and access limitations.
+2. **Broad inventory:** the landscape and meaningful producer/consumer relationships.
+3. **Sample rationale and findings:** selected repositories, uncovered patterns, and concrete evidence of practice.
+4. **Principle assessment:** a table mapping each candidate principle to supporting evidence, counterevidence, local variation, and unresolved questions.
+5. **Decision agenda:** the questions the operator must resolve, evidence needed for each, options and tradeoffs, and dependencies between decisions.
+6. **Recommended next step:** a bounded proposal with purpose, scope, exclusions, completion evidence, and revisit conditions. Apply none of it.
+
+Use links or precise repository paths and revisions near claims. Separate direct observations, source statements, operator decisions, and inferences. Do not turn inaccessible history into a claim that no decision exists.
+
+Return the report in the originating conversation unless a report destination is explicitly authorized. Access to a repository or vault does not authorize saving findings there.
+
+### Completion and stopping conditions
+
+The review is complete when the inventory has a stated coverage boundary, the sample is justified, the seven principles have evidence-backed assessments, and the decision agenda makes remaining uncertainty actionable. Completion does not require proving universal applicability or resolving every open question.
+
+Stop short of adoption or implementation. If access prevents meaningful coverage, return the evidence gathered and the exact missing input rather than making a universal recommendation. Do not expand into a cleanup, compliance program, repository migration, or governance-tool build.
+
+The success criterion is that the operator can decide what to investigate, pilot, adapt, accept, or reject next without treating one repository's practice as authority for all the others.
+
+
+Proposal version: none. Use bb docs propose to suggest changes for approval.
+
+---
+
+Okay I see the disconnect now and I realized I wasn't paying enough attention but this is much better. This is good and I like this one but this is a different task than what I was assuming in my brain.
+
+I was assuming the task of an agent to go out and research all the repositories. Help us understand how to configure renovate dependencies. Get together what languages are in what repos and what tools they use because we need to avoid conflicting shared renovate configs across repos. That's the follow-up next one that I need but that update you did is very good. I like that one
+
+---
+
+Yes precisely. Those are solid 5 questions. Drop that one as a cross-repository renovate config review prompt

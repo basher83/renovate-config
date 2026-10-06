@@ -1,0 +1,45 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "f8910981c26c",
+  "strategy": "manual-commit",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "AGENTS.md",
+    "bundle/decisions.md",
+    "bundle/enforcement.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/index.md",
+    "bundle/log.md",
+    "bundle/preset-management.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/index.md",
+    "bundle/references/attesters/lint_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py",
+    "bundle/references/generators/generate_indexes.py",
+    "bundle/references/generators/index.md",
+    "bundle/references/index.md",
+    "bundle/references/ingest/index.md",
+    "bundle/references/upstream-code/index.md",
+    "mise.toml",
+    "sources/evaluate/2026-10-06-pr-verdict-receipt.json",
+    "sources/evaluate/index.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f8/910981c26c/0/metadata.json",
+      "transcript": "/f8/910981c26c/0/full.jsonl",
+      "compact_transcript": "/f8/910981c26c/0/transcript.jsonl",
+      "content_hash": "/f8/910981c26c/0/content_hash.txt",
+      "prompt": "/f8/910981c26c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 50197,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2541952,
+    "output_tokens": 17464,
+    "api_call_count": 25
+  }
+}

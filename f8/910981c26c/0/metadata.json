@@ -1,0 +1,74 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "f8910981c26c",
+  "session_id": "01a11266-0a59-79b3-9afb-a4e1d18137be",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-06T21:39:22.994658Z",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "AGENTS.md",
+    "bundle/decisions.md",
+    "bundle/enforcement.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/index.md",
+    "bundle/log.md",
+    "bundle/preset-management.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/index.md",
+    "bundle/references/attesters/lint_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py",
+    "bundle/references/generators/generate_indexes.py",
+    "bundle/references/generators/index.md",
+    "bundle/references/index.md",
+    "bundle/references/ingest/index.md",
+    "bundle/references/upstream-code/index.md",
+    "mise.toml",
+    "sources/evaluate/2026-10-06-pr-verdict-receipt.json",
+    "sources/evaluate/index.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "7511820bb0c3",
+  "checkpoint_transcript_start": 989,
+  "transcript_lines_at_start": 989,
+  "compact_transcript_start": 142,
+  "token_usage": {
+    "input_tokens": 50197,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2541952,
+    "output_tokens": 17464,
+    "api_call_count": 25
+  },
+  "session_metrics": {
+    "turn_count": 27
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-06T21:39:22.901446Z",
+    "agent_lines": 2311,
+    "agent_removed": 14,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2311,
+    "total_lines_changed": 2325,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 806,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "sources/basher83-repo-inventory.csv": 93,
+        "sources/renovate-dependency-review.md": 374,
+        "sources/repo-dependency-map.csv": 95,
+        "sources/shared-agent-policy-repository-review.md": 244
+      }
+    }
+  ]
+}

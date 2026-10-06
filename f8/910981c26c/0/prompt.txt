@@ -1,0 +1,17 @@
+gimme a roll up of tags in the bundle. how many do we have and by what count
+
+---
+
+what is the purpose of a tag?
+
+---
+
+ahh there you go my thoughts exactly. this is literally a renovate repo so that tag does nothing for THIS bundle it would only benifit a bundle at a layer above this repo. No changes to be made here I'm making these comments in the pr now. Can you give me a tag rule in line with this I can assert from the PR?
+
+---
+
+ok check and address PR comments the last 1-2 should hand you the verdicts
+
+---
+
+awesome, lets commit and push

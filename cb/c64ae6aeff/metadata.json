@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "cbc64ae6aeff",
+  "strategy": "manual-commit",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 25,
+  "files_touched": [
+    ".github/agents/renovate-expert.agent.md",
+    ".github/copilot-instructions.md",
+    "AGENTS.md",
+    "README.md",
+    "bundle/decisions.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/preset-management.md",
+    "bundle/references/2026-10-06-adoption-rulings.md",
+    "bundle/references/2026-10-06-review-reconciliation.md",
+    "bundle/references/2026-10-06-slice-1-rulings.md",
+    "bundle/references/2026-10-06-source-captures.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py",
+    "bundle/references/generators/generate_indexes.py",
+    "bundle/references/ingest/capture_source.py",
+    "bundle/references/shared-agent-policy-repository-review.md",
+    "bundle/references/upstream-code/check_bundle.py.txt",
+    "bundle/references/upstream-code/generate_indexes.py.txt",
+    "bundle/references/upstream-code/ingest_agentsview_insight.py.txt",
+    "bundle/references/upstream-code/ingest_subagent_review.py.txt",
+    "docs/preset-management.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/cb/c64ae6aeff/0/metadata.json",
+      "transcript": "/cb/c64ae6aeff/0/full.jsonl",
+      "compact_transcript": "/cb/c64ae6aeff/0/transcript.jsonl",
+      "content_hash": "/cb/c64ae6aeff/0/content_hash.txt",
+      "prompt": "/cb/c64ae6aeff/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 501527,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 17091456,
+    "output_tokens": 116759,
+    "api_call_count": 159,
+    "subagent_tokens_complete": true
+  }
+}

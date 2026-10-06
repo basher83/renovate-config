@@ -1,0 +1,209 @@
+Entire Session Handoff:
+
+Self-handoff—no other sessions in this worktree. Handing off Codex session **01a10f26-49c7-7702-b5cd-ff4e517568c5**, 17 recorded turns, last active just now.
+
+### Task overview
+
+The session began with [renovate-config#122](https://github.com/basher83/renovate-config/issues/122), which asks whether runner upgrades and action-input tool updates should require approval. The operator stopped implementation because the issue contains candidate decisions, not an adopted policy. **No preset changes were made. #122 remains paused and unresolved.**
+
+The work shifted to drafting an agent operating policy, planning its local application, and preparing two separate cross-repository research prompts.
+
+### Repository state
+
+The following commits were reviewed, pushed, and then landed directly on `main` at the operator’s explicit request:
+
+- [`f9db3ec`](https://github.com/basher83/renovate-config/commit/f9db3ecb1642da46d13dcf90dbe13b125afc9b5a): adds `sources/github-repo-info-card.md` and its CSV counterpart.
+- [`e063800`](https://github.com/basher83/renovate-config/commit/e06380002719988d6654aad293eee9ee295fc0d2): replaces `task_run_auto_install = true` with `task.run_auto_install = true` in mise.toml.
+
+Publication was a fast-forward, with no PR or force push. The final verification established:
+
+```text
+Local main = origin/main = live GitHub main
+e06380002719988d6654aad293eee9ee295fc0d2
+```
+
+The main checkout at `/Users/basher8383/3I/lab/renovate-config` was also fast-forwarded. Both working trees were clean.
+
+This thread remains in:
+
+```text
+/Users/basher8383/.bb/plugins/environment-git-worktree/host-data/worktrees/thr_2gvd7sszwk-1/renovate-config
+```
+
+On branch:
+
+```text
+bb/REDACTED
+```
+
+Validation passed for both root configs and all ten presets. Renovate reported its optional RE2 fallback warning. The Markdown inventory passed lint, and its 92 unique records exactly match the CSV. Individual repository descriptions were not independently verified. The operator confirmed this is preliminary discovery data.
+
+### Plans and artifacts
+
+Documents live in the **Repository Contracts and Policy** Docs vault, ID `repository-contracts-and-policy`.
+
+::docs{vault="repository-contracts-and-policy" path="agent-working-policy-draft.md" title="Agent Working Policy — Draft"}
+
+::docs{vault="repository-contracts-and-policy" path="renovate-config/agent-policy-implementation-plan.md" title="Renovate-config agent policy implementation plan"}
+
+::docs{vault="repository-contracts-and-policy" path="renovate-config/slice-1-governance-plan.md" title="Slice 1 — Establish renovate-config’s operating contract"}
+
+::docs{vault="repository-contracts-and-policy" path="renovate-config/cross-repository-policy-review-agent-prompt.md" title="Agent prompt — Evaluate a shared working policy across repositories"}
+
+::docs{vault="repository-contracts-and-policy" path="renovate-config/cross-repository-renovate-config-review-prompt.md" title="Agent prompt — Cross-repository Renovate configuration review"}
+
+The governance review prompt received a simpler, self-contained **proposal version 1**. The operator liked it; acceptance in Docs was not subsequently verified. Re-read the document and proposal before editing.
+
+### Decisions and boundaries to preserve
+
+- **Governance implementation remains under deliberation.** Approval to save plans and publish the two existing commits does not authorize implementing Slice 1.
+- The intended knowledge path is **`bundle/`**, singular. The operator edited the plan accordingly, but the inspected checkout still contained `docs/`. Reconcile that before any migration.
+- **OKF formatting is deferred.**
+- Keep `.github/copilot-instructions.md` and `.github/agents/renovate-expert.agent.md` for now. The proposed slice marks them for removal and evaluates useful content before deletion.
+- Proposed local owners are `bundle/governance.md` and `bundle/decisions.md`; these files have not been created.
+- The shared policy remains a draft. Local adoption would not automatically adopt it across other repositories.
+- The governance applicability review and Renovate dependency review are **different workstreams**. Neither investigation has started.
+
+### Next work
+
+Continue deliberating Slice 1 when directed. Its proposed outcome is a local authority contract, prospective decision history, aligned entry points, and explicit verification limits—without changing dependency policy or adding enforcement.
+
+The separate Renovate review prompt asks for repository stacks and tools, dependency/update mechanisms, preset inheritance and overrides, configuration conflicts, and allocation between base, optional, and local rules.
+
+For future research prompts, the operator prefers remote-access assumptions, direct questions, and useful answers over requiring agents to reconstruct the policy’s philosophy or provenance.
+
+The raw session transcript used for this handoff is available at [handoff transcript](/tmp/handoff-01a10f26-49c7-7702-b5cd-ff4e517568c5.jsonl).
+
+---
+
+I have two long running agent tasks in flight one per drafted prompts from the last session as an aside. Will advise when they land results
+
+---
+
+does slice on depend on results from either task?
+
+---
+
+cool, use the ask user tool to walk through the decision tree
+
+---
+
+hmm that didn't work no ask-user-question popped up
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"What scope should we settle on for Slice 1, keeping #122 and dependency-policy changes excluded?","header":"Slice 1 scope","options":[{"label":"Full slice (Recommended)","description":"Prepare the contract and decision log, align entry points, and mark and evaluate retained Copilot files."},{"label":"Contract first","description":"Prepare only the contract and decision log; defer entry-point alignment and Copilot review."},{"label":"Principles first","description":"Review the governance rules before settling the implementation scope."}],"multiSelect":false}],"answers":{"What scope should we settle on for Slice 1, keeping #122 and dependency-policy changes excluded?":"Full slice (Recommended)"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"The checkout is clean and still has docs/ with no bundle/. How should Slice 1 establish bundle/?","header":"Knowledge path","options":[{"label":"Focused move (Recommended)","description":"Create governance.md and decisions.md in bundle/, move preset-management.md there, and update affected links. Leave audits and upstream reference mirrors in docs/."},{"label":"Rename all docs/","description":"Move the entire docs/ tree to bundle/ and update affected links. Include the broader migration explicitly in Slice 1; preserve each document's standing."},{"label":"Separate migration first","description":"Resolve the docs/ to bundle/ transition as a separate change before preparing Slice 1."}],"multiSelect":false}],"answers":{"The checkout is clean and still has docs/ with no bundle/. How should Slice 1 establish bundle/?":"1 with caveat. OKF formatting see /Users/basher8383/3I/lab/personal-computing/.ok/okf/*"},"response":"1 with caveat. OKF formatting see /Users/basher8383/3I/lab/personal-computing/.ok/okf/*"}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"How should your OKF caveat apply to Slice 1?","header":"OKF formatting","options":[{"label":"Bundle documents (Recommended)","description":"Format governance.md, decisions.md, and preset-management.md using the referenced OKF v0.2 schemas, including useful provenance and accurate lifecycle metadata. Leave other documents and tooling unchanged."},{"label":"Minimum frontmatter","description":"Add only the required type field to those three bundle documents; keep provenance and decision standing in the body."},{"label":"Keep formatting deferred","description":"Use the schemas as a reference for later work, retaining the earlier plan's OKF formatting deferral."}],"multiSelect":false}],"answers":{"How should your OKF caveat apply to Slice 1?":"Bundle documents (Recommended)"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"When should we prepare and adopt Slice 1 relative to the running shared-policy review?","header":"Adoption timing","options":[{"label":"Draft now, adopt later (Recommended)","description":"Prepare the full repository diff now as a candidate, reconcile the governance review when it arrives, then seek your explicit adoption decision. Commit and publication remain separate."},{"label":"Wait before drafting","description":"Keep these scope decisions and wait for the governance review before preparing repository changes."},{"label":"Review for adoption now","description":"Prepare the full candidate and bring it to you for adoption without waiting for the governance review; assess its findings later."}],"multiSelect":false}],"answers":{"When should we prepare and adopt Slice 1 relative to the running shared-policy review?":"Draft now, adopt later (Recommended)"}}
+
+---
+
+You need to double check OKF frontmatter. $opensrc has the repo registered already find the SPEC.md
+
+---
+
+is sha hash a field under sources?
+
+---
+
+yeah same. do not invent fileds simply because the schema allows it. That is a boundry right there. ref in the body and use the short form
+
+---
+
+ok getting closer. Take a peek at /Users/basher8383/greenfield/.claude/learnings/index.md and follow the governance trail. Formatting the my friction in frontmatter right now. Your md body is fine
+
+---
+
+agreed and these formatting rules also need thier own doc
+
+---
+
+That problem you just highlighted ... look at /Users/basher8383/greenfield/.claude/learnings/references/index.md
+
+---
+
+check out the python tooling in there tool. I was allso pointing towards the deterministic scripts as well
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"How should deterministic Python tooling fit into the Slice 1 candidate, given its earlier documentation-only scope?","header":"Python tooling","options":[{"label":"Standalone scripts (Recommended)","description":"Include narrowly adapted index generation/checks, metadata and source validation, and capture-fidelity checks in the draft. Leave CI, hooks, mise tasks, and installed enforcement unchanged."},{"label":"Document and defer","description":"Finish the reference captures and document the tooling pattern, keeping Python implementation outside Slice 1."}],"multiSelect":false}],"answers":{"How should deterministic Python tooling fit into the Slice 1 candidate, given its earlier documentation-only scope?":"Standalone scripts (Recommended)"}}
+
+---
+
+cool. hit me with ask-user tool to work through the adoption questions
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"Where are we relative to the running shared working-policy review?","header":"Review readiness","options":[{"label":"Still pending","description":"Work through the adoption choices now, while keeping final acceptance pending until we reconcile the review's results."},{"label":"Results are ready","description":"Reconcile the results with the candidate before settling the adoption choices; provide the results or their location next."},{"label":"Change the timing","description":"Review the candidate for adoption now without waiting, explicitly revising the earlier decision to wait for the governance results."}],"multiSelect":false}],"answers":{"Where are we relative to the running shared working-policy review?":"Results are ready"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"How should I access the completed shared working-policy review?","header":"Review results","options":[{"label":"Local file or Docs","description":"Provide its file path or BB Docs vault and document path."},{"label":"Paste results here","description":"Paste the review into this conversation so I can reconcile it with the candidate."},{"label":"Remote report","description":"Provide the report URL or repository and artifact location."}],"multiSelect":false}],"answers":{"How should I access the completed shared working-policy review?":"in repo sources/"},"response":"in repo sources/"}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"Given the review's recommendation to start with a minimal pilot, what should we bring forward for local adoption in renovate-config?","header":"Local adoption","options":[{"label":"Full local contract (Recommended)","description":"Keep the prepared Slice 1, clarify publication consequences and layered-instruction boundaries, and adopt only for this repository. Shared adoption stays unresolved."},{"label":"Minimal local pilot","description":"Retain the prepared material as drafts, but adopt only a concise consequence-and-authority header with an explicit trial and revisit point."},{"label":"Rework before deciding","description":"Keep adoption pending and revise the candidate around the review's minimal-pilot recommendation before choosing its standing."}],"multiSelect":false}],"answers":{"Given the review's recommendation to start with a minimal pilot, what should we bring forward for local adoption in renovate-config?":"Full local contract (Recommended)"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"What authority rule should the local contract use for commits, pushes, merges, publication, and external changes?","header":"Action authority","options":[{"label":"Use task authorization (Recommended)","description":"Proceed when the operator's task explicitly authorizes the action; preparation alone does not. Ask once for any consequential action whose authority remains unresolved. Existing bots retain their configured authority."},{"label":"Separate publication approval","description":"Allow commits when the task authorizes them, but require a distinct approval of the concrete result before each push, merge, publication, or external change."},{"label":"Specify action by action","description":"Set different local defaults for commits, pushes, merges, publication, and external changes before drafting the rule."}],"multiSelect":false}],"answers":{"What authority rule should the local contract use for commits, pushes, merges, publication, and external changes?":"Separate publication approval"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"For a future change to shared preset behavior, what verification should the local contract require before accepting the change for publication?","header":"Consumer checks","options":[{"label":"Evidence or explicit exception (Recommended)","description":"Require strict validation plus relevant extraction, matching, or resolved-configuration evidence from an identified representative consumer. If unavailable, explain the gap and obtain an explicit operator exception."},{"label":"Always require consumer evidence","description":"Require strict validation and representative consumer evidence for every shared behavior change; defer publication when that evidence cannot be obtained."},{"label":"Keep claim-based checks","description":"Keep the current proportionate rule: require checks that support the claimed behavior and report gaps, without a separate exception requirement."}],"multiSelect":false}],"answers":{"For a future change to shared preset behavior, what verification should the local contract require before accepting the change for publication?":"Evidence or explicit exception (Recommended)"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"How should Slice 1 dispose of the retained Copilot instructions and Renovate specialist after their content review?","header":"Copilot files","options":[{"label":"Retain for now (Recommended)","description":"Adopt the canonical bundle and AGENTS routing while keeping both files and their boundary notes. Leave deletion for a separately reviewed change."},{"label":"Remove both in Slice 1","description":"Include deletion of both files in the final adoption diff after checking that useful unique guidance is preserved in canonical documents."},{"label":"Decide individually","description":"Review the two files separately and choose retention or removal for each before completing the candidate."}],"multiSelect":false}],"answers":{"How should Slice 1 dispose of the retained Copilot instructions and Renovate specialist after their content review?":"Retain for now (Recommended)"}}
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"Do you accept revised Slice 1 candidate 33e5e1f29df4 as local guidance for renovate-config, including the separate publication-approval rule, consumer evidence-or-exception rule, and retention of both Copilot files?","header":"Final adoption","options":[{"label":"Adopt locally (Recommended)","description":"Record acceptance, promote the four maintained bundle documents to stable without inventing human verification, and align entry-point standing. Accept standalone tools as support; no commit, publication, shared adoption, or dependency-policy change."},{"label":"Revise the text","description":"Keep the candidate draft and specify wording or behavior to change before acceptance."},{"label":"Defer adoption","description":"Keep the reconciled candidate and completed checks for later acceptance."}],"multiSelect":false}],"answers":{"Do you accept revised Slice 1 candidate 33e5e1f29df4 as local guidance for renovate-config, including the separate publication-approval rule, consumer evidence-or-exception rule, and retention of both Copilot files?":"Adopt locally (Recommended)"}}
+
+---
+
+ok whats the next move
+
+---
+
+thats a huge diff and im human so thats gonna be a you job
+
+---
+
+Your earlier AskUserQuestion tool call has finished. Its result:
+
+{"questions":[{"question":"Should I fix the three confirmed Slice 1 review findings: verification timestamp independence, validation of locally authored capture headers, and the guide's missing consumer-evidence exception path?","header":"Review fixes","options":[{"label":"Fix all three (Recommended)","description":"Apply narrow corrections, add focused regression checks for the checker gaps, and rerun scoped validation. Preserve captured bodies and adopted policy; no commit or publication."},{"label":"Show the fix plan first","description":"Present the exact changes and checks before editing."},{"label":"Leave findings open","description":"Keep the reviewed diff unchanged and defer remediation."}],"multiSelect":false}],"answers":{"Should I fix the three confirmed Slice 1 review findings: verification timestamp independence, validation of locally authored capture headers, and the guide's missing consumer-evidence exception path?":"Fix all three (Recommended)"}}

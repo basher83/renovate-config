@@ -1,0 +1,432 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "cbc64ae6aeff",
+  "session_id": "01a10fa7-da90-74c2-b71f-07770a0f7661",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-06T07:56:24.921804Z",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 25,
+  "save_step_count": 17,
+  "files_touched": [
+    ".github/agents/renovate-expert.agent.md",
+    ".github/copilot-instructions.md",
+    "AGENTS.md",
+    "README.md",
+    "bundle/decisions.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/preset-management.md",
+    "bundle/references/2026-10-06-adoption-rulings.md",
+    "bundle/references/2026-10-06-review-reconciliation.md",
+    "bundle/references/2026-10-06-slice-1-rulings.md",
+    "bundle/references/2026-10-06-source-captures.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py",
+    "bundle/references/generators/generate_indexes.py",
+    "bundle/references/ingest/capture_source.py",
+    "bundle/references/shared-agent-policy-repository-review.md",
+    "bundle/references/upstream-code/check_bundle.py.txt",
+    "bundle/references/upstream-code/generate_indexes.py.txt",
+    "bundle/references/upstream-code/ingest_agentsview_insight.py.txt",
+    "bundle/references/upstream-code/ingest_subagent_review.py.txt",
+    "docs/preset-management.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "6a575aae71ed",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 501527,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 17091456,
+    "output_tokens": 116759,
+    "api_call_count": 159,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 25
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-06T07:56:24.83197Z",
+    "agent_lines": 1768,
+    "agent_removed": 0,
+    "human_added": 18297,
+    "human_modified": 439,
+    "human_removed": 0,
+    "total_committed": 20438,
+    "total_lines_changed": 20504,
+    "agent_percentage": 8.622707764338667,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 674,
+      "agent_lines_removed": 321
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 699,
+      "agent_lines_removed": 321
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 699,
+      "agent_lines_removed": 321
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 701,
+      "agent_lines_removed": 321
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 21,
+      "user_lines_removed": 24,
+      "agent_lines_added": 701,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/decisions.md": 6,
+        "bundle/governance.md": 9,
+        "bundle/preset-management.md": 6
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 7,
+        "bundle/governance.md": 10,
+        "bundle/preset-management.md": 7
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 1625,
+      "user_lines_removed": 36,
+      "agent_lines_added": 811,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "AGENTS.md": 7,
+        "README.md": 1,
+        "bundle/decisions.md": 7,
+        "bundle/formatting.md": 20,
+        "bundle/governance.md": 12,
+        "bundle/index.md": 14,
+        "bundle/references/2026-10-06-slice-1-rulings.md": 66,
+        "bundle/references/2026-10-06-source-captures.md": 61,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 14,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "AGENTS.md": 3,
+        "bundle/decisions.md": 5,
+        "bundle/formatting.md": 15,
+        "bundle/governance.md": 13
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 1459,
+      "user_lines_removed": 1,
+      "agent_lines_added": 2705,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 21,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/preset-management.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 1459,
+      "user_lines_removed": 1,
+      "agent_lines_added": 2705,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 21,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/preset-management.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 1459,
+      "user_lines_removed": 1,
+      "agent_lines_added": 2705,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 21,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/preset-management.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 1459,
+      "user_lines_removed": 1,
+      "agent_lines_added": 2705,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 21,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/preset-management.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 1459,
+      "user_lines_removed": 1,
+      "agent_lines_added": 2705,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 21,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/preset-management.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 1459,
+      "user_lines_removed": 1,
+      "agent_lines_added": 2705,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 21,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/preset-management.md": 1
+      }
+    },
+    {
+      "checkpoint_number": 14,
+      "user_lines_added": 1558,
+      "user_lines_removed": 25,
+      "agent_lines_added": 3047,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/decisions.md": 33,
+        "bundle/formatting.md": 2,
+        "bundle/governance.md": 50,
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/2026-10-06-source-captures.md": 9,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/attesters/check_bundle.py": 1,
+        "bundle/references/generators/generate_indexes.py": 1,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 24,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 6,
+        "bundle/formatting.md": 2,
+        "bundle/governance.md": 14,
+        "bundle/preset-management.md": 1,
+        "bundle/references/2026-10-06-source-captures.md": 1,
+        "bundle/references/generators/generate_indexes.py": 1
+      }
+    },
+    {
+      "checkpoint_number": 15,
+      "user_lines_added": 1637,
+      "user_lines_removed": 72,
+      "agent_lines_added": 3047,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/decisions.md": 71,
+        "bundle/formatting.md": 9,
+        "bundle/governance.md": 62,
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 8,
+        "bundle/references/2026-10-06-adoption-rulings.md": 12,
+        "bundle/references/2026-10-06-review-reconciliation.md": 3,
+        "bundle/references/2026-10-06-source-captures.md": 9,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/attesters/check_bundle.py": 1,
+        "bundle/references/generators/generate_indexes.py": 1,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 24,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 22,
+        "bundle/formatting.md": 8,
+        "bundle/governance.md": 26,
+        "bundle/preset-management.md": 8,
+        "bundle/references/2026-10-06-adoption-rulings.md": 4,
+        "bundle/references/2026-10-06-review-reconciliation.md": 2,
+        "bundle/references/2026-10-06-source-captures.md": 1,
+        "bundle/references/generators/generate_indexes.py": 1
+      }
+    },
+    {
+      "checkpoint_number": 16,
+      "user_lines_added": 1637,
+      "user_lines_removed": 72,
+      "agent_lines_added": 3047,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/decisions.md": 71,
+        "bundle/formatting.md": 9,
+        "bundle/governance.md": 62,
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 8,
+        "bundle/references/2026-10-06-adoption-rulings.md": 12,
+        "bundle/references/2026-10-06-review-reconciliation.md": 3,
+        "bundle/references/2026-10-06-source-captures.md": 9,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/attesters/check_bundle.py": 1,
+        "bundle/references/generators/generate_indexes.py": 1,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 24,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 22,
+        "bundle/formatting.md": 8,
+        "bundle/governance.md": 26,
+        "bundle/preset-management.md": 8,
+        "bundle/references/2026-10-06-adoption-rulings.md": 4,
+        "bundle/references/2026-10-06-review-reconciliation.md": 2,
+        "bundle/references/2026-10-06-source-captures.md": 1,
+        "bundle/references/generators/generate_indexes.py": 1
+      }
+    },
+    {
+      "checkpoint_number": 17,
+      "user_lines_added": 1637,
+      "user_lines_removed": 72,
+      "agent_lines_added": 3047,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/decisions.md": 71,
+        "bundle/formatting.md": 9,
+        "bundle/governance.md": 62,
+        "bundle/index.md": 14,
+        "bundle/preset-management.md": 8,
+        "bundle/references/2026-10-06-adoption-rulings.md": 12,
+        "bundle/references/2026-10-06-review-reconciliation.md": 3,
+        "bundle/references/2026-10-06-source-captures.md": 9,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/attesters/check_bundle.py": 1,
+        "bundle/references/generators/generate_indexes.py": 1,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 24,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 22,
+        "bundle/formatting.md": 8,
+        "bundle/governance.md": 26,
+        "bundle/preset-management.md": 8,
+        "bundle/references/2026-10-06-adoption-rulings.md": 4,
+        "bundle/references/2026-10-06-review-reconciliation.md": 2,
+        "bundle/references/2026-10-06-source-captures.md": 1,
+        "bundle/references/generators/generate_indexes.py": 1
+      }
+    },
+    {
+      "checkpoint_number": 18,
+      "user_lines_added": 1664,
+      "user_lines_removed": 66,
+      "agent_lines_added": 3170,
+      "agent_lines_removed": 321,
+      "user_added_per_file": {
+        "bundle/decisions.md": 89,
+        "bundle/formatting.md": 20,
+        "bundle/governance.md": 62,
+        "bundle/index.md": 14,
+        "bundle/references/2026-10-06-adoption-rulings.md": 19,
+        "bundle/references/2026-10-06-review-reconciliation.md": 3,
+        "bundle/references/2026-10-06-source-captures.md": 9,
+        "bundle/references/agent-working-policy-draft.md": 111,
+        "bundle/references/generators/generate_indexes.py": 1,
+        "bundle/references/greenfield-evidence-boundary.md": 45,
+        "bundle/references/greenfield-framework.md": 208,
+        "bundle/references/greenfield-lifecycle-and-revision.md": 43,
+        "bundle/references/index.md": 24,
+        "bundle/references/okf-spec.md": 1016
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 22,
+        "bundle/formatting.md": 10,
+        "bundle/governance.md": 26,
+        "bundle/references/2026-10-06-adoption-rulings.md": 4,
+        "bundle/references/2026-10-06-review-reconciliation.md": 2,
+        "bundle/references/2026-10-06-source-captures.md": 1,
+        "bundle/references/generators/generate_indexes.py": 1
+      }
+    }
+  ]
+}

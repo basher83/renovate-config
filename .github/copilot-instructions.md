@@ -1,5 +1,13 @@
 # Copilot Instructions for renovate-config
 
+**Retained for now; deletion requires a separate reviewed change.** Read [AGENTS.md](../AGENTS.md), the
+[local contract](../bundle/governance.md), and the [content disposition](../bundle/decisions.md).
+The contract is adopted locally. Separate publication approval remains required. The retained capability,
+policy, and command examples below do not independently authorize changes or tool installation.
+
+Use AGENTS for current commands and verification boundaries. Schema acceptance does not prove extraction,
+matching, inherited behavior, or consumer results. An umbrella lint run does not cover all entry points.
+
 ## Repository Overview
 
 This repository contains centralized Renovate presets for dependency management across basher83
@@ -17,7 +25,7 @@ runtime code. All presets are JSON configuration files validated against Renovat
 
 ```text
 renovate-config/
-├── default.json              # Base preset extended by all repos
+├── default.json              # Base preset for repos extending it
 ├── renovate.json             # This repo's own Renovate config (dogfooding)
 ├── presets/                  # Shared presets, some global and some optional
 │   ├── ansible.json          # Ansible collection/role updates
@@ -30,9 +38,9 @@ renovate-config/
 │   ├── rust.json             # Rust/Cargo crate updates
 │   └── terraform-tofu.json   # Terraform/OpenTofu providers
 ├── examples/                 # Real-world configuration examples
-├── docs/                     # Documentation
-│   ├── preset-management.md  # Guidelines for preset organization
-│   └── official-docs/         # Renovate reference documentation
+├── bundle/                   # Local contract, decisions, and preset guide
+├── docs/                     # Historical audits and upstream reference mirrors
+│   └── official-docs/        # Renovate reference documentation
 ├── mise.toml                 # Task runner configuration
 ├── .pre-commit-config.yaml   # Pre-commit hooks
 ├── .rumdl.toml               # Markdown linter configuration
@@ -136,5 +144,5 @@ If pre-commit fails, run the validation commands above to identify the issue.
 
 `default.json` globally includes `github-actions-security.json` and `mise.json`. Python runtime caps
 belong in stack-specific presets such as `python-mcp.json` and `ansible.json`, not in the global
-`mise.json` preset. Refer to `docs/preset-management.md` for detailed automerge strategy and preset
-philosophy.
+`mise.json` preset. Refer to [bundle/preset-management.md](../bundle/preset-management.md) for detailed
+automerge strategy and preset philosophy.

@@ -1,6 +1,14 @@
 # Renovate Shared Configuration
 
-Centralized Renovate presets for consistent dependency management across all repositories.
+Centralized Renovate presets for consistent dependency management in repositories extending these presets.
+Shared changes affect those consumers, subject to inheritance and local overrides; this repository does not
+establish that every owned repository has been inventoried or extends the base.
+
+The [local operating contract](./bundle/governance.md) and
+[prospective decision record](./bundle/decisions.md) define the adopted local authority and verification boundaries.
+**Slice 1 is adopted locally.** The operator accepted candidate `33e5e1f29df4` on 2026-10-06;
+[decision D005](./bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records its scope. Commit and publication
+remain separate. Existing JSON remains operative, shared adoption remains unresolved, and issue #122 stays paused.
 
 ## Quick Start
 
@@ -75,7 +83,9 @@ Python runtime caps are intentionally stack-specific and live in `python-mcp.jso
 
 ## Documentation
 
-- [Preset Management Strategy](./docs/preset-management.md) – Guidelines for creating and organizing
+- [Repository Knowledge](./bundle/index.md) – Local guidance and captured references
+- [Bundle Document Formatting](./bundle/formatting.md) – Local OKF frontmatter and provenance style
+- [Preset Management Strategy](./bundle/preset-management.md) – Guidelines for creating and organizing
   presets, including the automerge mental model
 - [Official Renovate Docs](./docs/official-docs/) – Reference documentation mirrors
 - [Configuration Examples](./examples/) – Real-world configuration examples
@@ -105,7 +115,8 @@ Specific details may evolve; always check `default.json` for the canonical confi
 
 ## Automerge Mental Model (Important)
 
-Across all presets, automerge is designed to follow a simple mental model:
+The categories below summarize the guide's automerge model. They are not permission to select a new policy
+or proof of safety. Consult matched JSON rules and any applicable decision for the actual dependency and consumer:
 
 1. Safe changes auto‑merge via PR
    - Examples:
@@ -137,21 +148,22 @@ Across all presets, automerge is designed to follow a simple mental model:
    - We rely on:
      - Required status checks (e.g. tests + security scans).
      - No required approvals where we want Renovate to auto‑merge.
-   - Renovate only automerges when these conditions are met.
+   - Inspect the consumer's actual requirements; passing checks establish only what those checks verify.
+   - Merge conditions do not establish policy approval or that an update is suitable.
 
 For a deeper explanation with examples (e.g., `Zammad-MCP`), see
-[Preset Management Strategy](./docs/preset-management.md).
+[Preset Management Strategy](./bundle/preset-management.md).
 
 ---
 
 ## Preset Philosophy
 
-Presets follow a simple rule:
+For a new preset, consider this starting point for an operator-reviewed recommendation:
 
-> If it’s used universally and is safe, include it in `default.json`.
-> Otherwise, make it an optional preset and extend it only where needed.
+> Recommend global inclusion when evidence supports broad consumer applicability and acceptable risk.
+> Recommend optional inclusion for stack-specific needs. Implement only the authorized outcome.
 
 - Global presets in `default.json`: very conservative, universal behavior.
 - Optional presets: technology- or project-specific behavior.
 
-See [Preset Management Strategy](./docs/preset-management.md) for detailed guidelines and the current global vs optional list.
+See [Preset Management Strategy](./bundle/preset-management.md) for detailed guidelines and the current global vs optional list.

@@ -1,0 +1,286 @@
+#!/usr/bin/env -S uv run --script --quiet
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pyyaml"]
+# ///
+"""Derive the pure concept-listing indexes of the learnings bundle from front-matter.
+
+Phase 2 of the operator's standing queue: the five flat concept directories'
+index.md files are derived views (PAT-001), so this generator rebuilds each
+one from its directory's concept files — entry titles from front-matter (or
+the filename date, for transcripts), each description byte-identical to its
+file's front-matter description — and, in check mode, attests that the
+on-disk index carries zero drift against the regeneration.
+
+Usage:
+    uv run --script references/generators/generate_indexes.py            # --check
+    uv run --script references/generators/generate_indexes.py --write
+    uv run --script generate_indexes.py /path/to/learnings --check
+
+When to use: as a drift gate beside check_bundle.py before any commit
+(--check, the default), and to rebuild the in-scope indexes after adding,
+renaming, or re-describing a concept file in one of them (--write).
+
+When NOT to use: on the excluded indexes — references/legacy-learnings/,
+references/review-reports/, the bundle root, and references/ itself; the
+EXCLUDED table below carries the reason for each. This script never reads
+or writes those indexes, and it refuses a scope table that marks a
+directory both in-scope and excluded. It also does not replace
+check_bundle.py, which owns coverage and byte-identity findings across the
+whole bundle, excluded indexes included.
+
+Determinism: same tree in, same bytes out. The tree includes each existing
+index.md, because entry order is curated append order — framework/ and
+references/dispatch-records/ are not filename-sorted — so regeneration
+preserves the existing index's entry order and appends unlisted files in
+filename order. A directory with no index.md yet generates in filename
+order. A hand-reorder of existing entries is curated arrangement, not
+drift, and passes --check.
+"""
+
+import argparse
+import difflib
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+# Mirrors check_bundle.py: references/generators/ -> references/ -> bundle root.
+DEFAULT_BUNDLE = Path(__file__).resolve().parent.parent.parent
+RESERVED = {"index.md", "log.md"}
+EXPERIMENT_SUFFIX = ".brent.md"
+# Same entry shape check_bundle.py enforces: "* [Title](target) - Description".
+ENTRY_RE = re.compile(r"^\* \[([^\]]+)\]\(([^)]+)\) - (.*)$")
+
+# Scope table. IN_SCOPE rows are the pure concept-listing indexes this script
+# owns. Every directory holding typed concept files must appear in exactly one
+# of the two tables; an unclassified directory is a fatal error in both modes,
+# so a new tier gets a deliberate classification before anything generates.
+# Fields: bundle-relative directory, index H1 heading, entry-title rule, reason.
+IN_SCOPE = [
+    ("framework", "# Framework concepts", "front-matter",
+     "pure concept listing; entry titles and descriptions come straight "
+     "from each file's front-matter"),
+    ("patterns", "# Patterns", "front-matter",
+     "pure concept listing; entry titles and descriptions come straight "
+     "from each file's front-matter"),
+    ("references/evidence", "# Evidence", "front-matter",
+     "pure concept listing; entry titles and descriptions come straight "
+     "from each file's front-matter"),
+    ("references/dispatch-records", "# Dispatch records", "front-matter",
+     "pure concept listing; entry titles and descriptions come straight "
+     "from each file's front-matter"),
+    ("references/insight-analysis-transcripts", "# Agent Analysis Insights",
+     "filename-date",
+     "pure concept listing; every transcript's front-matter title is the "
+     "constant 'Agent Analysis', so entry titles are 'YYYY-MM-DD Insight' "
+     "taken from the filename's date"),
+]
+EXCLUDED = {
+    ".": "the root index is a directory-pointer index with curated "
+         "descriptions, not a concept listing",
+    "references": "directory-pointer index with curated descriptions, "
+                  "not a concept listing",
+    "references/legacy-learnings": (
+        "operator ruling 2026-08-25: the thematic groupings are operator "
+        "interpretation over a closed shrinking tier — hand-maintained under "
+        "the attester's check-mode; the exception liquidates when the "
+        "decomposition queue empties"),
+    "references/review-reports": (
+        "mixed index: carries a non-concept archive line — candidate for a "
+        "later version"),
+}
+
+
+def front_matter(path: Path) -> dict:
+    """Parse a concept file's YAML front-matter block.
+
+    Args:
+        path: The concept file to parse.
+
+    Returns:
+        The front-matter mapping.
+
+    Raises:
+        SystemExit: when the block is absent, unterminated, or not a mapping —
+            a loud failure; check_bundle.py owns the detailed conformance report.
+    """
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        sys.exit(f"FATAL: {path}: no front-matter block")
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        sys.exit(f"FATAL: {path}: unterminated front-matter block")
+    fm = yaml.safe_load(text[4:end])
+    if not isinstance(fm, dict):
+        sys.exit(f"FATAL: {path}: front-matter is not a mapping")
+    return fm
+
+
+def entry_title(path: Path, rule: str, fm: dict) -> str:
+    """Return the index-entry title for one concept file.
+
+    Args:
+        path: The concept file.
+        rule: The directory's entry-title rule from IN_SCOPE: "front-matter"
+            uses the file's title key; "filename-date" derives
+            "YYYY-MM-DD Insight" from the filename's leading date.
+        fm: The file's parsed front-matter.
+
+    Returns:
+        The entry title.
+
+    Raises:
+        SystemExit: when the rule needs a front-matter title and none exists,
+            or when a filename-date file does not start with an ISO date.
+    """
+    if rule == "filename-date":
+        if not re.match(r"\d{4}-\d{2}-\d{2}", path.name):
+            sys.exit(f"FATAL: {path}: filename does not start with an ISO date")
+        return f"{path.name[:10]} Insight"
+    title = str(fm.get("title") or "").strip()
+    if not title:
+        sys.exit(f"FATAL: {path}: front-matter title missing")
+    return title
+
+
+def entry_order(index_path: Path, names: list[str]) -> list[str]:
+    """Order entries: the existing index's curated order, new files appended.
+
+    Args:
+        index_path: The directory's current index.md (may not exist).
+        names: Filenames of the concept files that must be listed.
+
+    Returns:
+        Every name in `names` exactly once: names the existing index already
+        lists, in its order, then unlisted names in filename order. With no
+        existing index, plain filename order.
+    """
+    listed: list[str] = []
+    if index_path.exists():
+        for line in index_path.read_text(encoding="utf-8").splitlines():
+            m = ENTRY_RE.match(line)
+            if m and m.group(2) in names and m.group(2) not in listed:
+                listed.append(m.group(2))
+    return listed + sorted(n for n in names if n not in listed)
+
+
+def render_index(directory: Path, heading: str, rule: str) -> str:
+    """Regenerate one in-scope directory's index.md content.
+
+    Args:
+        directory: The concept directory.
+        heading: The index's H1 heading line.
+        rule: The directory's entry-title rule (see entry_title).
+
+    Returns:
+        The full index text: heading, blank line, one entry per concept file,
+        trailing newline. Experiment files (*.brent.md) and deprecated
+        concepts are omitted — the attester treats listing them as optional,
+        and this generator takes the omit branch.
+
+    Raises:
+        SystemExit: when a concept file's description is missing, empty, or
+            multi-line — descriptions must be single-line to mirror verbatim.
+    """
+    concepts: dict[str, str] = {}
+    for p in sorted(directory.glob("*.md")):
+        if p.name in RESERVED or p.name.endswith(EXPERIMENT_SUFFIX):
+            continue
+        fm = front_matter(p)
+        if str(fm.get("status") or "") == "deprecated":
+            continue
+        desc = fm.get("description")
+        if not isinstance(desc, str) or not desc.strip() or "\n" in desc:
+            sys.exit(f"FATAL: {p}: front-matter description missing, empty, "
+                     f"or multi-line")
+        concepts[p.name] = f"* [{entry_title(p, rule, fm)}]({p.name}) - {desc}"
+    if not concepts:
+        sys.exit(f"FATAL: {directory}: no concept files to index")
+    order = entry_order(directory / "index.md", list(concepts))
+    return heading + "\n\n" + "\n".join(concepts[n] for n in order) + "\n"
+
+
+def unclassified_concept_dirs(bundle: Path) -> list[str]:
+    """Return concept-holding directories absent from both scope tables.
+
+    Args:
+        bundle: The bundle root.
+
+    Returns:
+        Sorted bundle-relative paths of directories that hold typed concept
+        files but appear in neither IN_SCOPE nor EXCLUDED.
+    """
+    known = {row[0] for row in IN_SCOPE} | set(EXCLUDED)
+    dirs = set()
+    for p in bundle.rglob("*.md"):
+        if p.name in RESERVED or (p.name == "inbox.md" and p.parent == bundle):
+            continue
+        dirs.add(p.parent.relative_to(bundle).as_posix() or ".")
+    return sorted(d for d in dirs if d not in known)
+
+
+def main() -> int:
+    """Check or write the in-scope indexes.
+
+    Returns:
+        Process exit code: 0 when check mode finds zero drift or write mode
+        completes, 1 on drift or a scope-table failure.
+    """
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("bundle", nargs="?", type=Path, default=DEFAULT_BUNDLE,
+                        help="bundle root (default: resolved from this "
+                             "script's location, as check_bundle.py does)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true",
+                      help="regenerate in memory and diff against disk "
+                           "(default); exit 1 on any drift")
+    mode.add_argument("--write", action="store_true",
+                      help="write the regenerated in-scope indexes; excluded "
+                           "directories are never written")
+    args = parser.parse_args()
+    bundle = args.bundle.resolve()
+    if not (bundle / "framework.md").exists():
+        print(f"FATAL: {bundle} does not look like the learnings bundle "
+              f"(no framework.md)")
+        return 1
+    overlap = {row[0] for row in IN_SCOPE} & set(EXCLUDED)
+    if overlap:
+        print(f"FATAL: refusing to run: directories marked both in-scope and "
+              f"excluded: {sorted(overlap)}")
+        return 1
+    if stray := unclassified_concept_dirs(bundle):
+        print(f"FATAL: concept directories absent from the scope table: "
+              f"{stray}; classify each as in-scope or excluded first")
+        return 1
+
+    drifted = 0
+    for rel, heading, rule, _reason in IN_SCOPE:
+        index_path = bundle / rel / "index.md"
+        want = render_index(bundle / rel, heading, rule)
+        have = index_path.read_text(encoding="utf-8") if index_path.exists() else ""
+        if args.write:
+            if have == want:
+                print(f"unchanged {rel}/index.md")
+            else:
+                index_path.write_text(want, encoding="utf-8")
+                print(f"wrote {rel}/index.md")
+        elif have == want:
+            print(f"OK {rel}/index.md")
+        else:
+            drifted += 1
+            sys.stdout.writelines(difflib.unified_diff(
+                have.splitlines(keepends=True), want.splitlines(keepends=True),
+                fromfile=f"{rel}/index.md (on disk)",
+                tofile=f"{rel}/index.md (regenerated)"))
+    if not args.write:
+        if drifted:
+            print(f"\nRESULT: DRIFT in {drifted} of {len(IN_SCOPE)} indexes")
+        else:
+            print(f"\nRESULT: zero drift across {len(IN_SCOPE)} indexes")
+    return 1 if drifted else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

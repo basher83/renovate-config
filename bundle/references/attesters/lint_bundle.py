@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script --quiet
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml==6.0.3"]
+# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0"]
 # ///
 """Lint authored knowledge and generated navigation without rewriting captures."""
 

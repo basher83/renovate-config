@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T17:39:21-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492

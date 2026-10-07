@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script --quiet
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml==6.0.3"]
+# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0"]
 # ///
 """Regression checks for verification history, source separation, and capture fidelity.
 
@@ -76,6 +76,77 @@ class VerificationHistoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "bundle-absolute"):
             checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
 
+    def test_usage_windows_require_complete_ordered_ranges(self):
+        past = (NOW - timedelta(hours=2)).isoformat()
+        later = (NOW - timedelta(hours=1)).isoformat()
+        for window in ({}, {"from": past}, {"to": later}, {"from": later, "to": past}, []):
+            for owner in (self.fm, self.fm["sources"][0]):
+                with self.subTest(window=window, source=owner is not self.fm):
+                    owner["usage_window"] = window
+                    with self.assertRaisesRegex(ValueError, "usage_window"):
+                        checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+                    del owner["usage_window"]
+        self.fm["usage_window"] = {"from": past, "to": later}
+        self.fm["sources"][0]["usage_window"] = {"from": past, "to": later}
+        checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+
+    def test_usage_count_requires_nonnegative_integer(self):
+        source = self.fm["sources"][0]
+        for count in (-1, True, 1.5, "1"):
+            with self.subTest(count=count):
+                source["usage_count"] = count
+                with self.assertRaisesRegex(ValueError, "nonnegative integer"):
+                    checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+        for count in (0, 1):
+            source["usage_count"] = count
+            checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+
+    def test_stale_after_requires_offset_and_allows_future_expiration(self):
+        for value in ([], {}, None, 1, NOW.replace(tzinfo=None).isoformat(), "invalid"):
+            with self.subTest(value=value):
+                self.fm["stale_after"] = value
+                with self.assertRaises(ValueError):
+                    checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+        for value in (NOW - timedelta(days=1), NOW + timedelta(days=1)):
+            self.fm["stale_after"] = value.isoformat()
+            checker.authored_metadata(BUNDLE, self.file, self.fm, self.body, NOW)
+
+    def test_metadata_validation_preserves_yaml_round_trip(self):
+        self.fm["stale_after"] = (NOW + timedelta(days=1)).isoformat()
+        self.fm["usage_window"] = {"from": (NOW - timedelta(days=1)).isoformat(), "to": NOW.isoformat()}
+        self.fm["sources"][0]["usage_count"] = 0
+        self.fm["verified"] = [{"by": "human:test", "at": (NOW - timedelta(days=2)).isoformat()}]
+        original = copy.deepcopy(self.fm)
+        restored = checker.yaml.load(checker.yaml.safe_dump(self.fm), Loader=checker.UniqueLoader)
+        checker.authored_metadata(BUNDLE, self.file, restored, self.body, NOW)
+        self.assertEqual(restored, original)
+
+    def test_markdown_destinations_share_path_and_anchor_validation(self):
+        for body, error in (
+            ('[policy](governance.md "Policy")', "bundle-absolute"),
+            ("[policy](/missing.md 'Policy')", "inside this repository"),
+            ('[policy](</missing.md> "Policy")', "inside this repository"),
+            ('[policy][ref]\n\n[ref]: governance.md "Policy"', "bundle-absolute"),
+            ('[policy][]\n\n[policy]: /missing.md', "inside this repository"),
+            ('[policy]\n\n[policy]: /missing.md', "inside this repository"),
+            ('[policy](/governance.md#missing "Policy")', "broken local anchor"),
+            ('![policy](/missing.md "Policy")', "inside this repository"),
+        ):
+            with self.subTest(body=body):
+                with self.assertRaisesRegex(ValueError, error):
+                    checker.markdown_links(BUNDLE, self.file, body)
+        for body in (
+            '[policy](/governance.md "Policy")',
+            '[policy][ref]\n\n[ref]: /governance.md "Policy"',
+            '[policy][]\n\n[policy]: /governance.md',
+            '[policy]\n\n[policy]: /governance.md',
+            '`[example](/missing.md "Title")`',
+            '```markdown\n[example](/missing.md "Title")\n```',
+            '~~~markdown\n[example](/missing.md)\n~~~',
+        ):
+            with self.subTest(body=body):
+                checker.markdown_links(BUNDLE, self.file, body)
+
 
 class HistoryTests(unittest.TestCase):
     def test_log_is_not_a_concept_and_dates_are_newest_first(self):
@@ -106,6 +177,37 @@ class HistoryTests(unittest.TestCase):
                     log.write_text("# History\n\n## 2026-10-06\n\n" + entry + "\n")
                     with self.assertRaises(ValueError):
                         checker.history(log)
+
+    def test_all_nested_list_markers_are_rejected_without_blank_line(self):
+        with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
+            log = Path(directory) / "log.md"
+            for marker in ("*", "+", "-", "1.", "2.", "1)"):
+                with self.subTest(marker=marker):
+                    log.write_text("# History\n\n## 2026-10-06\n\n* **Update**: Probe.\n  "
+                                   + marker + " Nested event.\n")
+                    with self.assertRaisesRegex(ValueError, "flat list"):
+                        checker.history(log)
+
+    def test_numbered_log_entries_require_date_and_label(self):
+        with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
+            log = Path(directory) / "log.md"
+            for marker in ("1.", "1)"):
+                log.write_text("# History\n\n## 2026-10-06\n\n" + marker + " Unlabelled.\n")
+                with self.assertRaisesRegex(ValueError, "accepted bold label"):
+                    checker.history(log)
+                log.write_text("# History\n\n" + marker + " **Update**: Undated.\n\n## 2026-10-06\n")
+                with self.assertRaisesRegex(ValueError, "before a dated group"):
+                    checker.history(log)
+                log.write_text("# History\n\n## 2026-10-06\n\n" + marker + " **Update**: Labelled.\n")
+                checker.history(log)
+
+    def test_history_validates_titled_and_reference_links(self):
+        with tempfile.TemporaryDirectory(prefix="bundle-history-") as directory:
+            log = Path(directory) / "log.md"
+            for link in ('[policy](/missing.md "Policy")', '[policy][ref]\n\n[ref]: /missing.md'):
+                log.write_text("# History\n\n## 2026-10-06\n\n* **Update**: " + link + "\n")
+                with self.assertRaisesRegex(ValueError, "inside this repository"):
+                    checker.history(log)
 
 
 class CaptureHeaderTests(unittest.TestCase):
@@ -205,6 +307,70 @@ class CaptureHeaderTests(unittest.TestCase):
         self.assertIn("(/references/nested/example.md) - " + fm["description"], index)
         self.assertEqual(self.run_checker().returncode, 0)
 
+
+    def test_generator_rejects_symlinks_before_any_index_writes(self):
+        generator = BUNDLE / "references/generators/generate_indexes.py"
+        external = self.bundle.parent.parent / "outside"
+        external.mkdir()
+        sentinel = external / "index.md"
+        sentinel.write_text("Owned external bytes.\n")
+        root_index = self.bundle / "index.md"
+        root_index.write_text("Deliberate drift must survive failed generation.\n")
+        before = {file: file.read_bytes() for file in self.bundle.rglob("index.md")}
+        intake_index = self.bundle.parent / "sources/evaluate/index.md"
+        before[intake_index] = intake_index.read_bytes()
+        cases = ((self.bundle / "external", external),
+                 (self.bundle / "references/internal", self.bundle / "references/ingest"),
+                 (self.bundle / "references/upstream-code/index.md", sentinel),
+                 (intake_index, sentinel),
+                 (self.bundle / "dangling", external / "missing"))
+        for link, destination in cases:
+            with self.subTest(link=link):
+                saved = link.read_bytes() if link.is_file() else None
+                if link.exists():
+                    link.unlink()
+                link.symlink_to(destination, target_is_directory=destination.is_dir())
+                for mode in ("--write", "--check"):
+                    result = subprocess.run([sys.executable, "-B", str(generator), str(self.bundle), mode],
+                                            capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                    self.assertIn("symlink in governed scope", result.stdout)
+                    self.assertNotIn("WROTE", result.stdout)
+                    self.assertEqual(sentinel.read_text(), "Owned external bytes.\n")
+                    for file, raw in before.items():
+                        if file != link:
+                            self.assertEqual(file.read_bytes(), raw)
+                result = self.run_checker()
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn("symlink in governed scope", result.stdout)
+                link.unlink()
+                if saved is not None:
+                    link.write_bytes(saved)
+
+    def test_generator_rejects_symlinked_intake_parent(self):
+        generator = BUNDLE / "references/generators/generate_indexes.py"
+        sources = self.bundle.parent / "sources"
+        outside = self.bundle.parent.parent / "moved-sources"
+        sources.rename(outside)
+        sources.symlink_to(outside, target_is_directory=True)
+        before = {file: file.read_bytes() for file in self.bundle.rglob("index.md")}
+        result = subprocess.run([sys.executable, "-B", str(generator), str(self.bundle), "--write"],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("symlink in governed scope", result.stdout)
+        for file, raw in before.items():
+            self.assertEqual(file.read_bytes(), raw)
+
+    def test_titled_link_negative_controls_reach_full_checker(self):
+        file = self.bundle / "governance.md"
+        original = file.read_text()
+        for link in ('[policy](governance.md "Policy")', '[policy](/missing.md "Policy")',
+                     '[policy][ref]\n\n[ref]: /missing.md "Policy"'):
+            with self.subTest(link=link):
+                file.write_text(original + "\n" + link + "\n")
+                result = self.run_checker()
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertNotIn("derived index drift", result.stdout)
     def test_body_fidelity_is_still_enforced(self):
         file = self.bundle.parent / "sources/evaluate/okf-spec.md"
         file.write_bytes(file.read_bytes() + b"\nChanged imported content.\n")

@@ -4,7 +4,7 @@ title: Bundle document formatting
 description: This framework defines local OKF metadata, provenance, navigation, and history conventions.
 tags: [governance, formatting]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T01:20:34Z }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -107,6 +107,9 @@ Additional leading labels require human acceptance through a PR. Preserve factua
 separate validation runs; concept bodies hold current knowledge, and decisions hold material rationale.
 
 ## Identify the producing harness and model
+
+Set `generated.at` to the last meaningful content change, preserving historical verification and acceptance
+events when correcting generation metadata.
 
 Write `generated` as an inline mapping, using the house actor form `<harness_agent>/<Model Name>` and an ISO
 8601 datetime with an explicit UTC offset. Use the actual producing harness and model. A CLI version or document

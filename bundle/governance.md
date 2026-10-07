@@ -4,7 +4,7 @@ title: Renovate-config operating contract
 description: This contract defines the exemplar purpose, authority, knowledge boundaries, and agent and code responsibilities.
 tags: [governance]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T17:39:21-04:00 }
 sources:
   - id: okf-spec
     resource: ../sources/evaluate/okf-spec.md

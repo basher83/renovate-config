@@ -4,7 +4,7 @@ title: Repository enforcement
 description: This contract defines agent and code ownership, mise interfaces, lifecycle boundaries, and enforcement coverage.
 status: draft
 tags: [governance, enforcement]
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T17:39:21-04:00 }
 sources:
   - id: local-contract
     resource: /governance.md

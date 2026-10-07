@@ -53,7 +53,27 @@ def directories(bundle: Path) -> list[Path]:
                            if path.is_dir() and "__pycache__" not in path.relative_to(bundle).parts)]
 
 
+def governed_scope(bundle: Path) -> Path:
+    """Reject symlinks throughout both governed trees before reading or writing."""
+    # Canonicalize the checkout parent; system aliases such as macOS /var are outside scope.
+    bundle = bundle.parent.resolve() / bundle.name
+    intake = bundle.parent / "sources/evaluate"
+    for root in (bundle, intake):
+        for ancestor in (root, *root.parents):
+            if ancestor.is_symlink():
+                raise ValueError(f"{ancestor}: symlink in governed scope")
+            if ancestor == bundle.parent:
+                break
+        if not root.is_dir():
+            raise ValueError(f"{root}: expected governed directory")
+        for path in root.rglob("*"):
+            if path.is_symlink():
+                raise ValueError(f"{path}: symlink in governed scope")
+    return bundle
+
+
 def render(bundle: Path) -> dict[Path, str]:
+    bundle = governed_scope(bundle)
     if not (bundle / "formatting.md").is_file():
         raise ValueError(f"{bundle}: expected this repository's formatting.md")
     outputs = {}
@@ -109,8 +129,12 @@ def main() -> int:
     args = parser.parse_args()
     try:
         drift = False
-        for index, expected in render(args.bundle.resolve()).items():
-            current = index.read_text(encoding="utf-8") if index.exists() else ""
+        outputs = render(args.bundle)
+        # Read every destination before the first write, including late intake outputs.
+        current_outputs = {index: index.read_text(encoding="utf-8") if index.exists() else ""
+                           for index in outputs}
+        for index, expected in outputs.items():
+            current = current_outputs[index]
             if current == expected:
                 print(f"OK {index.name} in {index.parent.name}")
             elif args.write:

@@ -2,6 +2,18 @@
 
 ## 2026-10-06
 
+* **Update**: Addressed the five findings in the [PR review](https://github.com/basher83/renovate-config/pull/123#issuecomment-6028352636).
+  Generation rejects symlinks throughout both governed trees and reads all destinations before writing;
+  concept and log links use CommonMark parsing, including titles and reference forms. History validates
+  unordered and numbered entry markers for flatness, date grouping, and accepted labels. Usage windows
+  require both endpoints, source counts are nonnegative integers, and expiration timestamps require offsets
+  while allowing future expiration. Root concept generation dates now identify their last persisted content
+  revision; formatting uses this correction's authoring time. Historical verification and acceptance remain intact.
+* **Update**: A separate remediation run passed thirty regressions, including YAML round-trip preservation,
+  code-example link handling, and symlink failures that preserve every earlier index and external sentinel.
+  Original-revision controls reproduced the reported bypasses in owned temporary fixtures. Strict root and
+  preset validation and authored Markdown lint passed; all ten capture pins remained valid.
+  All sixteen configured hooks passed through mise using a fresh task-local cache, with no skips.
 * **Update**: Corrected history validation to process date headings and entries in document order and
   reject entries before the first dated group. The new regression reproduced the gap before the fix;
   this follow-up run passed all nineteen regressions, including that ordering case.

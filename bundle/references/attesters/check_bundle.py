@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script --quiet
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml==6.0.3"]
+# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0"]
 # ///
 """Check this bundle's metadata, source joins, indexes, and pinned capture bytes.
 
@@ -23,6 +23,7 @@ from urllib.parse import unquote, urlsplit
 
 sys.dont_write_bytecode = True
 import yaml
+from markdown_it import MarkdownIt
 
 DEFAULT_BUNDLE = Path(__file__).resolve().parents[2]
 FIELDS = {
@@ -75,11 +76,13 @@ def document(file: Path) -> tuple[dict, str]:
     return fm, text[match.end():]
 
 
-def timestamp(value, now: datetime) -> datetime:
+def timestamp(value, now: datetime, *, allow_future: bool = False) -> datetime:
+    if not isinstance(value, (str, datetime)):
+        raise ValueError("timestamp must be an offset-qualified datetime")
     result = value if isinstance(value, datetime) else datetime.fromisoformat(str(value).replace("Z", "+00:00"))
     if result.tzinfo is None or result.utcoffset() is None:
         raise ValueError("timestamp needs an explicit UTC offset")
-    if result > now:
+    if not allow_future and result > now:
         raise ValueError("timestamp is in the future")
     return result
 
@@ -90,8 +93,8 @@ def actor(value) -> None:
 
 
 def window(value, now: datetime) -> None:
-    if not isinstance(value, dict) or set(value) - {"from", "to"}:
-        raise ValueError("usage_window must use documented from/to fields")
+    if not isinstance(value, dict) or set(value) != {"from", "to"}:
+        raise ValueError("usage_window needs both documented from/to fields")
     parsed = {key: timestamp(item, now) for key, item in value.items()}
     if set(parsed) == {"from", "to"} and parsed["from"] > parsed["to"]:
         raise ValueError("usage_window starts after it ends")
@@ -123,6 +126,23 @@ def local_target(bundle: Path, file: Path, resource: str) -> Path | None:
     return resolved
 
 
+def markdown_links(bundle: Path, file: Path, text: str) -> None:
+    """Validate CommonMark inline, titled, reference, image, and autolink destinations."""
+    for block in MarkdownIt("commonmark").parse(text):
+        for token in block.children or []:
+            resource = token.attrGet("href") if token.type == "link_open" else (
+                token.attrGet("src") if token.type == "image" else None)
+            if resource is None:
+                continue
+            resolved = local_target(bundle, file, resource)
+            fragment = unquote(urlsplit(resource).fragment)
+            if resolved is not None and fragment and resolved.suffix == ".md":
+                headings = re.findall(r"^#{1,6}\s+(.+)$", resolved.read_text(encoding="utf-8"), re.M)
+                anchors = {re.sub(r"[^\w\- ]", "", heading.lower()).replace(" ", "-") for heading in headings}
+                if fragment not in anchors:
+                    raise ValueError(f"broken local anchor: {resource}")
+
+
 def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: datetime) -> None:
     if set(fm) - FIELDS:
         raise ValueError(f"undocumented frontmatter fields: {sorted(set(fm) - FIELDS)}")
@@ -144,6 +164,8 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
         if not isinstance(fm["resource"], str) or not fm["resource"].strip():
             raise ValueError("resource must be a nonempty URL/path")
         local_target(bundle, file, fm["resource"])
+    if "stale_after" in fm:
+        timestamp(fm["stale_after"], now, allow_future=True)
     if "usage_window" in fm:
         window(fm["usage_window"], now)
     generated = fm.get("generated")
@@ -183,8 +205,8 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
         if "last_modified" in source:
             timestamp(source["last_modified"], now)
         if "usage_count" in source and (isinstance(source["usage_count"], bool) or
-                                         not isinstance(source["usage_count"], int)):
-            raise ValueError("source usage_count must be an integer")
+                                         not isinstance(source["usage_count"], int) or source["usage_count"] < 0):
+            raise ValueError("source usage_count must be a nonnegative integer")
         if "usage_window" in source:
             window(source["usage_window"], now)
     clean = re.sub(r"^```.*?^```\s*$", "", body, flags=re.M | re.S)
@@ -194,14 +216,7 @@ def authored_metadata(bundle: Path, file: Path, fm: dict, body: str, now: dateti
         raise ValueError("duplicate footnote definition")
     if ids != uses or set(definitions) != uses:
         raise ValueError(f"source/footnote join mismatch: sources={sorted(ids)}, uses={sorted(uses)}")
-    for resource in re.findall(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)", clean):
-        resolved = local_target(bundle, file, resource)
-        fragment = unquote(urlsplit(resource).fragment)
-        if resolved is not None and fragment and resolved.suffix == ".md":
-            headings = re.findall(r"^#{1,6}\s+(.+)$", resolved.read_text(encoding="utf-8"), re.M)
-            anchors = {re.sub(r"[^\w\- ]", "", heading.lower()).replace(" ", "-") for heading in headings}
-            if fragment not in anchors:
-                raise ValueError(f"broken local anchor: {resource}")
+    markdown_links(bundle, file, body)
 
 
 def history(file: Path, bundle: Path | None = None) -> None:
@@ -217,10 +232,12 @@ def history(file: Path, bundle: Path | None = None) -> None:
             if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", heading):
                 raise ValueError("log date headings must use YYYY-MM-DD")
             dates.append(datetime.strptime(heading, "%Y-%m-%d").date())
-        elif entry := re.match(r"^[*+-] (.+)$", line):
+        elif entry := re.match(r"^([ \t]*)(?:[*+-]|[0-9]+[.)])[ \t]+(.+)$", line):
+            if entry[1]:
+                raise ValueError("log entries must form a flat list")
             if not dates:
                 raise ValueError("log entry appears before a dated group")
-            label = re.match(r"\*\*([^*]+)\*\*", entry[1])
+            label = re.match(r"\*\*([^*]+)\*\*", entry[2])
             if not label or label[1] not in LOG_LABELS:
                 raise ValueError("log entry must begin with an accepted bold label")
             entry_count += 1
@@ -230,10 +247,7 @@ def history(file: Path, bundle: Path | None = None) -> None:
         raise ValueError("log dates must be unique and newest first")
     if not entry_count:
         raise ValueError("log needs prose entries")
-    if re.search(r"^[ \t]+[*+-] |^\d+\. ", text, re.M):
-        raise ValueError("log entries must form a flat list")
-    for resource in re.findall(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)", text):
-        local_target(bundle or file.parent, file, resource)
+    markdown_links(bundle or file.parent, file, text)
 
 
 def main() -> int:

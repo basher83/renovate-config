@@ -4,7 +4,7 @@ title: Preset Management Strategy
 description: This guide applies the operating contract to preset changes, consumer evidence, and validation.
 tags: [presets]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T19:45:48Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T17:39:21-04:00 }
 sources:
   - id: prior-guide
     resource: "https://github.com/basher83/renovate-config/blob/e06380002719988d6654aad293eee9ee295fc0d2/docs/preset-management.md"

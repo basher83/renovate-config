@@ -1,0 +1,57 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "65a5c8ca4072",
+  "session_id": "01a113ef-3a58-7b42-a9a1-551f8d64dec7",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-07T02:53:42.728025Z",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 4,
+  "save_step_count": 2,
+  "files_touched": [],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "f07c2c454d37",
+  "checkpoint_transcript_start": 204,
+  "transcript_lines_at_start": 204,
+  "compact_transcript_start": 25,
+  "token_usage": {
+    "input_tokens": 54252,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 3442304,
+    "output_tokens": 9102,
+    "api_call_count": 27,
+    "subagent_tokens_complete": false
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 806,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "sources/basher83-repo-inventory.csv": 93,
+        "sources/renovate-dependency-review.md": 374,
+        "sources/repo-dependency-map.csv": 95,
+        "sources/shared-agent-policy-repository-review.md": 244
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 806,
+      "agent_lines_removed": 0
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+@superpowers set your goal: review and address all findings from https://github.com/basher83/renovate-config/pull/123#issuecomment-6028352636.

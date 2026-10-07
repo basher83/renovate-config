@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script --quiet
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0"]
+# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0", "mdit-py-plugins==0.5.0"]
 # ///
 """Check this bundle's metadata, source joins, indexes, and pinned capture bytes.
 
@@ -24,8 +24,10 @@ from urllib.parse import unquote, urlsplit
 sys.dont_write_bytecode = True
 import yaml
 from markdown_it import MarkdownIt
+from mdit_py_plugins.footnote import footnote_plugin
 
-DEFAULT_BUNDLE = Path(__file__).resolve().parents[2]
+# Keep a symlinked bundle root visible until scope validation.
+DEFAULT_BUNDLE = Path(__file__).absolute().parents[2]
 FIELDS = {
     "type", "title", "description", "resource", "tags", "status", "sources",
     "usage_window", "generated", "verified", "stale_after",
@@ -127,8 +129,9 @@ def local_target(bundle: Path, file: Path, resource: str) -> Path | None:
 
 
 def markdown_links(bundle: Path, file: Path, text: str) -> None:
-    """Validate CommonMark inline, titled, reference, image, and autolink destinations."""
-    for block in MarkdownIt("commonmark").parse(text):
+    """Validate CommonMark and footnote destinations, including titles and references."""
+    parser = MarkdownIt("commonmark").use(footnote_plugin, inline=False, move_to_end=False)
+    for block in parser.parse(text):
         for token in block.children or []:
             resource = token.attrGet("href") if token.type == "link_open" else (
                 token.attrGet("src") if token.type == "image" else None)
@@ -255,9 +258,12 @@ def main() -> int:
     parser.add_argument("bundle", nargs="?", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--now", help="explicit UTC-offset timestamp for reproducible temporal checks")
     args = parser.parse_args()
-    bundle = args.bundle.resolve()
+    bundle = args.bundle.absolute()
     errors = []
     try:
+        if bundle.is_symlink():
+            raise ValueError(f"{bundle}: symlink in governed scope")
+        bundle = bundle.resolve()
         now = datetime.fromisoformat(args.now.replace("Z", "+00:00")) if args.now else datetime.now(timezone.utc)
         if now.tzinfo is None:
             raise ValueError("--now needs an explicit UTC offset")

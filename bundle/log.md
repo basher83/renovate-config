@@ -2,6 +2,16 @@
 
 ## 2026-10-06
 
+* **Update**: Addressed both findings in the [follow-up review](https://github.com/basher83/renovate-config/pull/123#issuecomment-6029851923).
+  Generator and checker defaults retain the lexical bundle root until symlink validation, so supported mise
+  invocations reject a linked root. Markdown parsing now recognizes labeled footnotes and validates their
+  embedded links without interpreting their definitions as ordinary reference-link destinations.
+* **Update**: This separate follow-up run passed thirty-three regressions. New tests reproduced both failures
+  before the fixes, then exercised actual mise generation, checking, finalization, and lint in owned checkout
+  fixtures. Linked roots leave both checkout copies unchanged; valid plain, titled, and reference links in
+  footnotes pass, while broken paths, relative bundle paths, and broken anchors still fail.
+  All ten capture pins, strict root/preset validation, authored Markdown lint, Python parsing, and full hooks
+  passed. Prior verification, acceptance, and validation receipts remain historical records.
 * **Update**: Addressed the five findings in the [PR review](https://github.com/basher83/renovate-config/pull/123#issuecomment-6028352636).
   Generation rejects symlinks throughout both governed trees and reads all destinations before writing;
   concept and log links use CommonMark parsing, including titles and reference forms. History validates

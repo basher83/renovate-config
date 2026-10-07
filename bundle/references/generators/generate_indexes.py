@@ -19,7 +19,8 @@ from pathlib import Path
 
 import yaml
 
-DEFAULT_BUNDLE = Path(__file__).resolve().parents[2]
+# Keep a symlinked bundle root visible until scope validation.
+DEFAULT_BUNDLE = Path(__file__).absolute().parents[2]
 TOOLING = {
     "attesters": "Deterministic bundle checks",
     "generators": "Derived index generation and drift checks",

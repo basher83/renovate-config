@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script --quiet
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0"]
+# dependencies = ["pyyaml==6.0.3", "markdown-it-py==4.0.0", "mdit-py-plugins==0.5.0"]
 # ///
 """Regression checks for verification history, source separation, and capture fidelity.
 
@@ -11,6 +11,8 @@ Run with the same compatible environment as check_bundle.py.
 
 import copy
 import importlib.util
+import os
+import re
 import shutil
 import subprocess
 import sys
@@ -218,14 +220,79 @@ class CaptureHeaderTests(unittest.TestCase):
         root.mkdir()
         self.bundle = root / "bundle"
         shutil.copytree(BUNDLE, self.bundle)
-        for name in ("AGENTS.md", "README.md"):
+        for name in ("AGENTS.md", "README.md", "mise.toml", ".rumdl.toml"):
             shutil.copyfile(BUNDLE.parent / name, root / name)
         shutil.copytree(BUNDLE.parent / ".github", root / ".github")
         shutil.copytree(BUNDLE.parent / "sources", root / "sources")
+        for name in ("examples", "presets", "docs"):
+            shutil.copytree(BUNDLE.parent / name, root / name)
 
     def run_checker(self):
         return subprocess.run([sys.executable, "-B", str(CHECKER), str(self.bundle),
                                "--now", NOW.isoformat()], capture_output=True, text=True)
+
+    def run_mise(self, task):
+        root = self.bundle.parent
+        env = os.environ.copy()
+        # Trust only the owned fixture for this subprocess; do not persist trust settings.
+        env["MISE_TRUSTED_CONFIG_PATHS"] = str(root.resolve())
+        return subprocess.run(["mise", "run", task], cwd=root, env=env,
+                              capture_output=True, text=True, timeout=60)
+
+    def test_default_mise_rejects_symlinked_bundle_root_without_writes(self):
+        root = self.bundle.parent
+        other = root.parent / "other-checkout"
+        shutil.copytree(root, other)
+        original_bundle = root / "original-bundle"
+        self.bundle.rename(original_bundle)
+        self.bundle.symlink_to(other / "bundle", target_is_directory=True)
+        sentinel = other / "bundle/index.md"
+        sentinel.write_text("Other checkout's index must remain unchanged.\n")
+        before = {file: file.read_bytes() for directory in (original_bundle, root / "sources", other)
+                  for file in directory.rglob("*") if file.is_file()}
+        for task in ("bundle:generate", "bundle:check", "bundle:finalize"):
+            with self.subTest(task=task):
+                result = self.run_mise(task)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("symlink in governed scope", result.stdout + result.stderr)
+                self.assertNotIn("WROTE", result.stdout + result.stderr)
+                for file, raw in before.items():
+                    self.assertEqual(file.read_bytes(), raw, str(file))
+        for tool in ("attesters/check_bundle.py", "generators/generate_indexes.py"):
+            result = subprocess.run([sys.executable, "-B", str(original_bundle / "references" / tool),
+                                     str(self.bundle)], capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("symlink in governed scope", result.stdout)
+
+    def test_default_mise_accepts_links_in_provenance_footnotes(self):
+        file = self.bundle / "governance.md"
+        original = file.read_text()
+        for definition in (
+            '[^exemplar-intent]: [record](../sources/evaluate/2026-10-06-exemplar-intent.md)',
+            '[^exemplar-intent]: [record](../sources/evaluate/2026-10-06-exemplar-intent.md "Record")',
+            '[^exemplar-intent]:\n    [record][evidence]\n\n'
+            '[evidence]: ../sources/evaluate/2026-10-06-exemplar-intent.md "Record"',
+        ):
+            with self.subTest(definition=definition):
+                file.write_text(re.sub(r"^\[\^exemplar-intent\]:.*$", definition, original, flags=re.M))
+                for task in ("bundle:check", "bundle:finalize", "bundle:lint"):
+                    result = self.run_mise(task)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_provenance_footnote_links_still_enforce_paths_and_anchors(self):
+        file = self.bundle / "governance.md"
+        original = file.read_text()
+        for definition, error in (
+            ('[^exemplar-intent]: [record](governance.md "Record")', "bundle-absolute"),
+            ('[^exemplar-intent]: [record](/missing.md "Record")', "inside this repository"),
+            ('[^exemplar-intent]: [record][evidence]\n\n[evidence]: /missing.md', "inside this repository"),
+            ('[^exemplar-intent]: [record](/governance.md#missing "Record")', "broken local anchor"),
+        ):
+            with self.subTest(definition=definition):
+                file.write_text(re.sub(r"^\[\^exemplar-intent\]:.*$", definition, original, flags=re.M))
+                result = self.run_mise("bundle:check")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(error, result.stdout)
 
     def test_original_headers_and_raw_snapshots_pass(self):
         result = self.run_checker()

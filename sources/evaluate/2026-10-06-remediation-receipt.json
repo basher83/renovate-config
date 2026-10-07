@@ -1,0 +1,42 @@
+{
+  "fixture": "/var/folders/6w/pyhtlzyx03zflfvnnt1wymqh0000gn/T/renovate-123-boundary-2szc94qn/repository",
+  "capture_count": 10,
+  "capture_bytes_unchanged": true,
+  "full_pipeline_initial_exit": 0,
+  "generation_stops_attempt": true,
+  "generated_diff": [
+    "bundle/index.md"
+  ],
+  "retry_exit": 0,
+  "idempotent": true,
+  "checked_at": "2026-10-06T20:06:32.588263+00:00",
+  "starting_head": "952677eca3aaee918c27c7b0c9dc77b185827a62",
+  "capture_hashes": {
+    "sources/evaluate/agent-working-policy-draft.md": "888dd6429834693dd7fb96b7842aebea66bca07c66b4d7d3c97bbb8cc728b676",
+    "sources/evaluate/okf-spec.md": "973f6f9e03e0faa4a9b6a92b81857703524d9d7426f242ad9cb0564a41c6284e",
+    "sources/evaluate/shared-agent-policy-repository-review.md": "eb8577875711ed49913f903ba535b25cff5e3b89cbcbb3bff4d26ed7512d4995",
+    "sources/evaluate/greenfield-framework.md": "7aed48800e0a8c3a7d17f846e9919a46aeb6a1cc817a26a7d3b3d8546298d268",
+    "sources/evaluate/greenfield-lifecycle-and-revision.md": "0d34c130a9f244cf7cc1993a194011ab2b042cf92fa14f4c7db39af83ba19f0c",
+    "sources/evaluate/greenfield-evidence-boundary.md": "af991166fb34531925fd51552055d351b220d3e277030400db389dbdf922c5d4",
+    "bundle/references/upstream-code/check_bundle.py.txt": "0b93a347468b5ff2561a742f2b240502f2763ccf742709b47108041f0d19790c",
+    "bundle/references/upstream-code/generate_indexes.py.txt": "5a9a1f2dc819413dded3d2220f9ee6e89ebf73ee3b04dc0317d40a3e74d1af43",
+    "bundle/references/upstream-code/ingest_agentsview_insight.py.txt": "8d1d535dad6562a8ffe35c09eb724ee6eb36648da3174a66bf6fe7a5f7ca260d",
+    "bundle/references/upstream-code/ingest_subagent_review.py.txt": "49052b574b8dc017c51b442a12b0a0e708d04e777b3ffa26d0cd55fadc271bde"
+  },
+  "all_ten_captures_match_starting_head": true,
+  "checks": {
+    "bundle_regressions": 9,
+    "authored_markdown_files": 15,
+    "generated_indexes": 3,
+    "strict_renovate_root_files": 2,
+    "strict_renovate_presets": 10,
+    "python_parse": "passed",
+    "config_syntax": "passed",
+    "full_precommit_pipeline": "passed without bypasses"
+  },
+  "limits": [
+    "Hook exercise ran in an isolated staged repository, without creating a commit.",
+    "Renovate reported unavailable optional RE2 and used its RegExp fallback.",
+    "These checks do not authenticate claims or acceptance."
+  ]
+}

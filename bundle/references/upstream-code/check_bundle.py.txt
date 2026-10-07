@@ -1,0 +1,592 @@
+#!/usr/bin/env -S uv run --script --quiet
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pyyaml"]
+# ///
+"""Attest the learnings OKF bundle: conformance, joins, mirrors, timestamps, vocabulary.
+
+Consolidates the two build-session validators (okf_conformance.py, okf_check.py)
+into the bundle's single deterministic attester.
+
+Usage:
+    uv run --script references/attesters/check_bundle.py
+    uv run --script check_bundle.py /path/to/learnings   # explicit bundle root
+
+When to use: before any commit touching the bundle, after remediation rounds,
+and as the machine gate behind a review pass. When NOT to use: this is not a
+general OKF validator — it encodes this bundle's contract (framework.md) on
+top of OKF v0.2, including bundle-specific leniencies listed below.
+
+Checks (errors fail the run with exit 1; warnings do not):
+- OKF SS11 conformance: parseable YAML frontmatter and non-empty `type` on
+  every non-reserved .md file, recursively. Non-root index.md files must not
+  carry frontmatter at all (SS8/SS12).
+- Concept naming, recursively throughout the tree: LRN-, EVD-, and
+  PAT-prefixed files match <PREFIX>-NNN-<slug>.md with numbers unique per
+  prefix across the whole bundle, and the filename prefix must match the
+  frontmatter type (LRN- one of the three learning kinds, EVD- Evidence,
+  PAT- Pattern).
+- Location of kinds: prefixed concepts must live in their mandated tier
+  directory — PAT- in patterns/, EVD- in references/evidence/, LRN- in
+  references/legacy-learnings/ (the closed pre-decomposition feedstock).
+- Body contracts per type, mandated headings present as an in-order
+  subsequence of the body's H1 headings, with absent headings and
+  out-of-order headings reported as distinct findings: Correction /
+  Confirmed Approach / Open Tension need # Learning, # Why it mattered,
+  # How to apply; Evidence needs # Point, # Evidence, # Analysis, # Reflect,
+  # Link (PEARL); Pattern needs # What it is, # When to reach for it,
+  # When NOT to, # Exemplars, # Related. Framework and Dispatch Record types
+  carry no body contract.
+- Footnote-label <-> sources[].id joins in both directions, fences stripped.
+- index.md structure (SS8) per directory: entry shape, no duplicate or phantom
+  entries, entry set covering the directory's own concept files, and
+  descriptions byte-identical to each linked file's frontmatter description.
+  Every directory holding typed concept files must have an index.md.
+  Directory-level entries are valid in any index; an entry pointing at a
+  concept file beyond the index's own directory draws a warning (operator
+  ruling 2026-08-24: an index lists what its directory contains and should
+  not have to point beyond it). A directory-level entry for a tooling
+  directory must name every .py and .js script present there (operator
+  ruling 2026-09-04: the hand-maintained tooling descriptions drifted twice
+  with no check; extended to .js by operator ruling 2026-09-05, when the
+  extracted workflow script joined the tooling class).
+- log.md structure (SS9), at any depth (scoped directory logs included): no
+  frontmatter, ISO date headings, newest first; log.md is reserved and never
+  needs a type.
+- inbox.md at the bundle root is the reserved rulings-inbox pilot (no
+  frontmatter, no type, no index listing): each bullet under a date heading
+  must open with a bold disposition (unresolved, deferred, applied,
+  rejected), and an applied entry must carry a destination link and a commit
+  hash — violations warn, never fail.
+- Path resolution: markdown links and path-like sources[].resource values must
+  exist on disk; non-path scope descriptors are reported as warnings. A
+  resource containing whitespace is classified as a scope descriptor
+  regardless of slashes (populations like "all dispatches in X/Y" are not
+  paths). A resource or index-entry target that resolves to an existing
+  file of any kind (an archive, a script) is a valid path (operator ruling
+  2026-08-25); missing targets are still reported.
+- Timestamp coherence: generated.at and verified[].at parseable; verified.at
+  never before generated.at; generated.at not in the future;
+  sources[].last_modified a plausible date (valid, not in the future, not
+  before 2000).
+- Banned vocabulary in generated artifacts: "load-bearing" / "load bearing",
+  literal "actually is" / "really is", and "the honest picture" must not
+  appear outside fenced code blocks and blockquote lines (operator ruling
+  2026-08-25: verbatim quotation is evidence; the rule governs generated
+  prose).
+
+Bundle-specific leniencies (deliberate, documented for the operator):
+- Files matching *.brent.md are operator-authored experiments: exempt from the
+  banned-vocabulary check, the body-contract check, and index-listing
+  expectations; all other checks still apply.
+- references/insight-analysis-transcripts/ and references/review-reports/
+  hold verbatim ingested evidence preserved byte-identical; findings there
+  (banned vocabulary, uncited source ids) downgrade to warnings.
+- Files with status: deprecated are historical record retained for
+  trajectory: their findings downgrade to warnings, index listing is
+  optional, and a deprecated file gets a dedicated warning unless its
+  supersession note region (the block between the frontmatter and the first
+  heading) carries a resolving successor link.
+"""
+
+import re
+import sys
+from datetime import date, datetime, timezone
+from pathlib import Path
+
+import yaml
+
+DEFAULT_BUNDLE = Path(__file__).resolve().parent.parent.parent
+RESERVED = {"index.md", "log.md"}
+ROOT_RESERVED = {"inbox.md"}  # reserved operational surfaces at the bundle root only
+# Verbatim evidence: preserved byte-identical, so its findings warn, not fail.
+LENIENT_DIRS = ("references/insight-analysis-transcripts", "references/review-reports")
+EXPERIMENT_SUFFIX = ".brent.md"
+
+BANNED = [
+    (re.compile(r"load[- ]bearing", re.I), '"load-bearing"'),
+    (re.compile(r"\bactually is\b", re.I), '"actually is"'),
+    (re.compile(r"\breally is\b", re.I), '"really is"'),
+    (re.compile(r"\bthe honest picture\b", re.I), '"the honest picture"'),
+]
+
+LRN_HEADINGS = ["# Learning", "# Why it mattered", "# How to apply"]
+BODY_CONTRACTS = {
+    "Correction": LRN_HEADINGS,
+    "Confirmed Approach": LRN_HEADINGS,
+    "Open Tension": LRN_HEADINGS,
+    "Evidence": ["# Point", "# Evidence", "# Analysis", "# Reflect", "# Link"],
+    "Pattern": ["# What it is", "# When to reach for it", "# When NOT to",
+                "# Exemplars", "# Related"],
+}
+NUMBERED_PREFIXES = ("LRN", "EVD", "PAT")
+# Location-of-kind: each prefix's mandated directory, bundle-relative.
+KIND_DIRS = {
+    "LRN": "references/legacy-learnings",
+    "EVD": "references/evidence",
+    "PAT": "patterns",
+}
+PREFIX_TYPES = {
+    "LRN": {"Correction", "Confirmed Approach", "Open Tension"},
+    "EVD": {"Evidence"},
+    "PAT": {"Pattern"},
+}
+
+LINK_RE = re.compile(r"(?<!!)\[([^\]]*)\]\(([^)\s]+)\)")
+FOOT_REF_RE = re.compile(r"\[\^([^\]]+)\](?!:)")
+FOOT_DEF_RE = re.compile(r"^\[\^([^\]]+)\]:", re.M)
+ENTRY_RE = re.compile(r"^\* \[([^\]]+)\]\(([^)]+)\) - (.*)$")
+
+errors: list[str] = []
+warnings: list[str] = []
+
+
+def is_lenient(rel: str) -> bool:
+    """Return True when a bundle-relative path lies inside a verbatim-evidence directory.
+
+    Args:
+        rel: Bundle-relative POSIX path of the file, including its index.md.
+
+    Returns:
+        True when the path is under one of LENIENT_DIRS.
+    """
+    return any(rel.startswith(d + "/") for d in LENIENT_DIRS)
+
+
+def reserved_names(directory: Path, bundle: Path) -> set[str]:
+    """Return the reserved non-concept filenames for a directory.
+
+    Args:
+        directory: The directory whose reserved set is wanted.
+        bundle: Bundle root; root-only reserved files apply there alone.
+
+    Returns:
+        Set of filenames exempt from concept-class checks in that directory.
+    """
+    return RESERVED | (ROOT_RESERVED if directory == bundle else set())
+
+
+def report(msg: str, lenient: bool) -> None:
+    """Record a finding as a warning when lenient, else as an error.
+
+    Args:
+        msg: The finding, prefixed with the offending file's bundle-relative path.
+        lenient: True for files under a verbatim-evidence directory.
+    """
+    (warnings if lenient else errors).append(msg)
+
+
+def split_frontmatter(text: str):
+    """Split a document into (frontmatter, body).
+
+    Args:
+        text: Full file content.
+
+    Returns:
+        Tuple of the parsed frontmatter (dict, None when absent, or the string
+        "UNPARSEABLE" when YAML parsing fails) and the body text.
+    """
+    if not text.startswith("---\n"):
+        return None, text
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        return "UNPARSEABLE", text
+    try:
+        return yaml.safe_load(text[4:end]), text[end + 5:]
+    except yaml.YAMLError:
+        return "UNPARSEABLE", text[end + 5:]
+
+
+def strip_fences(text: str) -> str:
+    """Remove fenced code blocks so example markup inside them is not scanned.
+
+    Args:
+        text: Markdown text.
+
+    Returns:
+        The text with every ```-fenced block deleted.
+    """
+    return re.sub(r"^```.*?^```\s*$", "", text, flags=re.M | re.S)
+
+
+def blank_blockquotes(text: str) -> str:
+    """Blank out blockquote lines so quoted material is not vocabulary-scanned.
+
+    Lines are replaced by empty strings rather than removed, so line numbers
+    reported for the remaining text stay accurate.
+
+    Args:
+        text: Markdown text, fences already stripped.
+
+    Returns:
+        The text with every line whose stripped form starts with ``>`` emptied.
+    """
+    return "\n".join("" if ln.lstrip().startswith(">") else ln
+                     for ln in text.split("\n"))
+
+
+def link_resolves(bundle: Path, origin: Path, target: str) -> bool:
+    """Check whether a markdown link target resolves.
+
+    Args:
+        bundle: Bundle root directory.
+        origin: File the link appears in; relative targets resolve from its parent.
+        target: The link target.
+
+    Returns:
+        True when the target is an external URL, a bare in-page fragment, or
+        an existing file on disk.
+    """
+    if target.startswith(("http://", "https://", "mailto:")):
+        return True
+    t = target.split("#")[0]
+    if not t:
+        return True
+    p = (bundle / t.lstrip("/")) if target.startswith("/") else (origin.parent / t)
+    return p.resolve().exists()
+
+
+def as_datetime(value, where: str, lenient: bool):
+    """Parse a frontmatter timestamp into an aware datetime.
+
+    Args:
+        value: The raw value (str, datetime, or date, depending on YAML parsing).
+        where: Location string for the failure message.
+        lenient: Passed through to report().
+
+    Returns:
+        A timezone-aware datetime, or None when the value is unparseable
+        (reported as a finding).
+    """
+    if isinstance(value, datetime):
+        return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+    if isinstance(value, date):
+        return datetime(value.year, value.month, value.day, tzinfo=timezone.utc)
+    if isinstance(value, str):
+        try:
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+        except ValueError:
+            pass
+    report(f"{where}: unparseable timestamp {value!r}", lenient)
+    return None
+
+
+def verified_entries(fm: dict):
+    """Return the verified events as a list, treating a bare mapping as one entry.
+
+    Args:
+        fm: Parsed frontmatter.
+
+    Returns:
+        List of verification-event mappings (possibly empty).
+    """
+    v = fm.get("verified")
+    if v is None:
+        return []
+    return [v] if isinstance(v, dict) else [e for e in v if isinstance(e, dict)]
+
+
+def main() -> int:
+    """Run every check over the bundle and print findings.
+
+    Returns:
+        Process exit code: 0 when no errors (warnings permitted), 1 otherwise.
+    """
+    bundle = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else DEFAULT_BUNDLE
+    if not (bundle / "framework.md").exists():
+        print(f"FATAL: {bundle} does not look like the learnings bundle (no framework.md)")
+        return 1
+
+    md_files = sorted(p for p in bundle.rglob("*.md"))
+    today = datetime.now(timezone.utc).date()
+    descriptions: dict[str, str] = {}  # bundle-relative path -> frontmatter description
+    statuses: dict[str, str] = {}  # bundle-relative path -> lifecycle status
+    print(f"bundle: {bundle}")
+    print(f"markdown files: {len(md_files)}")
+
+    # Concept numbering, recursively: unique zero-padded numbers per prefix
+    # among canonical files anywhere in the tree.
+    for prefix in NUMBERED_PREFIXES:
+        named = [p for p in md_files
+                 if p.name.startswith(prefix + "-")
+                 and not p.name.endswith(EXPERIMENT_SUFFIX)]
+        nums = []
+        for p in named:
+            m = re.match(prefix + r"-(\d{3})-[a-z0-9-]+\.md$", p.name)
+            if not m:
+                errors.append(f"{p.relative_to(bundle).as_posix()}: "
+                              f"does not match {prefix}-NNN-<slug>.md naming")
+            else:
+                nums.append(int(m.group(1)))
+        dupes = sorted({n for n in nums if nums.count(n) > 1})
+        if dupes:
+            errors.append(f"duplicate {prefix} numbers: {dupes}")
+
+    for f in md_files:
+        rel = f.relative_to(bundle).as_posix()
+        lenient = is_lenient(rel)
+        text = f.read_text(encoding="utf-8")
+        fm, body = split_frontmatter(text)
+        deprecated = isinstance(fm, dict) and fm.get("status") == "deprecated"
+        if deprecated:
+            lenient = True  # deprecated files are historical record: findings warn
+        scannable = strip_fences(text)
+
+        # --- SS11 conformance ---
+        if fm == "UNPARSEABLE":
+            report(f"{rel}: unparseable YAML frontmatter (SS11.1)", lenient)
+            fm = None
+        if f.name == "log.md":
+            if fm is not None:
+                report(f"{rel}: log.md must not carry frontmatter", lenient)
+        elif f.name == "inbox.md" and f.parent == bundle:
+            if fm is not None:
+                report(f"{rel}: inbox.md must not carry frontmatter", lenient)
+        elif f.name == "index.md":
+            is_root = f.parent == bundle
+            if is_root:
+                if fm != {"okf_version": "0.2"}:
+                    report(f"{rel}: root index frontmatter {fm!r} != {{'okf_version': '0.2'}}", lenient)
+            elif fm is not None:
+                # SS8/SS12 permit frontmatter only on a bundle-root index.
+                report(f"{rel}: non-root index.md must not carry frontmatter (SS8)", lenient)
+        else:
+            if not isinstance(fm, dict):
+                report(f"{rel}: missing frontmatter block (SS11.1)", lenient)
+                fm = {}
+            if not str(fm.get("type") or "").strip():
+                report(f"{rel}: missing or empty type (SS11.2)", lenient)
+            descriptions[rel] = fm.get("description", "")
+            statuses[rel] = str(fm.get("status") or "")
+
+        fmd = fm if isinstance(fm, dict) else {}
+
+        # --- footnote <-> sources joins, both directions ---
+        if f.name not in reserved_names(f.parent, bundle):
+            scannable_body = strip_fences(body)
+
+            # --- body contract per type ---
+            contract = BODY_CONTRACTS.get(str(fmd.get("type") or ""))
+            if contract and not f.name.endswith(EXPERIMENT_SUFFIX):
+                heads = [h.strip() for h in
+                         re.findall(r"^# .*$", scannable_body, re.M)]
+                absent = [want for want in contract if want not in heads]
+                if absent:
+                    report(f"{rel}: body headings absent for type "
+                           f"{fmd.get('type')}: {absent}", lenient)
+                present = [want for want in contract if want in heads]
+                found_order = sorted(present, key=heads.index)
+                if present != found_order:
+                    report(f"{rel}: body headings out of order for type "
+                           f"{fmd.get('type')}: expected {present}, found {found_order}",
+                           lenient)
+
+            # --- filename prefix must match frontmatter type and mandated directory ---
+            for prefix, allowed in PREFIX_TYPES.items():
+                if f.name.startswith(prefix + "-"):
+                    t = str(fmd.get("type") or "")
+                    if t not in allowed:
+                        report(f"{rel}: filename prefix {prefix}- requires type in "
+                               f"{sorted(allowed)}, found {t!r}", lenient)
+                    want_dir = KIND_DIRS[prefix]
+                    have_dir = f.parent.relative_to(bundle).as_posix()
+                    if have_dir != want_dir:
+                        report(f"{rel}: {prefix}- concepts live in {want_dir}/, "
+                               f"found in {have_dir or '.'}/", lenient)
+
+            # --- deprecated files must point at a successor in the supersession note ---
+            if deprecated:
+                first_head = re.search(r"^#{1,6} ", body, re.M)
+                note = body[:first_head.start()] if first_head else body
+                if not any(link_resolves(bundle, f, t)
+                           for _, t in LINK_RE.findall(strip_fences(note))):
+                    warnings.append(f"{rel}: deprecated but its supersession note (before "
+                                    f"the first heading) has no resolving successor link")
+
+            srcs = [s for s in (fmd.get("sources") or []) if isinstance(s, dict)]
+            ids = [s.get("id") for s in srcs]
+            if len(ids) != len(set(ids)):
+                report(f"{rel}: duplicate sources ids {ids}", lenient)
+            idset = {i for i in ids if i}
+            refs = set(FOOT_REF_RE.findall(scannable_body))
+            defs = set(FOOT_DEF_RE.findall(scannable_body))
+            if refs != defs:
+                report(f"{rel}: footnote refs {sorted(refs)} != definitions {sorted(defs)}", lenient)
+            if not refs <= idset:
+                report(f"{rel}: footnotes without a matching sources[].id: {sorted(refs - idset)}", lenient)
+            if not idset <= refs and (idset or refs):
+                report(f"{rel}: sources ids never cited by a body footnote: {sorted(idset - refs)}", lenient)
+
+            # --- sources[].resource resolution ---
+            for s in srcs:
+                r = s.get("resource", "")
+                if not isinstance(r, str) or r.startswith(("http://", "https://")):
+                    continue
+                # A resource containing whitespace is a scope descriptor
+                # regardless of slashes ("all dispatches in X/Y" is not a path).
+                # Any target that resolves to an existing file, markdown or
+                # not (an archive, a script), is a valid path (operator ruling
+                # 2026-08-25); missing targets are still reported.
+                p = (bundle / r.lstrip("/")) if r.startswith("/") else (f.parent / r)
+                if not re.search(r"\s", r) and p.resolve().exists():
+                    continue
+                if re.search(r"\s", r) or not ("/" in r or r.endswith(".md")):
+                    warnings.append(f"{rel}: sources[{s.get('id')}] is a scope descriptor, not a path: {r!r}")
+                else:
+                    report(f"{rel}: sources[{s.get('id')}].resource does not resolve: {r!r}", lenient)
+
+            # --- timestamp coherence ---
+            gen = fmd.get("generated")
+            gen_at = None
+            if isinstance(gen, dict):
+                if not str(gen.get("by") or "").strip():
+                    report(f"{rel}: generated.by missing", lenient)
+                if "at" in gen:
+                    gen_at = as_datetime(gen["at"], f"{rel}: generated.at", lenient)
+                    if gen_at and gen_at.date() > today:
+                        report(f"{rel}: generated.at {gen_at.date()} is in the future", lenient)
+            for i, v in enumerate(verified_entries(fmd)):
+                v_at = as_datetime(v.get("at"), f"{rel}: verified[{i}].at", lenient)
+                if v_at and gen_at and v_at < gen_at:
+                    report(f"{rel}: verified[{i}].at {v_at.isoformat()} is before "
+                           f"generated.at {gen_at.isoformat()}", lenient)
+            for s in srcs:
+                lm = s.get("last_modified")
+                if lm is None:
+                    continue
+                lm_dt = as_datetime(lm, f"{rel}: sources[{s.get('id')}].last_modified", lenient)
+                if lm_dt and not (date(2000, 1, 1) <= lm_dt.date() <= today):
+                    report(f"{rel}: sources[{s.get('id')}].last_modified {lm_dt.date()} "
+                           f"is implausible (future or pre-2000)", lenient)
+
+        # --- markdown link resolution ---
+        for label, target in LINK_RE.findall(scannable):
+            if not link_resolves(bundle, f, target):
+                report(f"{rel}: broken link [{label}]({target})", lenient)
+
+        # --- banned vocabulary over generated artifacts ---
+        # Blockquote lines are exempt (operator ruling 2026-08-25): verbatim
+        # quotation is evidence; the vocabulary rule governs generated prose.
+        if not f.name.endswith(EXPERIMENT_SUFFIX):
+            prose = blank_blockquotes(scannable)
+            for pattern, name in BANNED:
+                for m in pattern.finditer(prose):
+                    line = prose[: m.start()].count("\n") + 1
+                    report(f"{rel}: banned phrase {name} near stripped-text line {line}", lenient)
+
+    # --- every concept directory must have an index.md (operator ruling 2026-08-24) ---
+    concept_dirs = {f.parent for f in md_files
+                    if f.name not in reserved_names(f.parent, bundle)}
+    for d in sorted(concept_dirs):
+        if not (d / "index.md").exists():
+            errors.append(f"{d.relative_to(bundle).as_posix() or '.'}: "
+                          f"directory holds concept files but has no index.md")
+
+    # --- per-directory index checks ---
+    for idx in (p for p in md_files if p.name == "index.md"):
+        rel = idx.relative_to(bundle).as_posix()
+        lenient = is_lenient(rel)
+        _, body = split_frontmatter(idx.read_text(encoding="utf-8"))
+        entries: dict[str, tuple[str, str]] = {}
+        for line in body.splitlines():
+            if not line.startswith("*"):
+                continue
+            m = ENTRY_RE.match(line)
+            if not m:
+                report(f"{rel}: malformed entry line: {line!r}", lenient)
+                continue
+            title, target, desc = m.groups()
+            if target in entries:
+                report(f"{rel}: duplicate entry for {target}", lenient)
+            entries[target] = (title, desc)
+            # Deep leaf entries violate the scope ruling; directory-level
+            # entries and pointers to a subdirectory's index.md are valid.
+            if "/" in target and target.endswith(".md") and Path(target).name != "index.md":
+                warnings.append(f"{rel}: entry [{title}]({target}) points at a concept file "
+                                f"beyond its own directory (operator ruling 2026-08-24: "
+                                f"an index lists what its directory contains)")
+        reserved = reserved_names(idx.parent, bundle)
+        siblings = {p.name for p in idx.parent.glob("*.md")} - reserved
+        # Any existing file in the directory is a valid entry target, markdown
+        # or not (operator ruling 2026-08-25); only .md siblings are required
+        # to be listed.
+        existing = {p.name for p in idx.parent.iterdir() if p.is_file()} - reserved
+        # Deprecated concepts may stay listed (e.g. under a Deprecated grouping)
+        # but are not required to be.
+        expected = {n for n in siblings if not n.endswith(EXPERIMENT_SUFFIX)
+                    and statuses.get((idx.parent / n).relative_to(bundle).as_posix()) != "deprecated"}
+        local_targets = {t for t in entries if "/" not in t}
+        if missing := expected - local_targets:
+            report(f"{rel}: on-disk concepts missing from index: {sorted(missing)}", lenient)
+        if phantom := local_targets - existing:
+            report(f"{rel}: index lists non-existent files: {sorted(phantom)}", lenient)
+        for target, (_, desc) in entries.items():
+            tp = (idx.parent / target).resolve()
+            try:
+                want = descriptions.get(tp.relative_to(bundle).as_posix())
+            except ValueError:
+                want = None
+            if want is not None and desc != want:
+                report(f"{rel}: description for {target} not byte-identical to frontmatter"
+                       f"\n  index: {desc!r}\n  fm:    {want!r}", lenient)
+        # --- tooling entries name every script in their directory (operator ruling 2026-09-04) ---
+        # A directory-level entry for a tooling directory is a hand-maintained
+        # derived view with no front-matter to mirror; PAT-001 requires a check.
+        # The rule: the entry's description names every .py and .js script
+        # present (.js added by operator ruling 2026-09-05).
+        for target, (title, desc) in entries.items():
+            if not target.endswith("/"):
+                continue
+            tdir = (idx.parent / target).resolve()
+            if not tdir.is_dir():
+                continue
+            scripts = sorted(p.name for p in tdir.iterdir() if p.suffix in (".py", ".js"))
+            if unnamed := [s for s in scripts if s not in desc]:
+                report(f"{rel}: entry [{title}]({target}) does not name every script in "
+                       f"{target}: {unnamed}", lenient)
+
+    # --- inbox.md rulings-inbox pilot (operator-authorized 2026-08-25): warnings only ---
+    inbox = bundle / "inbox.md"
+    if inbox.exists():
+        dispositions = ("**unresolved**", "**deferred**", "**applied**", "**rejected**")
+        in_dates = False
+        for n, line in enumerate(
+                strip_fences(inbox.read_text(encoding="utf-8")).split("\n"), 1):
+            if line.startswith("## "):
+                in_dates = True
+            elif line.startswith("# "):
+                in_dates = False
+            elif in_dates and line.startswith("* "):
+                if not line[2:].startswith(dispositions):
+                    warnings.append(f"inbox.md: line {n}: entry does not open with a "
+                                    f"disposition (unresolved/deferred/applied/rejected)")
+                elif line[2:].startswith("**applied**") and not (
+                        LINK_RE.search(line) and re.search(r"\b[0-9a-f]{7,}\b", line)):
+                    warnings.append(f"inbox.md: line {n}: applied entry lacks "
+                                    f"destination pointer/commit")
+
+    # --- log.md SS9, at any depth (scoped directory logs included) ---
+    for log in (p for p in md_files if p.name == "log.md"):
+        rel = log.relative_to(bundle).as_posix()
+        log_text = log.read_text(encoding="utf-8")
+        if not log_text.startswith("# "):
+            errors.append(f"{rel}: missing top-level heading")
+        dates = re.findall(r"^## (.+)$", log_text, re.M)
+        for d in dates:
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
+                errors.append(f"{rel}: non-ISO date heading {d!r}")
+        if dates != sorted(dates, reverse=True):
+            errors.append(f"{rel}: date headings not newest-first: {dates}")
+
+    print()
+    for w in warnings:
+        print(f"WARN  {w}")
+    for e in errors:
+        print(f"ERROR {e}")
+    print(f"\nRESULT: {len(errors)} errors, {len(warnings)} warnings")
+    return 1 if errors else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

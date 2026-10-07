@@ -72,3 +72,32 @@ description = "Validate Renovate presets"
 tools = { node = "24.11.1" }
 dir = "presets"
 run = "npx --yes --package renovate -- renovate-config-validator --strict *.json"
+
+# === Bundle finalization: deterministic outputs owned by code ===
+[tasks."bundle:generate"]
+description = "Regenerate all governed directory indexes from document metadata"
+tools = { uv = "0.12.3" }
+run = "uv run --script bundle/references/generators/generate_indexes.py --write"
+
+[tasks."bundle:check"]
+description = "Check metadata, links, generated index drift, and capture fidelity"
+tools = { uv = "0.12.3" }
+run = "uv run --script bundle/references/attesters/check_bundle.py"
+
+[tasks."bundle:test"]
+description = "Run standalone bundle regression tests"
+tools = { uv = "0.12.3" }
+run = "uv run --script bundle/references/attesters/test_check_bundle.py"
+
+[tasks."bundle:finalize"]
+description = "Finalize generated indexes, then validate the bundle before commit"
+run = """
+set -euo pipefail
+mise run bundle:generate
+mise run bundle:check
+"""
+
+[tasks."bundle:lint"]
+description = "Lint all authored governance documents and generated navigation"
+tools = { uv = "0.12.3", rumdl = "0.2.78" }
+run = "uv run --script bundle/references/attesters/lint_bundle.py"

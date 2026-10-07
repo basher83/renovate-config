@@ -1,0 +1,193 @@
+#!/usr/bin/env -S uv run --script --quiet
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Transform a Claude Code subagent transcript into a verbatim Review Report concept.
+
+Usage:
+    ./ingest_subagent_review.py agent-<id>.jsonl --author "claude_agent/Opus 5" \
+        --title "Cold review of the external capture ingest phase card, first pass" \
+        --description "FAIL: sixteen blocking findings ..." \
+        --judged-resource ../dispatch-records/2026-09-04-external-capture-ingest-phase-card.md \
+        --judged-title "External capture ingest phase card at commit 49a2b1f" \
+        --judged-author "claude_agent/Fable 5.1" \
+        --slug phase-card-cold-review-first-pass \
+        --out-dir references/review-reports/
+    ./ingest_subagent_review.py agent-<id>.jsonl --author ... --title ... --description ... \
+        --judged-resource ... --judged-title ... --judged-author ... --slug ... --check EXISTING.md
+
+Use this to ingest a cold reviewer's terminal report, dispatched as a Claude Code
+subagent, into references/review-reports/ as verbatim evidence: the body is the
+text blocks of the transcript's last assistant message, byte for byte, with the
+Review Report front-matter prepended. Do not use it to summarize or edit a review,
+on a transcript whose last assistant message is not the terminal report, or to
+copy the transcript itself into the bundle: the transcript stays where the
+harness wrote it and the report cites it by path and sha256.
+
+Args:
+    transcript: path to the subagent transcript (agent-<id>.jsonl).
+
+Options:
+    --author: OKF actor for `generated.by` and the transcript source, for example
+        `claude_agent/Opus 5`. Required.
+    --title: front-matter title; carries no date. Required.
+    --description: one-line front-matter description stating the finding. Required.
+    --judged-resource: bundle-relative path, from references/review-reports/, of the
+        artifact the review judged. Required.
+    --judged-title: title for the judged source; name the commit reviewed. Required.
+    --judged-author: OKF actor that generated the judged artifact. Required.
+    --slug: filename slug; the file is `<generated date>-<slug>.md`. Required.
+    --out-dir: directory to write into.
+    --check: instead of writing, re-run the transform and compare byte for byte
+        with an existing markdown file; exit 1 on mismatch. This is the attestation
+        use: it proves an ingested report still equals its transcript.
+
+Notes:
+    `generated.at` is the last assistant record's `timestamp`, fractional seconds
+    dropped. The transcript source path is written relative to
+    references/review-reports/ so it resolves on the machine that holds the
+    harness store, and its sha256 pins the file wherever it lives. That
+    directory belongs to the canonical checkout, found from this script's own
+    position through git's common directory, never from the working directory,
+    so the emitted path is the same from the main checkout, from any worktree,
+    and from any working directory.
+"""
+import argparse
+import hashlib
+import json
+import os
+import sys
+import subprocess
+from pathlib import Path
+
+
+def canonical_review_reports() -> Path:
+    """Return the review-reports directory of the canonical checkout, located from this script.
+
+    The emitted transcript path is relative to references/review-reports/ of the
+    main checkout, because a worktree sits two directories deeper than the main
+    checkout and a path computed from the worktree's own depth would not resolve
+    from the main checkout. The canonical checkout is the parent of git's common
+    directory, which is the same from the main checkout and from every worktree;
+    the working directory plays no part. Outside a git checkout (a detached copy
+    of the bundle) the script's own location is the anchor, and a note says so.
+
+    Returns:
+        Absolute path of the canonical checkout's references/review-reports/.
+    """
+    here = Path(__file__).resolve()
+    own = here.parent.parent / "review-reports"
+    git = subprocess.run(["git", "-C", str(here.parent), "rev-parse", "--git-common-dir", "--show-toplevel"],
+                         capture_output=True, text=True)
+    if git.returncode != 0:
+        print(f"NOTE: {here.parent} is not inside a git checkout; the transcript path is "
+              f"anchored at this copy's own review-reports/", file=sys.stderr)
+        return own
+    common_dir, toplevel = git.stdout.splitlines()
+    common = Path(common_dir) if Path(common_dir).is_absolute() else here.parent / common_dir
+    return common.resolve().parent / own.relative_to(Path(toplevel).resolve())
+
+
+def last_report(transcript: Path) -> tuple[str, str, str, str]:
+    """Return (body, generated_at, model, agent_id) from the transcript's last assistant text.
+
+    Args:
+        transcript: path to the agent-<id>.jsonl file.
+
+    Returns:
+        The text blocks of the last assistant record joined by one blank line, the
+        record's timestamp truncated to seconds with a Z suffix, the model id the
+        record names, and the agent id.
+
+    Raises:
+        ValueError: if no assistant record with a text block exists.
+    """
+    records = [json.loads(line) for line in transcript.read_text(encoding="utf-8").splitlines() if line.strip()]
+    for rec in reversed(records):
+        if rec.get("type") != "assistant":
+            continue
+        content = (rec.get("message") or {}).get("content") or []
+        texts = [b.get("text") or "" for b in content if isinstance(b, dict) and b.get("type") == "text"]
+        if not texts:
+            continue
+        stamp = rec.get("timestamp") or ""
+        if len(stamp) < 19:
+            raise ValueError(f"assistant record lacks a timestamp: {stamp!r}")
+        return "\n\n".join(texts).strip("\n"), stamp[:19] + "Z", (rec.get("message") or {}).get("model") or "", rec.get("agentId") or ""
+    raise ValueError(f"{transcript}: no assistant record with a text block")
+
+
+def transform(transcript: Path, a: argparse.Namespace) -> tuple[str, str]:
+    """Return (filename, markdown) for a subagent review transcript.
+
+    Args:
+        transcript: path to the agent-<id>.jsonl file.
+        a: parsed arguments carrying author, title, description, judged source fields, and slug.
+
+    Returns:
+        The house-style filename and the full markdown text.
+
+    Raises:
+        ValueError: from last_report when the transcript has no report, or when a title
+            or description contains a colon-space or a leading YAML indicator character.
+    """
+    body, generated_at, model, agent_id = last_report(transcript)
+    for field in ("title", "description", "judged_title"):
+        value = getattr(a, field)
+        if ": " in value or value[:1] in "\"'[{&*!|>%@`#":
+            raise ValueError(f"--{field.replace('_', '-')} would break the YAML plain scalar: {value!r}")
+    sha = hashlib.sha256(transcript.read_bytes()).hexdigest()
+    rel = Path(os.path.relpath(transcript.resolve(), canonical_review_reports())).as_posix()
+    front = f"""---
+type: Review Report
+title: {a.title}
+description: {a.description}
+tags: [learnings, review-report, phase-card, cold-review]
+status: draft
+generated: {{ by: {a.author}, at: {generated_at} }}
+sources:
+  - id: judged
+    resource: {a.judged_resource}
+    title: {a.judged_title}
+    author: {a.judged_author}
+    last_modified: {generated_at[:10]}
+  - id: transcript
+    resource: {rel}
+    title: Subagent transcript {transcript.name}, agent {agent_id}, model {model}, sha256 {sha}; the report is the last assistant text
+    author: {a.author}
+    last_modified: {generated_at[:10]}
+---
+
+"""
+    return f"{generated_at[:10]}-{a.slug}.md", front + body + "\n"
+
+
+def main() -> None:
+    """Parse arguments and write or check the ingested report."""
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    p.add_argument("transcript", type=Path)
+    for opt in ("--author", "--title", "--description", "--judged-resource", "--judged-title", "--judged-author", "--slug"):
+        p.add_argument(opt, required=True)
+    p.add_argument("--out-dir", type=Path)
+    p.add_argument("--check", type=Path)
+    a = p.parse_args()
+    if bool(a.out_dir) == bool(a.check):
+        p.error("give exactly one of --out-dir or --check")
+    name, text = transform(a.transcript, a)
+    if a.check:
+        if a.check.read_text(encoding="utf-8") != text:
+            print(f"MISMATCH: {a.check} differs from a fresh transform of {a.transcript}")
+            sys.exit(1)
+        print(f"OK: {a.check} is byte-identical to the transform of {a.transcript}")
+        return
+    out = a.out_dir / name
+    if out.exists():
+        print(f"REFUSED: {out} already exists; use --check to compare, or remove it deliberately")
+        sys.exit(1)
+    out.write_text(text, encoding="utf-8")
+    print(f"wrote {out}")
+
+
+if __name__ == "__main__":
+    main()

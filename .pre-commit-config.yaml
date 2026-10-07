@@ -1,6 +1,24 @@
 minimum_prek_version: "0.2.0"
 
 repos:
+  - repo: local
+    hooks:
+      - id: bundle-finalize
+        name: Finalize governed bundle indexes through mise
+        entry: mise run bundle:finalize
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      - id: bundle-lint
+        name: Lint authored knowledge through mise
+        entry: mise run bundle:lint
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
   - repo: https://github.com/renovatebot/pre-commit-hooks
     rev: 42.19.3
     hooks:
@@ -10,11 +28,15 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
+      # Imported captures retain their pinned bytes; other checks still apply.
       - id: trailing-whitespace
+        exclude: ^(sources/evaluate/(agent-working-policy-draft|okf-spec|shared-agent-policy-repository-review|greenfield-framework|greenfield-lifecycle-and-revision|greenfield-evidence-boundary)\.md|bundle/references/upstream-code/(check_bundle|generate_indexes|ingest_agentsview_insight|ingest_subagent_review)\.py\.txt)$
       - id: end-of-file-fixer
+        exclude: ^(sources/evaluate/(agent-working-policy-draft|okf-spec|shared-agent-policy-repository-review|greenfield-framework|greenfield-lifecycle-and-revision|greenfield-evidence-boundary)\.md|bundle/references/upstream-code/(check_bundle|generate_indexes|ingest_agentsview_insight|ingest_subagent_review)\.py\.txt)$
       - id: check-yaml
       - id: check-added-large-files
       - id: check-shebang-scripts-are-executable
+        exclude: ^bundle/references/upstream-code/(check_bundle|generate_indexes|ingest_agentsview_insight|ingest_subagent_review)\.py\.txt$
       - id: detect-private-key
         exclude: ^docs/official-docs/
       - id: detect-aws-credentials
@@ -29,5 +51,5 @@ repos:
     rev: v0.0.166 # Use the latest release tag
     hooks:
       - id: rumdl
-        # Exclude Renovate reference docs and Claude agent configs with YAML frontmatter
-        exclude: ^(docs/official-docs/|\.claude/agents/)
+        # Governed Markdown is checked by bundle-lint; captures retain original bodies.
+        exclude: ^(docs/official-docs/|\.claude/agents/|bundle/|sources/evaluate/|AGENTS\.md$|CLAUDE\.md$|\.github/)

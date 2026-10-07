@@ -1,0 +1,143 @@
+#!/usr/bin/env -S uv run --script --quiet
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Transform an agentsview Agent Analysis Insight HTML export into a house-style transcript concept.
+
+Usage:
+    ./ingest_agentsview_insight.py EXPORT.html --author "codex_agent/GPT 5.6 Sol" \
+        --insight-url "https://brents-mac-studio.tailfb3ea.ts.net/recall?tab=generated&insight=13" \
+        --out-dir references/insight-analysis-transcripts/
+    ./ingest_agentsview_insight.py EXPORT.html --author ... --insight-url ... --check EXISTING.md
+
+Use this for the ingest step of the bundle's ingest -> Evidence -> Pattern pipeline:
+it mirrors the export verbatim into references/ with the transcript-kind frontmatter.
+Do not use it to decompose, summarize, or edit the transcript, and do not use it on
+anything other than an agentsview insight export (it anchors on the export's
+<article class="content"> element and header chips).
+
+Args:
+    export: path to the agentsview HTML export.
+
+Options:
+    --author: OKF actor for `generated.by` and the transcript source (for example
+        `codex_agent/GPT 5.6 Sol`). Required.
+    --insight-url: URL of the insight on the agentsview instance. Required.
+    --description: one-line frontmatter description. Optional; defaults to the
+        first sentence of the export body.
+    --out-dir: directory to write `<generated-at>-agent-analysis-insight.md` into.
+    --check: instead of writing, re-run the transform and compare byte for byte
+        with an existing markdown file; exit 1 on mismatch. This is the attestation
+        use: it proves a mirrored transcript still equals its source export.
+
+Notes:
+    The export's generation-time chip carries no zone; it is read as UTC, which
+    matched the download time of the first export ingested this way (2026-08-24).
+    Output body: <pre><code> blocks become ```text fences, <code> becomes backticks,
+    HTML entities are unescaped, nothing else is altered. The trailing
+    "Exported from agentsview" footer line is kept, matching the earlier transcripts.
+"""
+import argparse
+import html
+import re
+import sys
+from pathlib import Path
+
+
+def transform(src: str, author: str, insight_url: str, description: str | None) -> tuple[str, str]:
+    """Return (filename, markdown) for an agentsview insight export.
+
+    Args:
+        src: raw HTML of the export.
+        author: OKF actor string for generated.by and the transcript source author.
+        insight_url: URL of the insight on the agentsview instance.
+        description: Optional. Frontmatter description; first body sentence if None.
+
+    Returns:
+        The house-style filename and the full markdown text.
+
+    Raises:
+        ValueError: if the export lacks the content article or the timestamp chip.
+    """
+    m = re.search(r'<article class="content">(.*?)</article>', src, re.S)
+    if not m:
+        raise ValueError("no <article class=\"content\"> element; not an agentsview insight export")
+    chips = re.findall(r'<span class="chip">([^<]*)</span>', src)
+    stamps = [c for c in chips if re.fullmatch(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}", c)]
+    if len(stamps) != 1:
+        raise ValueError(f"expected exactly one 'YYYY-MM-DD HH:MM:SS' chip, found {stamps}")
+    generated_at = stamps[0].replace(" ", "T") + "Z"
+    body = m.group(1)
+    body = re.sub(
+        r"<pre><code>(.*?)</code></pre>",
+        lambda k: "```text\n" + html.unescape(k.group(1)).rstrip("\n") + "\n```",
+        body,
+        flags=re.S,
+    )
+    body = re.sub(r"<code>(.*?)</code>", lambda k: "`" + html.unescape(k.group(1)) + "`", body, flags=re.S)
+    body = html.unescape(body).strip("\n")
+    leftover = re.sub(r"```.*?```", "", body, flags=re.S)
+    if re.search(r"</?[a-zA-Z][^>]*>", leftover):
+        raise ValueError("unhandled HTML tag remains in body; extend the transform before ingesting")
+    if description is None:
+        description = re.split(r"(?<=[.!?])\s", body.strip(), maxsplit=1)[0].strip()
+    front = f"""---
+type: Agent Analysis Insight
+title: Agent Analysis
+description: {description}
+tags: [greenfield, analysis]
+generated: {{ by: {author}, at: {generated_at} }}
+status: draft
+sources:
+  - id: greenfield-plugin
+    resource: https://github.com/prime-radiant-inc/greenfield
+    title: Reverse engineer clean behavioral specs from any codebase.
+    author: human:obra
+  - id: agentsview-platform
+    resource: https://github.com/kenn-io/agentsview
+    title: Local-first session search, analytics, insights, and token use statistics for coding agents.
+    author: human:kenn-io
+  - id: brents-agentsview-platform
+    resource: {insight_url}
+    title: Agent Analysis Insight transcript
+    author: {author}
+    last_modified: {generated_at[:10]}
+---
+
+# Agent Analysis Insight
+
+"""
+    return f"{generated_at}-agent-analysis-insight.md", front + body + "\n\nExported from agentsview\n"
+
+
+def main() -> None:
+    """Parse arguments and write or check the transformed transcript."""
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    p.add_argument("export", type=Path)
+    p.add_argument("--author", required=True)
+    p.add_argument("--insight-url", required=True)
+    p.add_argument("--description")
+    p.add_argument("--out-dir", type=Path)
+    p.add_argument("--check", type=Path)
+    a = p.parse_args()
+    if bool(a.out_dir) == bool(a.check):
+        p.error("give exactly one of --out-dir or --check")
+    name, text = transform(a.export.read_text(encoding="utf-8"), a.author, a.insight_url, a.description)
+    if a.check:
+        existing = a.check.read_text(encoding="utf-8")
+        if existing != text:
+            print(f"MISMATCH: {a.check} differs from a fresh transform of {a.export}")
+            sys.exit(1)
+        print(f"OK: {a.check} is byte-identical to the transform of {a.export}")
+        return
+    out = a.out_dir / name
+    if out.exists():
+        print(f"REFUSED: {out} already exists; use --check to compare, or remove it deliberately")
+        sys.exit(1)
+    out.write_text(text, encoding="utf-8")
+    print(f"wrote {out}")
+
+
+if __name__ == "__main__":
+    main()

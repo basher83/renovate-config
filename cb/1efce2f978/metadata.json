@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "cb1efce2f978",
+  "strategy": "manual-commit",
+  "branch": "bb/basher83-renovate-config-122-decide-approval-pol-thr_2gvd7sszwk",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "bundle/decisions.md",
+    "bundle/enforcement.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/log.md",
+    "bundle/preset-management.md",
+    "bundle/references/attesters/check_bundle.py",
+    "bundle/references/attesters/lint_bundle.py",
+    "bundle/references/attesters/test_check_bundle.py",
+    "bundle/references/generators/generate_indexes.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/cb/1efce2f978/0/metadata.json",
+      "transcript": "/cb/1efce2f978/0/full.jsonl",
+      "compact_transcript": "/cb/1efce2f978/0/transcript.jsonl",
+      "content_hash": "/cb/1efce2f978/0/content_hash.txt",
+      "prompt": "/cb/1efce2f978/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 114183,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1744768,
+    "output_tokens": 12506,
+    "api_call_count": 22
+  }
+}

@@ -1,5 +1,17 @@
 # Repository knowledge change log
 
+## 2026-10-07
+
+* **Update**: Recorded the operator's repository-bound reference ruling in
+  [D014](/decisions.md#2026-10-07--d014-bound-local-references-to-this-repository).
+  Standalone bundle distribution is not required. Local references may leave `bundle/` but stay inside this
+  repository; other checkouts use Git-hosted URLs. The existing checker already enforces local containment.
+* **Update**: Finalized and checked the isolated D014 candidate through mise. All 33 bundle regression tests,
+  authored and generated Markdown lint, strict validation of two root and ten preset configs, all 16
+  configured hooks, and receipt JSON parsing passed. Ten pinned captures remain unchanged. The initial hook
+  cache could not run Renovate; a fresh task-local cache passed. Review and operator merge acceptance remain
+  pending; passing checks do not accept this revision.
+
 ## 2026-10-06
 
 * **Update**: Addressed both findings in the [follow-up review](https://github.com/basher83/renovate-config/pull/123#issuecomment-6029851923).

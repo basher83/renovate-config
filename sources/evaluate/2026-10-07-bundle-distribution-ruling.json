@@ -1,0 +1,17 @@
+{
+  "captured_at": "2026-10-08T03:26:21.267748+00:00",
+  "session_id": "01a1181a-7f5f-7153-b479-cf8c12409702",
+  "method": "Exact user messages extracted from entire session current --transcript",
+  "operator_messages": [
+    {
+      "timestamp": "2026-10-08T03:21:58.211Z",
+      "text": "the decision is more narrow than that. its not \"**what must accompany `bundle/` when it is distributed**\", its \"must this bundle be distributed beyond this repo?\""
+    },
+    {
+      "timestamp": "2026-10-08T03:25:13.707Z",
+      "text": "exactly, an exemplar isn't merly a template its something to point to as known good. so, I say no this bundle does not need to be distrbuted therefore it may reference outside of the boundle but that needs to be bound to the repo of paths. I am not ok with pointers accross the file system that just breaks at a higher level. those need to be git url refs at best"
+    }
+  ],
+  "ruling_summary": "This bundle is a known-good exemplar within its repository, not an independently distributed artifact. Local references may leave bundle/ but must resolve inside this repository. Material in another filesystem checkout must be addressed by a Git-hosted URL, not a filesystem pointer.",
+  "limits": "This records a scoped operator ruling, not a PR acceptance event or human verified marker. No cross-repository policy adoption, dependency-policy selection, commit, or publication is authorized."
+}

@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T17:39:21-04:00 }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:32:20-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -23,6 +23,9 @@ sources:
   - id: local-contract
     resource: /governance.md
     title: Local operating contract
+  - id: distribution-ruling
+    resource: ../sources/evaluate/2026-10-07-bundle-distribution-ruling.json
+    title: Exact operator ruling on distribution and repository path containment
 ---
 
 # Renovate-config prospective decisions
@@ -34,6 +37,27 @@ approval for existing preset rules or turn a journal entry into an acceptance re
 For each material decision, record the question and prior position, outcome, authority, effective scope,
 rationale, evidence, implementation and verification state, and revisit or supersession conditions.
 Keep routine maintenance records proportionate. Preserve prior rationale when superseding an entry.
+
+## 2026-10-07 — D014: Bound local references to this repository
+
+- **Question and prior position:** OKF permits external derivation sources; standalone distribution had not
+  been selected. The operator narrowed the question to whether this bundle needs distribution beyond its repo.
+- **Outcome: operator-selected boundary.** No standalone distribution requirement. Local paths may leave
+  `bundle/` but must resolve within this repository. Material in another checkout uses Git-hosted artifact
+  URLs rather than filesystem pointers.
+- **Authority and date:** Direct operator ruling on 2026-10-07 in session
+  `01a1181a-7f5f-7153-b479-cf8c12409702`; exact messages are preserved in the
+  [ruling receipt](../sources/evaluate/2026-10-07-bundle-distribution-ruling.json).[^distribution-ruling]
+- **Scope and rationale:** Local governance, reference guidance, and agent entry point. An exemplar is a
+  known-good reference, not necessarily a distributed template. Host filesystem dependencies would merely
+  move the portability failure outside the bundle; repository containment provides the intended boundary.
+- **Implementation and verification state:** Guidance is updated locally. Existing resolved-path validation
+  already enforces repository containment, including symlink escapes; no machinery change is needed.
+  Scoped checks verify guidance and the existing boundary, not external URL availability or human verification.
+- **Remaining authority and revisit conditions:** The ruling selects this local boundary; PR preparation is
+  separately authorized. Human acceptance occurs through operator merge of the reviewed PR. Runner-policy
+  selection, consumer edits, and adoption elsewhere remain separate. Revisit if distribution beyond this
+  repository is explicitly selected.
 
 ## 2026-10-06 — D012: Apply reviewed local OKF extensions
 
@@ -299,6 +323,7 @@ identify what must be preserved first; this adoption does not delete either file
 The [local contract](/governance.md) defines the adopted authority and verification boundaries reflected
 in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the metadata style.
 
+[^distribution-ruling]: Exact current-session operator ruling on repository containment and no standalone distribution requirement.
 [^review-verdicts]: Operator PR instructions on descriptions, index coverage, logs, tags, and the linked earlier rules.
 [^exemplar-intent]: Participant-authored summary of operator direction and the selected PR-merge acceptance boundary.
 [^slice-1-scope]: Participant-authored capture of the operator's Slice 1 directions, 2026-10-06.

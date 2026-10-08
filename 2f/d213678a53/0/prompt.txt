@@ -1,0 +1,111 @@
+theres incoming from remote we need to pull those in minding the untracked work
+
+---
+
+cool use $using-entire to review where I left off
+
+---
+
+4 of those items in sources are for renovate style decisions that effect all my repos. those 4 items are the evidence for review and sythnthsis prior to acceptance as a poilicy. so whats the next best step to take moving toards the 4 remaining work items
+
+---
+
+agreed, machinery before evidence of it's use case is the anti pattern here. So lets do it then. evaluate the four sources and draftone policy candidate
+
+---
+
+so we have two gaps to address before the policy candidate?
+
+---
+
+Ok I ran external adversarial review and heres the results: I've read the candidate, the preset it targets, the evidence evaluation, the receipt, and the source dependency review. Here is the review.
+
+# Adversarial review: runner update policy candidate
+
+**Verdict:** the policy itself (option C) is sound and the Renovate mechanics are described correctly. The document's biggest weakness is not in its reasoning but in what it leaves out. It never says the first real runner upgrade, `ubuntu-24.04` to `ubuntu-26.04`, is due within days. Its own six-item evidence gate makes it very likely that upgrade arrives and automerges before the policy can be accepted.
+
+## 1. The deadline is missing, and the evidence gate can't finish in time
+
+The issue #122 text captured in the receipt cites `actions/runner-images#14748`: `ubuntu-latest` moves to 26.04 starting October 19, 2026. The dependency review (`sources/renovate-dependency-review.md:344`) repeats it as "ubuntu 24.04 → 26.04 before Oct 19". The candidate mentions neither, even though it is dated October 7.
+
+That matters for two reasons:
+
+- **The gated case will probably happen first.** Once Renovate's `github-runners` datasource treats 26.04 as stable, `personal-computing` gets a runner bump. Under the current fourth rule (manager-wide automerge for patch, minor and major), it merges on a green `mise run ci`. That is exactly what #122 was opened to prevent, and personal-computing pinned the runner in its PR #35 for this reason.
+- **The best evidence gets used up.** Evidence item 5 asks for a real lookup or hosted observation and says "an unavailable update is a gap." The 26.04 bump is that real update. If it automerges under today's config, you lose the observation the gate needs, and you also lose the case the policy exists for.
+
+The document does offer "an explicit operator exception identifying the unverified boundary," but it never shows that this choice is urgent now. A stronger candidate would put the timing next to the decision. Your real choice is between three paths. You could accept C with an exception covering items 4 and 5 and observe the first real runner PR as the verification. You could run a quick `renovate --dry-run` against personal-computing before October 19. Or you could knowingly let one runner automerge. The document never mentions a consumer-local stopgap, and consumer edits are excluded anyway, so a stopgap would need your explicit say.
+
+## 2. Option C's advantage over B is overstated
+
+The candidate presents C as avoiding "an unverified runner classification," and lists B's cost as "other runner update types retain inherited behavior." The datasource uses Docker versioning, so `24.04` reads as major 24, minor 4. On that reading, every realistic hosted-runner change (Ubuntu LTS to LTS, `windows-2022` to `windows-2025`, `macos-14` to `macos-15`) is a major. I haven't run this, but if it holds, B and C gate the same real updates.
+
+C is still the better rule, because it is robust to classification surprises and costs nothing extra. However, the comparison table makes the trade-off look more consequential than it is. The honest framing is "C equals B in practice, plus insurance." The new grouping, not the gate scope, is what really separates C from #122's example.
+
+## 3. Runner retirement is not treated as a risk
+
+The cost of C is described as "stale runner pins require deliberate maintenance." It is sharper than that. GitHub retires hosted images on a schedule, with brownouts before removal (`ubuntu-20.04` went in 2025). An approval-gated runner bump that nobody approves turns into failing CI on a date GitHub chooses. Today's automerge hides that risk, and C brings it back. The revisit conditions should include "a pending runner approval approaches its image's deprecation date." The cost row should say that gating trades silent drift for a deadline you have to watch.
+
+## 4. "Representative consumer" coverage is thinner than it reads
+
+The dependency review counts 88 runner labels in 28 repos, but those counts come from hypothetical update types. The candidate correctly says floating `ubuntu-latest` isn't extracted, but it never estimates how many of the 88 labels are literal versions that the rule would actually affect. Zammad-MCP is the only override control, and its runner usage isn't captured; the evaluation says it is "not yet a verified runner-update case." So the shared change rests on one base-only consumer with one runner label. That may be enough for this rule, but the document should say so plainly instead of calling it "representative inputs."
+
+## 5. Authority is asserted but not recorded
+
+D005 (`bundle/decisions.md:257`) and `bundle/governance.md:220` both say #122 "remains paused." The candidate calls itself "the runner portion of #122." The evaluation says "the operator authorized evaluation of the four sources and one draft policy candidate," and the uncommitted entry in `bundle/log.md` calls it "authorized evaluation." The only authorization context in the receipt is from an earlier session about a different task (the portfolio research ask). If you gave this authorization in the session that produced the drafts, the receipt doesn't capture it. Under this repo's own rule against manufacturing approval, that gap should be closed by a recorded decision or a receipt line before anything cites "authorized."
+
+## 6. Smaller items
+
+- **Inconsistent contract links.** The frontmatter source `contract` uses `resource: /governance.md`, which is bundle-root syntax, but this file lives in `research/`, outside the bundle. The footnote for the same source uses `../bundle/governance.md`. One of the two is wrong for a non-bundle document; the evaluation record has the same mismatch.
+- **Runner PRs will carry a `security` label.** The labeling rule still matches runner updates under C. That is harmless but slightly misleading, and the implementation should either decide it on purpose or override it.
+- **The decision is buried.** About a third of the text is standing disclaimers ("does not establish," "is not acceptance"). For a decision memo addressed to you, the ask, the recommendation, the deadline and the exception choice should fit on the first screen. Most of the disclaimers already live in the governing contract.
+- **It is a subset of a larger recommendation.** The dependency review's recommendation at line 304 splits the whole preset by dependency type: actions, runners, and action inputs, plus a fix for one sensitive action blocking the entire actions group. The candidate takes only the runner part. That is defensible scoping, but it should say it is a subset so the rest isn't silently dropped.
+
+## What holds up
+
+The mechanics are right. Matching on `matchDepTypes: ["github-runner"]` is the correct boundary. Setting `automerge: false` is necessary, because approval alone would let the existing major-automerge rule merge after approval. The new rule has to come after the group rule and override both `groupName` and `groupSlug`. The document also correctly avoids claiming coverage of `ubuntu-latest`, self-hosted labels or expressions. And it separates the runner question from the action-input question as #122 frames them.
+
+If you want one change before deciding, add a short "Timing" section that names October 19 and asks you to choose between an exception-backed acceptance, a dry run first, or knowingly letting one runner automerge.
+
+---
+
+your comment "but they are inconsistent for ordinary readers" brings up a good point here I think. research/ is likely not the proper placement of this doc as is. it's a reccomendation for approval for me to review for approval, thats a different kind of thing than research. likely why this round sources/evaluate seemed the better home
+
+---
+
+i agree with that, makes sense to me
+
+---
+
+damnit, I just found a problem that effects a lot of stuff here .... and i realize this was not something you did but i'm pointing it out as i just caught it. sources.resource in the bundle frontmatter isn't supposed to point outside the bundle
+
+---
+
+lets double check that, use $opensrc to check the registered okf repo and review the spec on that
+
+---
+
+v0.2 is current. hmm ok so does break against the spec, what about the rulings i made that extended the spec for this repo?
+
+---
+
+ok good that makes it easy then. I just have to rule for this repo and that ruleing is related precisely to distrobution making the decision quite narrow
+
+---
+
+the decision is more narrow than that. its not "**what must accompany `bundle/` when it is distributed**", its "must this bundle be distributed beyond this repo?"
+
+---
+
+exactly, an exemplar isn't merly a template its something to point to as known good. so, I say no this bundle does not need to be distrbuted therefore it may reference outside of the boundle but that needs to be bound to the repo of paths. I am not ok with pointers accross the file system that just breaks at a higher level. those need to be git url refs at best
+
+---
+
+alright we are going to have to break this up a bit here because that decision and the recipt need to go as a pr on thier own to exercise the rules i'm trying to instill here and that i think will actually be the first exercise of it too as the just pr to go through the lifecycle as designed from the last pr that set the stage for this
+
+---
+
+approved
+
+---
+
+there we go, that was nice and easy its merged

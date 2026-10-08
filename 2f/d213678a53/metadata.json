@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "2fd213678a53",
+  "strategy": "manual-commit",
+  "branch": "policy/github-runner-approval",
+  "checkpoints_count": 17,
+  "files_touched": [
+    "AGENTS.md",
+    "bundle/decisions.md",
+    "bundle/formatting.md",
+    "bundle/governance.md",
+    "bundle/log.md",
+    "sources/evaluate/2026-10-07-policy-evidence-evaluation.md",
+    "sources/evaluate/2026-10-07-policy-evidence-receipt.json",
+    "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md",
+    "sources/evaluate/2026-10-07-runner-update-policy-candidate.md",
+    "sources/evaluate/index.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/2f/d213678a53/0/metadata.json",
+      "transcript": "/2f/d213678a53/0/full.jsonl",
+      "compact_transcript": "/2f/d213678a53/0/transcript.jsonl",
+      "content_hash": "/2f/d213678a53/0/content_hash.txt",
+      "prompt": "/2f/d213678a53/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 831083,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 17433344,
+    "output_tokens": 91374,
+    "api_call_count": 156,
+    "subagent_tokens_complete": true
+  }
+}

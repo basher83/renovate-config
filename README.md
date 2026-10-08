@@ -60,7 +60,8 @@ workarounds, PR limits, semantic commits, labels, timezone, and the global prese
 Global presets included by `default.json`:
 
 - `github-actions-security.json` – GitHub Actions security rules with digest pinning,
-  selective automerge, and approval for sensitive updates.
+  selective automerge, approval for sensitive updates, and a separate hosted-runner group requiring
+  dashboard approval and manual merge.
 - `mise.json` – mise-managed development tool updates, grouped and automerged.
 
 Optional presets in [`presets/`](./presets/) are extended per project:
@@ -131,6 +132,7 @@ or proof of safety. Consult matched JSON rules and any applicable decision for t
      - Major library updates.
      - MCP and `zammad-py` majors.
      - Sensitive GitHub Actions minors/majors.
+     - Extracted GitHub-hosted runner updates: dashboard approval, then manual merge.
      - Critical Docker image minors/majors.
    - Either:
      - No `automerge` rule (PR stays open), or

@@ -4,7 +4,7 @@ title: Bundle document formatting
 description: This framework defines local OKF metadata, provenance, navigation, and history conventions.
 tags: [governance, formatting]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:32:20-04:00 }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-08T00:00:10-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -156,8 +156,9 @@ locally. [Sources to evaluate](../sources/evaluate/index.md) provides intake nav
 [capture record](../sources/evaluate/2026-10-06-source-captures.md) identifies their origins, preservation method,
 and historical scope. The operator directions have an authored session record; it is not a verbatim transcript.
 
-Raw captures and authored evidence records await evaluation in `sources/evaluate/`; this document owns local
-formatting rules. Apply the [knowledge layers and evaluation
+Raw captures, authored evidence records, and authored decision proposals await evaluation in `sources/evaluate/`;
+their types and bodies distinguish evidence from a recommendation submitted for operator selection.
+This document owns local formatting rules. Apply the [knowledge layers and evaluation
 criteria](/governance.md#knowledge-layers-and-source-evaluation).
 OKF's optional `references/` convention represents material as first-class bundle concepts; it does not require
 source ingestion into the bundle. Greenfield's evidence-containment rule is not adopted here. Preserve imported bodies

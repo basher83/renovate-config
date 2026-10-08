@@ -1,7 +1,25 @@
 # Repository knowledge change log
 
+## 2026-10-08
+
+* **Update**: Finalized the runner implementation candidate through mise. All 33 bundle regressions,
+  20 authored-document and seven generated-index lint checks, strict validation of two root and ten preset
+  configs, and all 16 hooks passed. The behavior receipt retains 204 actual-input update-type controls,
+  40 fixture comparisons, real runner lookup/grouping, and an explicit approval-disposition control.
+  Imported reports initially failed local prose lint and Git would normalize CSV line endings; the
+  [source capture](../sources/evaluate/2026-10-08-policy-source-capture.json) instead preserves all four inputs
+  byte-for-byte as UTF-8 JSON strings. Exact-input hashes and JSON round trips pass; original operator files
+  remain untouched. Existing hooks and enforcement machinery are unchanged. Publication and acceptance remain pending.
+
 ## 2026-10-07
 
+* **Update**: The operator selected runner option C and authorized implementation preparation in
+  [D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c). Added the final runner-specific
+  preset rule and [runner policy](/github-hosted-runner-policy.md): separate grouping, dashboard approval,
+  and no automerge. The [behavior evaluation](../sources/evaluate/2026-10-08-runner-behavior-evaluation.md)
+  distinguishes fresh consumers, a preserved-input real lookup, and explicit controls. Personal-computing
+  already upgraded through bot-merged PR #39; replay still demonstrates C. Publication and merge acceptance
+  remain pending; action-input policy and consumer edits are separate.
 * **Update**: Recorded the operator's repository-bound reference ruling in
   [D014](/decisions.md#2026-10-07--d014-bound-local-references-to-this-repository).
   Standalone bundle distribution is not required. Local references may leave `bundle/` but stay inside this
@@ -11,6 +29,24 @@
   configured hooks, and receipt JSON parsing passed. Ten pinned captures remain unchanged. The initial hook
   cache could not run Renovate; a fresh task-local cache passed. Review and operator merge acceptance remain
   pending; passing checks do not accept this revision.
+* **Update**: Clarified pending intake for authored decision proposals under
+  [D013](/decisions.md#2026-10-07--d013-place-decision-proposals-in-pending-evaluation).
+  Moved the runner policy candidate from exploratory research to `sources/evaluate/`, keeping its proposal
+  type, draft standing, and supporting evidence distinct. Updated references and entry-point guidance;
+  navigation is finalized through mise. This placement agreement does not select the runner policy.
+* **Update**: Reconciled the supplied adversarial review in the
+  [review record](../sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md).
+  The runner candidate now leads with the policy and evidence-path choices, distinguishes alias migration
+  timing from pinned-runner eligibility, identifies retirement responsibility and single-input coverage,
+  and preserves the wider preset-splitting questions. The receipt now captures current drafting authority;
+  #122 implementation remains paused. No dependency policy, evidence exception, or consumer edit was selected.
+* **Creation**: Evaluated four preserved portfolio sources and drafted one
+  [runner approval policy candidate](../sources/evaluate/2026-10-07-runner-update-policy-candidate.md).
+  The [evaluation](../sources/evaluate/2026-10-07-policy-evidence-evaluation.md) records proposed source roles,
+  conflicting consumer classifications, unavailable original run artifacts, and historical scope.
+  The [receipt](../sources/evaluate/2026-10-07-policy-evidence-receipt.json) retains input hashes, structural
+  checks, issue #122, and three consumer files fetched at immutable revisions. This is authorized evaluation
+  and provisional synthesis, not policy selection, human verification, implementation, or publication.
 
 ## 2026-10-06
 

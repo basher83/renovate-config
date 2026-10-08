@@ -1,0 +1,192 @@
+{
+  "captured_at": "2026-10-07T21:01:27.156596+00:00",
+  "purpose": "Read-only evidence evaluation for a draft runner approval policy; no policy acceptance or implementation.",
+  "repository_head": "e24fc5e3cc71010c2fda084ff300820f4606dd49",
+  "input_sources": {
+    "basher83-repo-inventory.csv": {
+      "path": "sources/basher83-repo-inventory.csv",
+      "sha256": "1c6044c68f33b03014cf133d94cf6f51b1110ac000478b96ec1b8f71b0ea556e"
+    },
+    "renovate-dependency-review.md": {
+      "path": "sources/renovate-dependency-review.md",
+      "sha256": "afa44591cc5f7c8cc89a492bde113e5036c9e1d1b809cfd04d520a4b4ee304a2"
+    },
+    "repo-dependency-map.csv": {
+      "path": "sources/repo-dependency-map.csv",
+      "sha256": "f48c370c6d5d1ab32feaef3e3b2df4335329bbb37e55ac6546f88f56e54418da"
+    },
+    "shared-agent-policy-repository-review.md": {
+      "path": "sources/shared-agent-policy-repository-review.md",
+      "sha256": "c33855ebceb837b6f23d30d2bd76a313419718f6a8b7ca3de0c356f3383c8304"
+    }
+  },
+  "csv_checks": {
+    "inventory_rows": 92,
+    "dependency_rows": 94,
+    "inventory_renovate_counts": {
+      "shared preset": 37,
+      "": 44,
+      "standalone": 11
+    },
+    "dependency_config_classes": {
+      "base": 18,
+      "none": 49,
+      "base+presets": 16,
+      "independent": 11
+    },
+    "dependency_owner_counts": {
+      "basher83": 91,
+      "themothership-work": 3
+    },
+    "inventory_only_personal_repositories": [
+      "claw-code"
+    ],
+    "shared_classification_disagreements": [
+      "personal-learning",
+      "pi-paneworks",
+      "the-agent-toolshed"
+    ],
+    "duplicate_repository_keys": {
+      "inventory": [],
+      "dependencies": []
+    },
+    "malformed_rows": {
+      "inventory": 0,
+      "dependencies": 0
+    }
+  },
+  "raw_review_artifacts_present": {
+    "data": false,
+    "extract": false,
+    "scan.py": false
+  },
+  "issue_122": {
+    "body": "## Problem and observed behavior\n\nThe shared `github-actions-security.json` preset auto-merges GitHub Actions manager updates of every type once checks pass, except for a short list of security-sensitive action prefixes (`actions/checkout`, `actions/upload-artifact`, `actions/download-artifact`, `aws-actions/`, `google-github-actions/`, `azure/`, `docker/`). That rule matches on the manager, not the dependency type, so it also covers two non-action dependencies the github-actions manager extracts:\n\n- the GitHub-hosted runner label in `runs-on:` (for example `ubuntu-24.04`, dependency type `github-runner`, `github-runners` datasource);\n- tool versions passed through supported community action inputs, such as `jdx/mise-action`'s `version` input (dependency `jdx/mise`).\n\nbasher83/personal-computing#35 pinned its CI runner to `ubuntu-24.04` and mise to `2026.10.2` so that setup changes arrive as reviewable Renovate PRs rather than silent drift from `ubuntu-latest` and the action's default release selection. Under the current preset, a runner bump such as `ubuntu-24.04` to `ubuntu-26.04`, and any new mise release, would auto-merge on a green run with no maintainer approval. A green `mise run ci` does not exercise everything an operating-system migration can change, so an OS jump arguably belongs with the approval-gated updates.\n\nNot yet observed: no runner-label PR has been raised by Renovate in a consuming repository, so the actual update type Renovate assigns to the runner bump has not been seen. The `github-runners` datasource documentation says it uses `docker` versioning; classifying `24.04` to `26.04` as `major` is an inference from that, not a verified result.\n\n## Proposed solution for maintainer evaluation\n\nConsider adding a rule to `presets/github-actions-security.json` that requires Dependency Dashboard approval for runner label updates, matched by dependency type rather than package name:\n\n```json\n{\n  \"description\": \"Require approval for GitHub-hosted runner image upgrades\",\n  \"matchManagers\": [\"github-actions\"],\n  \"matchDepTypes\": [\"github-runner\"],\n  \"matchUpdateTypes\": [\"major\", \"minor\"],\n  \"automerge\": false,\n  \"dependencyDashboardApproval\": true\n}\n```\n\nIt would need to sit after the existing auto-merge rule so that it overrides it. The match keys should be checked against an actual runner PR or a Renovate dry run before relying on them.\n\nSeparately, decide whether `jdx/mise` runtime updates through the action input should keep auto-merging. They are frequent, CI exercises them directly, and integrity verification stays on, so leaving them on auto-merge is a reasonable choice; gating them is the stricter alternative.\n\nThese are candidate changes, not adopted decisions. The maintainer may keep the current behavior and rely on CI alone.\n\n## Evidence and verification pointers\n\n- [Shared GitHub Actions preset at 3f13ac5](https://github.com/basher83/renovate-config/blob/3f13ac535dbaa0b35c8d179acd86f5cd09cac163/presets/github-actions-security.json): the manager-wide auto-merge rule and its package-name exclusion list.\n- [Base preset at 3f13ac5](https://github.com/basher83/renovate-config/blob/3f13ac535dbaa0b35c8d179acd86f5cd09cac163/default.json): extends the GitHub Actions and mise presets.\n- [Renovate github-actions manager documentation](https://docs.renovatebot.com/modules/manager/github-actions/): runner labels in `runs-on:` and the supported community action inputs, including `jdx/mise-action` `version`.\n- [Renovate github-runners datasource documentation](https://docs.renovatebot.com/modules/datasource/github-runners/): `docker` versioning and handling of beta and deprecated runner images.\n- [GitHub runner migration announcement actions/runner-images#14748](https://github.com/actions/runner-images/issues/14748): `ubuntu-latest` moves from 24.04 to 26.04 beginning October 19, 2026.\n- basher83/personal-computing#35: the consuming change that introduced the pins.\n\n## Scope and completion\n\nLimit this issue to how the shared presets treat runner-label updates and action-input tool versions, and record the maintainer's decision. If a preset change is selected, verify it against a consuming repository (a Renovate dry run or the next runner or mise PR in basher83/personal-computing) and confirm the PR is approval-gated or auto-merged as intended. Other presets, the action SHA pinning rules, and personal-computing's workflow are outside this scope.\n",
+    "comments": [],
+    "state": "OPEN",
+    "title": "Decide approval policy for runner image and action-input tool updates",
+    "url": "https://github.com/basher83/renovate-config/issues/122"
+  },
+  "immutable_consumer_captures": [
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "1cb3820ce59c43b4245ecede7c6484b89858ea25",
+      "path": "renovate.json",
+      "url": "https://github.com/basher83/personal-computing/blob/1cb3820ce59c43b4245ecede7c6484b89858ea25/renovate.json",
+      "content_sha256": "bb4b848f228ba38fdc838d456a4014285b3959dd0b72a8eea44a6cff167806ad",
+      "content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\"local>basher83/renovate-config\"]\n}\n"
+    },
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "1cb3820ce59c43b4245ecede7c6484b89858ea25",
+      "path": ".github/workflows/ci.yml",
+      "url": "https://github.com/basher83/personal-computing/blob/1cb3820ce59c43b4245ecede7c6484b89858ea25/.github/workflows/ci.yml",
+      "content_sha256": "6bb48533abc6413bf0586a74b96d37f2b32eec0c9c900b8ad169c21d2c55fb4a",
+      "content": "name: ci\n\non:\n  workflow_dispatch:\n  pull_request:\n  push:\n    tags: [\"*\"]\n    branches: [\"main\"]\n\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n\nenv:\n  MISE_EXPERIMENTAL: true\n\njobs:\n  ci:\n    # Explicit runner and mise release; Renovate proposes upgrades (#35).\n    runs-on: ubuntu-24.04\n    timeout-minutes: 10\n    steps:\n      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7\n        with:\n          fetch-depth: 0\n      - uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5\n        with:\n          version: 2026.10.2\n      # GitGuardian's GitHub App reports PR secret scanning independently.\n      # Local Infisical pre-commit checks and explicit audits remain in mise.\n      - run: mise run ci\n"
+    },
+    {
+      "repository": "basher83/Zammad-MCP",
+      "revision": "ab0ad640e291a5aaaf025975b6a4190b959c6838",
+      "path": "renovate.json",
+      "url": "https://github.com/basher83/Zammad-MCP/blob/ab0ad640e291a5aaaf025975b6a4190b959c6838/renovate.json",
+      "content_sha256": "a3fbb15a4356db52a32f0cebfb53d81a662facebbe2aee59197cc9c4aa999e1c",
+      "content": "{\n    \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n    \"extends\": [\n        \"local>basher83/renovate-config\",\n        \"local>basher83/renovate-config//presets/python-mcp.json\",\n        \"local>basher83/renovate-config//presets/github-actions-security.json\",\n        \"local>basher83/renovate-config//presets/docker.json\"\n    ],\n    \"labels\": [\n        \"dependencies\",\n        \"renovate\"\n    ],\n    \"assignees\": [\n        \"basher83\"\n    ],\n    \"commitMessagePrefix\": \"chore(deps):\",\n    \"packageRules\": [\n        {\n            \"description\": \"Keep Python pinned below 3.14 until MCP SDK v1.x officially supports it\",\n            \"matchDepNames\": [\n                \"python\"\n            ],\n            \"allowedVersions\": \"<3.14\"\n        },\n        {\n            \"description\": \"Update the Python pins in mise.toml and .python-version in one PR (scripts/validate.sh fails when they differ)\",\n            \"matchManagers\": [\n                \"mise\",\n                \"pyenv\"\n            ],\n            \"matchDepNames\": [\n                \"python\"\n            ],\n            \"groupName\": \"python version pins\"\n        },\n        {\n            \"description\": \"Update the uv pins in mise.toml, the setup-uv steps, and the uv-pre-commit hook in one PR (scripts/validate.sh fails when they differ)\",\n            \"matchDepNames\": [\n                \"uv\",\n                \"astral-sh/uv\",\n                \"astral-sh/uv-pre-commit\"\n            ],\n            \"groupName\": \"uv version pins\"\n        },\n        {\n            \"description\": \"Require approval for major Zammad API updates\",\n            \"matchPackageNames\": [\n                \"zammad-py\"\n            ],\n            \"matchUpdateTypes\": [\n                \"major\"\n            ],\n            \"dependencyDashboardApproval\": true\n        }\n    ]\n}\n"
+    }
+  ],
+  "local_config_captures": {
+    "default.json": {
+      "sha256": "7dae8a38c4b5c2f56495b3aaf1d1f086c64f65a9663b48fd56fcebf0eb791560",
+      "content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"description\": \"Base Renovate preset for basher83 repositories - provides common settings for PR management, security alerts, and semantic commits\",\n  \"extends\": [\n    \"config:best-practices\",\n    \"workarounds:all\",\n    \"local>basher83/renovate-config//presets/github-actions-security.json\",\n    \"local>basher83/renovate-config//presets/mise.json\"\n  ],\n  \"timezone\": \"America/New_York\",\n  \"prConcurrentLimit\": 3,\n  \"prHourlyLimit\": 2,\n  \"prCreation\": \"not-pending\",\n  \"rebaseWhen\": \"behind-base-branch\",\n  \"semanticCommits\": \"enabled\",\n  \"labels\": [\n    \"renovate\"\n  ],\n  \"assignees\": [\n    \"basher83\"\n  ],\n  \"vulnerabilityAlerts\": {\n    \"labels\": [\n      \"security\"\n    ],\n    \"automerge\": true\n  }\n}\n"
+    },
+    "presets/github-actions-security.json": {
+      "sha256": "f41418bbb2dd0f47b7500f15309ff31849a96869744782c2b4ac8e7b92cca947",
+      "content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"description\": \"GitHub Actions security preset - groups all updates, auto-merges low-risk changes into main, requires dashboard approval for security-sensitive updates\",\n  \"packageRules\": [\n    {\n      \"description\": \"Pin GitHub Actions (uses:) to commit SHA digests for security\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchDepTypes\": [\n        \"action\"\n      ],\n      \"pinDigests\": true\n    },\n    {\n      \"description\": \"Group all GitHub Actions updates together\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"groupName\": \"GitHub Actions\",\n      \"groupSlug\": \"github-actions\"\n    },\n    {\n      \"description\": \"Auto-merge ALL GitHub Actions digest updates into main (no approval)\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"digest\"\n      ],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Auto-merge non-sensitive GitHub Actions patch, minor, and major updates into main (no approval)\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"patch\",\n        \"minor\",\n        \"major\"\n      ],\n      \"matchPackageNames\": [\n        \"!/^actions\\\\/checkout/\",\n        \"!/^actions\\\\/upload-artifact/\",\n        \"!/^actions\\\\/download-artifact/\",\n        \"!/^aws-actions\\\\//\",\n        \"!/^google-github-actions\\\\//\",\n        \"!/^azure\\\\//\",\n        \"!/^docker\\\\//\"\n      ],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Require approval for security-sensitive GitHub Actions minor and major updates\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"major\",\n        \"minor\"\n      ],\n      \"dependencyDashboardApproval\": true,\n      \"matchPackageNames\": [\n        \"/^actions\\\\/checkout/\",\n        \"/^actions\\\\/upload-artifact/\",\n        \"/^actions\\\\/download-artifact/\",\n        \"/^aws-actions\\\\//\",\n        \"/^google-github-actions\\\\//\",\n        \"/^azure\\\\//\",\n        \"/^docker\\\\//\"\n      ]\n    },\n    {\n      \"description\": \"Label GitHub Actions PRs\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"addLabels\": [\n        \"github-actions\",\n        \"security\"\n      ]\n    }\n  ]\n}\n"
+    }
+  },
+  "shared_config_unchanged_since_review": true,
+  "governance_review_duplicate_body_matches": true,
+  "dependency_map_default_branch_counts": {
+    "main": 88,
+    "entire/checkpoints/v1": 4,
+    "": 2
+  },
+  "recorded_task_context": {
+    "checkpoint": "81d33fa2b886",
+    "session_id": "01a10f26-49c7-7702-b5cd-ff4e517568c5",
+    "method": "User messages extracted from entire checkpoint explain --checkpoint 81d33fa2b886 --transcript --no-pager",
+    "user_messages": [
+      "hold up. It wasn't a just do it. The issue says its a question. Also lets fix this while we are here: mise WARN  deprecated [setting.task_run_auto_install]: Use task.run_auto_install instead. This will be removed in mise 2027.2.0.",
+      "right because a decision here effects all my repos. which in retrospect is fair and on me. And I'm also now seeing I should have pre-empted the task. So lets pause on that issue for a moment because the bigger thing to solve is this repo first. It lacks boundaries, authority, and disciple. Again on me but we can fix that. The model to emulate here in this repo is the direction in /Users/basher8383/3I/lab/personal-computing/AGENTS.md. Follow the pointers to see what I mean. review prs 29 amd 30 there and it should be more clear what i mean. This is a read only task you may use gh cli as well. no modifications to that repo or this one yet. Let me know what you infer as to what I mean after you review those pointers",
+      "Okay I see the disconnect now and I realized I wasn't paying enough attention but this is much better. This is good and I like this one but this is a different task than what I was assuming in my brain.\n\nI was assuming the task of an agent to go out and research all the repositories. Help us understand how to configure renovate dependencies. Get together what languages are in what repos and what tools they use because we need to avoid conflicting shared renovate configs across repos. That's the follow-up next one that I need but that update you did is very good. I like that one"
+    ]
+  },
+  "current_task_authorization": {
+    "session_id": "01a1181a-7f5f-7153-b479-cf8c12409702",
+    "captured_at": "2026-10-08T02:53:22.442245+00:00",
+    "method": "Exact user messages extracted from entire session current --transcript",
+    "user_messages": [
+      {
+        "timestamp": "2026-10-07T20:54:47.307Z",
+        "text": "4 of those items in sources are for renovate style decisions that effect all my repos. those 4 items are the evidence for review and sythnthsis prior to acceptance as a poilicy. so whats the next best step to take moving toards the 4 remaining work items"
+      },
+      {
+        "timestamp": "2026-10-07T20:59:00.666Z",
+        "text": "agreed, machinery before evidence of it's use case is the anti pattern here. So lets do it then. evaluate the four sources and draftone policy candidate"
+      }
+    ],
+    "authorized_scope": "Evaluate the four sources and draft one policy candidate.",
+    "limits": "No policy selection, implementation, consumer edit, exception, commit, push, or publication is granted by these messages. Issue #122 implementation remains paused."
+  },
+  "external_adversarial_review": {
+    "session_id": "01a1181a-7f5f-7153-b479-cf8c12409702",
+    "captured_at": "2026-10-08T02:53:22.442245+00:00",
+    "source": "User-supplied external review; reviewer identity/model is not authenticated.",
+    "user_message": {
+      "timestamp": "2026-10-08T02:51:57.806Z",
+      "text": "Ok I ran external adversarial review and heres the results: I've read the candidate, the preset it targets, the evidence evaluation, the receipt, and the source dependency review. Here is the review.\n\n# Adversarial review: runner update policy candidate\n\n**Verdict:** the policy itself (option C) is sound and the Renovate mechanics are described correctly. The document's biggest weakness is not in its reasoning but in what it leaves out. It never says the first real runner upgrade, `ubuntu-24.04` to `ubuntu-26.04`, is due within days. Its own six-item evidence gate makes it very likely that upgrade arrives and automerges before the policy can be accepted.\n\n## 1. The deadline is missing, and the evidence gate can't finish in time\n\nThe issue #122 text captured in the receipt cites `actions/runner-images#14748`: `ubuntu-latest` moves to 26.04 starting October 19, 2026. The dependency review (`sources/renovate-dependency-review.md:344`) repeats it as \"ubuntu 24.04 → 26.04 before Oct 19\". The candidate mentions neither, even though it is dated October 7.\n\nThat matters for two reasons:\n\n- **The gated case will probably happen first.** Once Renovate's `github-runners` datasource treats 26.04 as stable, `personal-computing` gets a runner bump. Under the current fourth rule (manager-wide automerge for patch, minor and major), it merges on a green `mise run ci`. That is exactly what #122 was opened to prevent, and personal-computing pinned the runner in its PR #35 for this reason.\n- **The best evidence gets used up.** Evidence item 5 asks for a real lookup or hosted observation and says \"an unavailable update is a gap.\" The 26.04 bump is that real update. If it automerges under today's config, you lose the observation the gate needs, and you also lose the case the policy exists for.\n\nThe document does offer \"an explicit operator exception identifying the unverified boundary,\" but it never shows that this choice is urgent now. A stronger candidate would put the timing next to the decision. Your real choice is between three paths. You could accept C with an exception covering items 4 and 5 and observe the first real runner PR as the verification. You could run a quick `renovate --dry-run` against personal-computing before October 19. Or you could knowingly let one runner automerge. The document never mentions a consumer-local stopgap, and consumer edits are excluded anyway, so a stopgap would need your explicit say.\n\n## 2. Option C's advantage over B is overstated\n\nThe candidate presents C as avoiding \"an unverified runner classification,\" and lists B's cost as \"other runner update types retain inherited behavior.\" The datasource uses Docker versioning, so `24.04` reads as major 24, minor 4. On that reading, every realistic hosted-runner change (Ubuntu LTS to LTS, `windows-2022` to `windows-2025`, `macos-14` to `macos-15`) is a major. I haven't run this, but if it holds, B and C gate the same real updates.\n\nC is still the better rule, because it is robust to classification surprises and costs nothing extra. However, the comparison table makes the trade-off look more consequential than it is. The honest framing is \"C equals B in practice, plus insurance.\" The new grouping, not the gate scope, is what really separates C from #122's example.\n\n## 3. Runner retirement is not treated as a risk\n\nThe cost of C is described as \"stale runner pins require deliberate maintenance.\" It is sharper than that. GitHub retires hosted images on a schedule, with brownouts before removal (`ubuntu-20.04` went in 2025). An approval-gated runner bump that nobody approves turns into failing CI on a date GitHub chooses. Today's automerge hides that risk, and C brings it back. The revisit conditions should include \"a pending runner approval approaches its image's deprecation date.\" The cost row should say that gating trades silent drift for a deadline you have to watch.\n\n## 4. \"Representative consumer\" coverage is thinner than it reads\n\nThe dependency review counts 88 runner labels in 28 repos, but those counts come from hypothetical update types. The candidate correctly says floating `ubuntu-latest` isn't extracted, but it never estimates how many of the 88 labels are literal versions that the rule would actually affect. Zammad-MCP is the only override control, and its runner usage isn't captured; the evaluation says it is \"not yet a verified runner-update case.\" So the shared change rests on one base-only consumer with one runner label. That may be enough for this rule, but the document should say so plainly instead of calling it \"representative inputs.\"\n\n## 5. Authority is asserted but not recorded\n\nD005 (`bundle/decisions.md:257`) and `bundle/governance.md:220` both say #122 \"remains paused.\" The candidate calls itself \"the runner portion of #122.\" The evaluation says \"the operator authorized evaluation of the four sources and one draft policy candidate,\" and the uncommitted entry in `bundle/log.md` calls it \"authorized evaluation.\" The only authorization context in the receipt is from an earlier session about a different task (the portfolio research ask). If you gave this authorization in the session that produced the drafts, the receipt doesn't capture it. Under this repo's own rule against manufacturing approval, that gap should be closed by a recorded decision or a receipt line before anything cites \"authorized.\"\n\n## 6. Smaller items\n\n- **Inconsistent contract links.** The frontmatter source `contract` uses `resource: /governance.md`, which is bundle-root syntax, but this file lives in `research/`, outside the bundle. The footnote for the same source uses `../bundle/governance.md`. One of the two is wrong for a non-bundle document; the evaluation record has the same mismatch.\n- **Runner PRs will carry a `security` label.** The labeling rule still matches runner updates under C. That is harmless but slightly misleading, and the implementation should either decide it on purpose or override it.\n- **The decision is buried.** About a third of the text is standing disclaimers (\"does not establish,\" \"is not acceptance\"). For a decision memo addressed to you, the ask, the recommendation, the deadline and the exception choice should fit on the first screen. Most of the disclaimers already live in the governing contract.\n- **It is a subset of a larger recommendation.** The dependency review's recommendation at line 304 splits the whole preset by dependency type: actions, runners, and action inputs, plus a fix for one sensitive action blocking the entire actions group. The candidate takes only the runner part. That is defensible scoping, but it should say it is a subset so the rest isn't silently dropped.\n\n## What holds up\n\nThe mechanics are right. Matching on `matchDepTypes: [\"github-runner\"]` is the correct boundary. Setting `automerge: false` is necessary, because approval alone would let the existing major-automerge rule merge after approval. The new rule has to come after the group rule and override both `groupName` and `groupSlug`. The document also correctly avoids claiming coverage of `ubuntu-latest`, self-hosted labels or expressions. And it separates the runner question from the action-input question as #122 frames them.\n\nIf you want one change before deciding, add a short \"Timing\" section that names October 19 and asks you to choose between an exception-backed acceptance, a dry run first, or knowingly letting one runner automerge."
+    }
+  },
+  "runner_timing_check": {
+    "checked_at": "2026-10-08T02:53:22.442245+00:00",
+    "url": "https://github.com/actions/runner-images/issues/14748",
+    "title": "[Ubuntu] `ubuntu-latest` label will use Ubuntu 26.04 in November 2026",
+    "updated_at": "2026-10-08T02:46:21Z",
+    "body_sha256": "0ef139bd545f269de226062c5d117b722000677d709b6062195b2b91fe43ab78",
+    "reported_rollout_start": "2026-10-19",
+    "reported_rollout_completion": "2026-11-19",
+    "reported_scope": "Migration of the floating ubuntu-latest alias to Ubuntu 26.04; not a schedule for pinned-runner Renovate PRs.",
+    "availability_statement": "The announcement describes Ubuntu 26.04 as generally available.",
+    "limits": "No hosted lookup, current consumer HEAD, runner PR arrival time, or Ubuntu 24.04 retirement date verified."
+  },
+  "runner_retirement_reference": {
+    "checked_at": "2026-10-08T02:53:22.442245+00:00",
+    "url": "https://github.blog/changelog/2025-01-15-github-actions-ubuntu-20-runner-image-brownout-dates-and-other-breaking-changes/",
+    "summary": "GitHub announced temporary CI failures during Ubuntu 20.04 brownouts beginning March 2025 and retirement by April 15, 2025.",
+    "limits": "Historical example; not a retirement schedule for Ubuntu 24.04."
+  },
+  "intake_placement_authorization": {
+    "session_id": "01a1181a-7f5f-7153-b479-cf8c12409702",
+    "captured_at": "2026-10-08T03:02:11.011965+00:00",
+    "method": "Exact conversation messages extracted from entire session current --transcript",
+    "messages": [
+      {
+        "role": "user",
+        "timestamp": "2026-10-08T02:59:30.088Z",
+        "text": "your comment \"but they are inconsistent for ordinary readers\" brings up a good point here I think. research/ is likely not the proper placement of this doc as is. it's a reccomendation for approval for me to review for approval, thats a different kind of thing than research. likely why this round sources/evaluate seemed the better home"
+      },
+      {
+        "role": "assistant",
+        "timestamp": "2026-10-08T02:59:41.949Z",
+        "text": "I agree. I classified it by how it was produced—synthesis from evidence—rather than by its current purpose: **a recommendation submitted for your decision**.\n\nThat suggests three distinct roles:\n\n- **Sources:** the four original artifacts and the receipts supporting factual claims.\n- **Research:** exploratory analysis that develops findings, alternatives, and uncertainty.\n- **Pending decision:** a bounded recommendation presenting the choice, consequences, and acceptance conditions to you.\n\nThe candidate has become the third kind. `research/` fits the analysis behind it, but fits this decision memo poorly.\n\n`sources/evaluate/` communicates pending evaluation more clearly. There is still a distinction to preserve: the memo is an **authored policy proposal**, while the four original files are **evidence supporting it**. Sharing a pending-evaluation location should not make those roles interchangeable.\n\nFor this round, I’d place the memo in `sources/evaluate/`, retain its `Policy Candidate` type and draft status, and describe it as awaiting **operator policy evaluation**. The supporting evaluation and receipt would remain separately identified. Acceptance would then lead to a recorded decision and promotion into the owning bundle concept.\n\nThat would be a small clarification of the existing intake boundary. The current contract describes `sources/evaluate/` specifically as intake for sources, so we should explicitly permit authored proposals awaiting a decision before treating that placement as the established rule.\n\nI haven’t moved the document or changed that boundary yet."
+      },
+      {
+        "role": "user",
+        "timestamp": "2026-10-08T03:01:15.581Z",
+        "text": "i agree with that, makes sense to me"
+      }
+    ],
+    "scope": "Clarify pending intake for authored decision proposals; relocate the runner policy candidate and update pointers and generated navigation.",
+    "limits": "No runner-policy acceptance, implementation, commit, or publication authority."
+  },
+  "current_candidate_path": "sources/evaluate/2026-10-07-runner-update-policy-candidate.md"
+}

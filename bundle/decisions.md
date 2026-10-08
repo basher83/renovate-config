@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:32:20-04:00 }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:55:09-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -23,9 +23,15 @@ sources:
   - id: local-contract
     resource: /governance.md
     title: Local operating contract
+  - id: intake-placement
+    resource: ../sources/evaluate/2026-10-07-policy-evidence-receipt.json
+    title: Exact operator agreement on pending proposal placement
   - id: distribution-ruling
     resource: ../sources/evaluate/2026-10-07-bundle-distribution-ruling.json
     title: Exact operator ruling on distribution and repository path containment
+  - id: runner-selection
+    resource: ../sources/evaluate/2026-10-08-runner-behavior-receipt.json
+    title: Exact option C selection and implementation evidence
 ---
 
 # Renovate-config prospective decisions
@@ -37,6 +43,31 @@ approval for existing preset rules or turn a journal entry into an acceptance re
 For each material decision, record the question and prior position, outcome, authority, effective scope,
 rationale, evidence, implementation and verification state, and revisit or supersession conditions.
 Keep routine maintenance records proportionate. Preserve prior rationale when superseding an entry.
+
+## 2026-10-07 — D015: Select runner approval policy C
+
+- **Question and prior position:** Manager-wide Actions rules allow runner updates to automerge. D005 paused
+  implementation of #122 while evidence was evaluated; the authored candidate recommended option C.
+- **Outcome: operator-selected policy and preparation.** Select C: separate runner grouping, dashboard approval
+  for all extracted `github-runner` updates, and `automerge: false`. The operator answered "Select C and prepare
+  implementation" on 2026-10-07 at 23:45:02 EDT; the exact prompt and answer are preserved in the
+  [behavior receipt](../sources/evaluate/2026-10-08-runner-behavior-receipt.json).[^runner-selection]
+- **Scope and rationale:** The shared Actions preset and its runner-policy documentation. Classification-independent
+  approval makes CI environment changes a maintainer decision; each consumer maintainer owns approval and image
+  retirement deadlines. This narrowly resumes runner implementation preparation under #122. Action-input policy,
+  broader action grouping, consumer edits, and other repository adoption remain separate.
+- **Evidence and implementation state:** Real Renovate extraction, preset resolution, rule application, lookup,
+  grouping, and a missing-branch approval control pass against retained inputs. Current personal-computing has
+  already upgraded through bot-merged PR #39; its preserved 24.04 input replays a real major 26.04 lookup, with
+  runner-only grouping, `needs-approval`, and no automerge. This is replay, not a hosted run of the new policy.
+  Non-runner behavioral configurations compare equal, apart from descriptive metadata; fixtures cover
+  mixed majors, repeated inheritance,
+  containers/services, reusable workflows, unsupported labels, and intentional later consumer overrides.
+- **Remaining authority and revisit conditions:** Publication approval and operator PR merge acceptance remain
+  pending. No evidence exception was granted or needed for the selected read-only lookup path; hosted behavior
+  after publication remains unobserved. A future pending runner approval approaching a brownout/removal date,
+  unintended non-runner effects, or Renovate extraction changes require review. The policy and bounded rollback
+  are maintained in [runner policy](/github-hosted-runner-policy.md).
 
 ## 2026-10-07 — D014: Bound local references to this repository
 
@@ -58,6 +89,24 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   separately authorized. Human acceptance occurs through operator merge of the reviewed PR. Runner-policy
   selection, consumer edits, and adoption elsewhere remain separate. Revisit if distribution beyond this
   repository is explicitly selected.
+
+## 2026-10-07 — D013: Place decision proposals in pending evaluation
+
+- **Question and prior position:** The runner candidate was placed in `research/` because it synthesized
+  evidence, although its current purpose is a recommendation submitted for an operator decision.
+- **Outcome: authorized clarification.** Permit authored decision proposals in `sources/evaluate/` alongside
+  sources and evaluation records, distinguishing their roles by type and body. Move this candidate there.
+- **Authority and date:** The operator agreed to the proposed placement and intake clarification on
+  2026-10-07 in session `01a1181a-7f5f-7153-b479-cf8c12409702`; exact rationale, proposal, and agreement are
+  retained in the receipt's `intake_placement_authorization`.[^intake-placement]
+- **Scope and rationale:** Local intake guidance, entry-point alignment, document relocation, and pointers.
+  Exploratory research remains separate from a bounded proposal awaiting selection; neither becomes adopted
+  policy through directory placement. Promotion uses the existing scoped decision and PR acceptance process.
+- **Implementation and verification state:** Placement and guidance are prepared locally; metadata, source
+  joins, paths, authored lint, and deterministic navigation are checked for this revision before handoff.
+  This entry is not a PR acceptance receipt or human verification marker.
+- **Remaining authority and revisit conditions:** No dependency-policy selection, implementation, new
+  machinery, commit, or publication is included. Revisit if shared intake obscures evidence/proposal roles.
 
 ## 2026-10-06 — D012: Apply reviewed local OKF extensions
 
@@ -323,7 +372,10 @@ identify what must be preserved first; this adoption does not delete either file
 The [local contract](/governance.md) defines the adopted authority and verification boundaries reflected
 in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the metadata style.
 
+[^runner-selection]: Current-session option C selection and preparation authority,
+    with observed behavior and explicit fixture limits.
 [^distribution-ruling]: Exact current-session operator ruling on repository containment and no standalone distribution requirement.
+[^intake-placement]: Current-session operator agreement on pending proposal placement, preserved in the evidence receipt.
 [^review-verdicts]: Operator PR instructions on descriptions, index coverage, logs, tags, and the linked earlier rules.
 [^exemplar-intent]: Participant-authored summary of operator direction and the selected PR-merge acceptance boundary.
 [^slice-1-scope]: Participant-authored capture of the operator's Slice 1 directions, 2026-10-06.

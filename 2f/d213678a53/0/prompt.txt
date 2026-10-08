@@ -109,3 +109,13 @@ approved
 ---
 
 there we go, that was nice and easy its merged
+
+---
+
+perfect, lets knock out the runner-policy then
+
+---
+
+<send_user_message_question_reply>
+[{"answer":"Select C and prepare implementation","question":"For the runner-policy work, should I select option C and prepare its shared-preset implementation for review: a separate runner group, dashboard approval for every extracted runner update, and no automerge? I’ll collect the behavioral evidence first and keep publication as a separate approval.","questionItemId":"[\"request_user_input_async\",\"call_aa5d9e4321c34312a61105511a5863e6\",0]"}]
+</send_user_message_question_reply>

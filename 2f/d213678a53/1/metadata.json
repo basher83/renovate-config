@@ -3,7 +3,7 @@
   "checkpoint_id": "2fd213678a53",
   "session_id": "57211065-732a-4280-b57d-a0ec903f1fa0",
   "strategy": "manual-commit",
-  "created_at": "2026-10-08T04:04:51.513698Z",
+  "created_at": "2026-10-08T04:05:20.251902Z",
   "branch": "policy/github-runner-approval",
   "checkpoints_count": 1,
   "save_step_count": 1,
@@ -28,15 +28,15 @@
     "turn_count": 1
   },
   "initial_attribution": {
-    "calculated_at": "2026-10-08T04:04:51.496665Z",
+    "calculated_at": "2026-10-08T04:05:20.235122Z",
     "agent_lines": 17,
     "agent_removed": 0,
-    "human_added": 13094,
+    "human_added": 13090,
     "human_modified": 0,
     "human_removed": 0,
-    "total_committed": 13111,
-    "total_lines_changed": 13122,
-    "agent_percentage": 0.1295534217344917,
+    "total_committed": 13107,
+    "total_lines_changed": 13118,
+    "agent_percentage": 0.12959292575087666,
     "metric_version": 2
   },
   "prompt_attributions": [

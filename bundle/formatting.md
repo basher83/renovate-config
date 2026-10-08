@@ -4,7 +4,7 @@ title: Bundle document formatting
 description: This framework defines local OKF metadata, provenance, navigation, and history conventions.
 tags: [governance, formatting]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T01:20:34Z }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:32:20-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -95,8 +95,11 @@ inside the bundle follows the same convention. The surrounding prose states the 
 link; a link alone does not establish derivation, asset binding, or acceptance.[^okf-spec]
 
 For example, use `[contract](/governance.md)` and `[index rules](/formatting.md#generate-governed-indexes)`.
-Targets outside the bundle retain repository-relative paths or external URLs; `/sources/...` would incorrectly
-resolve inside the bundle. Imported bodies retain their original link context.
+Targets outside the bundle but inside this repository use resolving document-relative paths;
+`/sources/...` would incorrectly resolve inside the bundle. Local paths MUST stay within the repository
+after resolution, including symlinks. Material in another checkout uses a Git-hosted URL instead of a host
+filesystem path. See the [repository boundary ruling](/governance.md#repository-boundary-and-distribution).
+Imported bodies retain their original link context.
 
 ## Record scoped history
 
@@ -139,6 +142,8 @@ rather than invent them.[^greenfield-framework][^okf-spec]
 
 `resource` must point to a followable artifact: an absolute URL or a resolving document path. A scope descriptor
 is appropriate for a population that cannot genuinely be followed, not as a substitute for a particular record.
+Local paths are bounded by this repository, not by `bundle/` alone. For another repository's artifact, use a
+Git-hosted URL, preferably pinned to its commit and file; do not point into another local checkout.
 Session-only evidence needs an addressable capture before it is cited as evidence.[^greenfield-evidence]
 
 Frontmatter points; the body explains what the source supports and its limits. State whether a reference is a

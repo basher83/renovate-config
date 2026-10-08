@@ -24,6 +24,9 @@ The [bundle index](bundle/index.md) routes to local knowledge and supporting too
 Read the [knowledge layers and source evaluation criteria](bundle/governance.md#knowledge-layers-and-source-evaluation)
 before admitting evidence or promoting knowledge. [Sources to evaluate](sources/evaluate/index.md) are pending, not
 adopted.
+This bundle is an exemplar within this repository; standalone distribution is not required. Local resource
+and source paths may leave `bundle/` but must resolve within this repository, including through symlinks.
+Use Git-hosted artifact URLs for material in other repositories; do not link into another local checkout.
 **The prior contract is adopted locally; the exemplar documentation revision is a candidate.**
 The operator accepted Slice 1 candidate `33e5e1f29df4` on 2026-10-06;
 [decision D005](bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records authority and scope. The completed

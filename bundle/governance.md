@@ -4,7 +4,7 @@ title: Renovate-config operating contract
 description: This contract defines the exemplar purpose, authority, knowledge boundaries, and agent and code responsibilities.
 tags: [governance]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-06T17:39:21-04:00 }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:32:20-04:00 }
 sources:
   - id: okf-spec
     resource: ../sources/evaluate/okf-spec.md
@@ -31,6 +31,9 @@ sources:
     resource: /formatting.md
     title: Bundle document formatting
     author: codex_agent/GPT 6.1 Sol
+  - id: distribution-ruling
+    resource: ../sources/evaluate/2026-10-07-bundle-distribution-ruling.json
+    title: Operator ruling on repository-bound bundle references
 ---
 
 # Renovate-config operating contract
@@ -51,6 +54,23 @@ agree. Documenting a rule or passing one check is not completion. Before proposi
 owners and authorized write surfaces; exercise finalization and rejection/repair paths; verify persisted results;
 record human acceptance of the reviewed revision; and report remaining bypasses and unsupported claims.
 These acceptance conditions are a proposed completion model, not evidence that the exemplar is complete.
+
+### Repository boundary and distribution
+
+This bundle is an exemplar to point to as known good within this repository; it is not required to be
+distributed independently or used as a template. Other repositories can evaluate and adapt the demonstrated
+pattern through their own adoption decisions. This ruling does not establish that the exemplar is complete.
+The repository, rather than `bundle/` alone, is the local reference boundary.[^distribution-ruling]
+
+Local source and resource paths may leave `bundle/` but MUST resolve inside this repository. They MUST NOT
+refer to another checkout, home directory, or other location on the host filesystem, including through a
+symlink escape. Material held in another repository or checkout must be referenced by a followable Git-hosted
+URL, preferably identifying a commit and artifact path. Ordinary external primary web sources retain their
+URLs. Referencing material does not adopt its policy or grant authority over its repository.
+
+The existing checker enforces resolved local path containment within the repository; it does not authenticate
+external URL content, availability, or revision stability. Standalone packaging is not a current requirement.
+Revisit this boundary only if the operator selects distribution beyond this repository.
 
 ## Governing division of work
 
@@ -298,6 +318,7 @@ including their provenance limits. Current enforcement coverage is recorded sepa
 
 [^exemplar-intent]: Participant-authored record of operator clarification in this review; operator selected PR merge
     as acceptance; machine projection remains unimplemented.
+[^distribution-ruling]: Exact current-session operator ruling on repository containment and no standalone distribution requirement.
 [^okf-spec]: Consulted cached specification, preserved in pending evaluation; the upstream link identifies its origin.
 [^review-rulings]: Participant-authored adoption walkthrough record, including the operator's final acceptance.
 [^review-reconciliation]: Reconciliation of the completed review, including reported-evidence limits and deferred work.

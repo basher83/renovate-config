@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "GitHub Actions security preset - groups all updates, auto-merges low-risk changes into main, requires dashboard approval for security-sensitive updates",
+  "description": "GitHub Actions security preset - pins action digests, selectively auto-merges action updates, and requires approval, then automerges passing hosted runner updates",
   "packageRules": [
     {
       "description": "Pin GitHub Actions (uses:) to commit SHA digests for security",
@@ -80,6 +80,15 @@
         "github-actions",
         "security"
       ]
+    },
+    {
+      "description": "Require dashboard approval for GitHub-hosted runner updates, then automerge when checks pass",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["github-runner"],
+      "groupName": "GitHub-Hosted Runners",
+      "groupSlug": "github-hosted-runners",
+      "dependencyDashboardApproval": true,
+      "automerge": true
     }
   ]
 }

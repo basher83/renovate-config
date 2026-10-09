@@ -4,7 +4,7 @@ title: Renovate-config operating contract
 description: This contract defines the exemplar purpose, authority, knowledge boundaries, and agent and code responsibilities.
 tags: [governance]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:32:20-04:00 }
+generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:55:09-04:00 }
 sources:
   - id: okf-spec
     resource: ../sources/evaluate/okf-spec.md
@@ -31,6 +31,9 @@ sources:
     resource: /formatting.md
     title: Bundle document formatting
     author: codex_agent/GPT 6.1 Sol
+  - id: intake-placement
+    resource: ../sources/evaluate/2026-10-07-policy-evidence-receipt.json
+    title: Operator agreement on authored proposal intake and placement
   - id: distribution-ruling
     resource: ../sources/evaluate/2026-10-07-bundle-distribution-ruling.json
     title: Operator ruling on repository-bound bundle references
@@ -122,7 +125,9 @@ Python checks; borrowing those mechanisms does not adopt its evidence-containmen
 - **Sources:** Root `sources/` holds raw material, captures, observations, and records. A citation does not turn
   a source into a concept or require copying it into the bundle.
 - **Research:** Root `research/` holds provisional analysis and synthesis across identified sources. Research
-  is subject to evaluation and does not establish adopted policy.
+  develops findings, alternatives, and uncertainty; it does not establish adopted policy. A bounded
+  recommendation submitted for an operator decision belongs in pending evaluation, with its supporting
+  analysis and evidence identified separately.
 - **Knowledge:** `bundle/` holds maintained, reusable concepts. Knowledge enters through deliberate promotion
   with a recorded outcome, rationale, evidence, and applicable operator authority. Promotion leaves sources intact.
 - **References:** Under OKF v0.2 §6.3, `bundle/references/` conventionally holds external material, run instructions,
@@ -150,10 +155,20 @@ contract owns layer definitions and evaluation criteria.
 
 ### Pending evaluation
 
-[`sources/evaluate/`](../sources/evaluate/index.md) is intake for sources to evaluate and decide what to act on.
+[`sources/evaluate/`](../sources/evaluate/index.md) is intake for sources, authored evaluation records, and
+authored proposals awaiting an operator decision. Source evaluation determines an artifact's evidentiary role;
+proposal evaluation determines whether to select its recommendation. These are distinct decisions even when
+their records share the intake directory. This clarification follows the operator's placement agreement
+recorded in [D013](/decisions.md#2026-10-07--d013-place-decision-proposals-in-pending-evaluation).[^intake-placement]
 Placement records pending evaluation only. It does not establish truth, necessity, acceptance, or promotion.
 Preserved frontmatter describes the source's original context, even when it says `stable` or records verification;
 that metadata does not grant local standing. Prior citations record historical use, not a completed evaluation.
+
+An authored proposal identifies its type, draft standing, decision requested, supporting evidence, and
+acceptance conditions. It is not raw evidence or adopted knowledge. Exploratory analysis can remain in
+`research/`; the proposal links to it. A selected proposal receives a scoped decision record and any accepted
+knowledge is promoted into its owning bundle concept under the existing PR acceptance boundary. Source
+evaluation, policy selection, implementation authorization, and promotion remain separate events.
 
 Evaluate each item before deciding its retained role or using it to support a new bundle assertion:
 
@@ -239,6 +254,13 @@ its meaning without requiring reconstruction of the full conversation.
 Historical adoption and subsequent adaptations are linked from [log.md](/log.md) and recorded with their
 scope in [decisions.md](/decisions.md). Issue #122 and dependency-policy selection remain separate workstreams.
 
+The operator subsequently selected separate runner grouping, dashboard approval for every extracted runner
+update, and no automerge, and authorized implementation preparation under
+[D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c).
+[D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) later replaced manual merge with
+automerge after approval. That scoped resumption does not select
+action-input policy or authorize publication; the earlier #122 pause remains historical.
+
 ### Human acceptance at the PR boundary
 
 Human acceptance is **merge of the PR by the operator** for the reviewed governance or knowledge change.
@@ -320,6 +342,7 @@ including their provenance limits. Current enforcement coverage is recorded sepa
     as acceptance; machine projection remains unimplemented.
 [^distribution-ruling]: Exact current-session operator ruling on repository containment and no standalone distribution requirement.
 [^okf-spec]: Consulted cached specification, preserved in pending evaluation; the upstream link identifies its origin.
+[^intake-placement]: Current-session operator agreement on authored proposal intake, preserved in the evidence receipt.
 [^review-rulings]: Participant-authored adoption walkthrough record, including the operator's final acceptance.
 [^review-reconciliation]: Reconciliation of the completed review, including reported-evidence limits and deferred work.
 [^shared-draft]: Captured Agent Working Policy — Draft, with original body hash identified above.

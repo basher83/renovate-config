@@ -24,6 +24,9 @@ The [bundle index](bundle/index.md) routes to local knowledge and supporting too
 Read the [knowledge layers and source evaluation criteria](bundle/governance.md#knowledge-layers-and-source-evaluation)
 before admitting evidence or promoting knowledge. [Sources to evaluate](sources/evaluate/index.md) are pending, not
 adopted.
+Authored proposals awaiting an operator decision also belong in `sources/evaluate/`, with draft standing
+and explicit proposal type. Their supporting evidence remains separate; exploratory analysis belongs in
+`research/`. Directory placement does not select policy or authorize implementation.
 This bundle is an exemplar within this repository; standalone distribution is not required. Local resource
 and source paths may leave `bundle/` but must resolve within this repository, including through symlinks.
 Use Git-hosted artifact URLs for material in other repositories; do not link into another local checkout.
@@ -31,7 +34,12 @@ Use Git-hosted artifact URLs for material in other repositories; do not link int
 The operator accepted Slice 1 candidate `33e5e1f29df4` on 2026-10-06;
 [decision D005](bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records authority and scope. The completed
 shared-policy review is [reconciled](sources/evaluate/2026-10-06-review-reconciliation.md). Shared adoption and
-dependency-policy selection remain separate; #122 stays paused.
+dependency-policy selection remain separate. The operator selected separate runner grouping, dashboard approval
+for every extracted runner update, and authorized preparation under
+[D015](bundle/decisions.md#2026-10-07--d015-select-runner-approval-policy-c);
+[D016](bundle/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) automerges approved runner PRs
+after checks pass. Publication still requires approval.
+The action-input portion of #122 remains paused.
 CLAUDE.md remains a symlink to this entry point.
 
 ## Governed indexes
@@ -70,8 +78,9 @@ for binding versus derivation, provenance, and the human PR acceptance needed to
 - Specialist capability and tool access do not authorize consumer edits, organization changes, or new enforcement.
 
 Slice 1 adopted local guidance and standalone supporting scripts. D007 corrects the capture placement:
-records in `sources/evaluate/` await evaluation; prior capture and citation do not establish acceptance. Keep preset
-JSON, dogfooding configuration, and consumer workflows unchanged. D009 authorizes mise index finalization;
+records in `sources/evaluate/` await evaluation; prior capture and citation do not establish acceptance. D015
+authorizes only the runner-specific shared-preset change; keep other preset rules, dogfooding configuration,
+and consumer workflows unchanged. D009 authorizes mise index finalization;
 D011 authorizes the authored-document lint task and capture-preserving hook reconciliation.
 The operator selected retention of both Copilot documents; deletion
 requires a
@@ -243,7 +252,8 @@ explicitly per repository. This list describes configured behavior, not an inven
 - `kubernetes.json` — Kubernetes manifests, Helm charts, Kustomize, and Talhelper updates
 - `rust.json` — Auto-merges patches, groups ecosystem crates (Tokio, Serde, observability), approval for critical majors
 - `javascript.json` — Auto-merges patches, groups linters, test tools, and TypeScript type definitions (npm & Bun)
-- `github-actions-security.json` — Groups updates, auto-merges digests/patches/minor
+- `github-actions-security.json` — Separately groups runners with dashboard approval, then automerge;
+  retains action digest pinning and selective automerge
 - `mise.json` — Groups and auto-merges mise-managed development tool updates
 - `ansible.json` — Ansible collection/role updates with an Ansible-specific mise Python cap
 - `terraform-tofu.json` — Terraform/OpenTofu provider and module rules

@@ -8,7 +8,11 @@ The [local operating contract](./bundle/governance.md) and
 [prospective decision record](./bundle/decisions.md) define the adopted local authority and verification boundaries.
 **Slice 1 is adopted locally.** The operator accepted candidate `33e5e1f29df4` on 2026-10-06;
 [decision D005](./bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records its scope. Commit and publication
-remain separate. Existing JSON remains operative, shared adoption remains unresolved, and issue #122 stays paused.
+remain separate. The runner implementation candidate prepares separate runner grouping, dashboard approval
+for every extracted runner update,
+and automerge after approval and passing checks; operator merge acceptance and rollout remain pending.
+The action-input portion of
+issue [#122](https://github.com/basher83/renovate-config/issues/122) remains paused.
 
 ## Quick Start
 
@@ -60,7 +64,8 @@ workarounds, PR limits, semantic commits, labels, timezone, and the global prese
 Global presets included by `default.json`:
 
 - `github-actions-security.json` – GitHub Actions security rules with digest pinning,
-  selective automerge, and approval for sensitive updates.
+  selective automerge, approval for sensitive updates, and a separate hosted-runner group requiring
+  dashboard approval, then automerging after checks pass.
 - `mise.json` – mise-managed development tool updates, grouped and automerged.
 
 Optional presets in [`presets/`](./presets/) are extended per project:
@@ -131,6 +136,7 @@ or proof of safety. Consult matched JSON rules and any applicable decision for t
      - Major library updates.
      - MCP and `zammad-py` majors.
      - Sensitive GitHub Actions minors/majors.
+     - Extracted GitHub-hosted runner updates: dashboard approval, then automerge after checks pass.
      - Critical Docker image minors/majors.
    - Either:
      - No `automerge` rule (PR stays open), or

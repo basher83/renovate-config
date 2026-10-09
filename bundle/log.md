@@ -2,6 +2,11 @@
 
 ## 2026-10-09
 
+* **Update**: The operator replaced runner manual merge with automerge after dashboard approval in
+  [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge). A default-branch survey found
+  one pinned-runner consumer among 33; the [runner policy](/github-hosted-runner-policy.md) now records it.
+  Strict validation passes; hosted automerge after approval remains unobserved.
+
 * **Update**: Addressed both CodeRabbit findings on PR #125: title-case `GitHub-Hosted Runners`
   while retaining its branch slug, and distinguish the runner implementation from paused action-input policy
   in README. Maintained guidance now states the selected policy directly. The

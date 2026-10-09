@@ -44,6 +44,23 @@ For each material decision, record the question and prior position, outcome, aut
 rationale, evidence, implementation and verification state, and revisit or supersession conditions.
 Keep routine maintenance records proportionate. Preserve prior rationale when superseding an entry.
 
+## 2026-10-09 — D016: Replace runner manual merge with automerge
+
+- **Question and prior position:** D015 required both dashboard approval and manual merge for runner updates.
+  The operator judged two manual steps per consumer too much attention for the purpose of this repository:
+  central management that minimizes operator attention while keeping security updates fast.
+- **Outcome: operator-selected amendment.** Keep the separate group and `dependencyDashboardApproval: true`;
+  set `automerge: true` so an approved runner PR merges once required checks pass. The operator chose this
+  one-gate option in a terminal review session on 2026-10-09.
+- **Scope and rationale:** Only the runner-specific rule in the shared Actions preset and its documentation.
+  The approval stays the deliberate decision on a CI environment change; the merge click added attention without
+  adding review. A survey of consumer default branches found that only `personal-computing` pins a runner, so this
+  affects one consumer today and keeps per-consumer cost low if more repositories pin later.
+- **Evidence and limits:** Strict validation passes. The D015 replay exercised approval with automerge disabled;
+  hosted automerge after approval remains unobserved. Consumers without required checks merge on approval.
+- **Revisit conditions:** An approved runner upgrade that merges and breaks a consumer, or consumers adopting
+  pinned runners widely.
+
 ## 2026-10-07 — D015: Select runner approval policy C
 
 - **Question and prior position:** Manager-wide Actions rules allow runner updates to automerge. D005 paused
@@ -63,6 +80,8 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   Non-runner behavioral configurations compare equal, apart from descriptive metadata; fixtures cover
   mixed majors, repeated inheritance,
   containers/services, reusable workflows, unsupported labels, and intentional later consumer overrides.
+- **Supersession:** [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) replaces `automerge: false`
+  with automerge after approval.
 - **Remaining authority and revisit conditions:** Publication approval and operator PR merge acceptance remain
   pending. No evidence exception was granted or needed for the selected read-only lookup path; hosted behavior
   after publication remains unobserved. A future pending runner approval approaching a brownout/removal date,

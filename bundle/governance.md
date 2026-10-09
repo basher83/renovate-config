@@ -256,7 +256,9 @@ scope in [decisions.md](/decisions.md). Issue #122 and dependency-policy selecti
 
 The operator subsequently selected separate runner grouping, dashboard approval for every extracted runner
 update, and no automerge, and authorized implementation preparation under
-[D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c). That scoped resumption does not select
+[D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c).
+[D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) later replaced manual merge with
+automerge after approval. That scoped resumption does not select
 action-input policy or authorize publication; the earlier #122 pause remains historical.
 
 ### Human acceptance at the PR boundary

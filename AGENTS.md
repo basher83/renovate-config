@@ -35,8 +35,10 @@ The operator accepted Slice 1 candidate `33e5e1f29df4` on 2026-10-06;
 [decision D005](bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records authority and scope. The completed
 shared-policy review is [reconciled](sources/evaluate/2026-10-06-review-reconciliation.md). Shared adoption and
 dependency-policy selection remain separate. The operator selected separate runner grouping, dashboard approval
-for every extracted runner update, and no automerge, and authorized preparation under
-[D015](bundle/decisions.md#2026-10-07--d015-select-runner-approval-policy-c); publication still requires approval.
+for every extracted runner update, and authorized preparation under
+[D015](bundle/decisions.md#2026-10-07--d015-select-runner-approval-policy-c);
+[D016](bundle/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) automerges approved runner PRs
+after checks pass. Publication still requires approval.
 The action-input portion of #122 remains paused.
 CLAUDE.md remains a symlink to this entry point.
 
@@ -245,7 +247,7 @@ explicitly per repository. This list describes configured behavior, not an inven
 - `kubernetes.json` — Kubernetes manifests, Helm charts, Kustomize, and Talhelper updates
 - `rust.json` — Auto-merges patches, groups ecosystem crates (Tokio, Serde, observability), approval for critical majors
 - `javascript.json` — Auto-merges patches, groups linters, test tools, and TypeScript type definitions (npm & Bun)
-- `github-actions-security.json` — Separately groups runners with dashboard approval and manual merge;
+- `github-actions-security.json` — Separately groups runners with dashboard approval, then automerge;
   retains action digest pinning and selective automerge
 - `mise.json` — Groups and auto-merges mise-managed development tool updates
 - `ansible.json` — Ansible collection/role updates with an Ansible-specific mise Python cap

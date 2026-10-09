@@ -290,7 +290,7 @@ When triaging such a case, check:
 The following presets are included in `default.json`:
 
 - `github-actions-security.json` – GitHub Actions security rules with digest pinning, selective automerge,
-  approval for sensitive updates, and separate hosted-runner approval with manual merge.
+  approval for sensitive updates, and separate hosted-runner approval followed by automerge.
   See [runner policy](/github-hosted-runner-policy.md) for coverage and retirement responsibility.
 - `mise.json` – mise-managed development tool updates, grouped and automerged.
 

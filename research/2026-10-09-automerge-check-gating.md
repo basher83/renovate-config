@@ -9,8 +9,8 @@ generated: { by: claude_code/Opus 5.5, at: 2026-10-09T17:39:05Z }
 
 # What gates Renovate automerge in consumers without required checks
 
-**Standing: open question; no research leg has run.** This record states the gap and hypotheses before
-research, so findings can be judged against what was expected. It establishes no policy.
+**Standing: research leg complete; proof leg pending.** The hypotheses below were recorded before research ran
+and are kept unchanged so the findings can be judged against them. Findings follow. This record establishes no policy.
 
 ## Gap
 
@@ -70,6 +70,63 @@ model but contradicts the documented Renovate behavior; it is kept only as the n
 - D016 evidence entry in PR #125: "Consumers without required checks merge on approval."
 - PR #125 description, "Verification and rollback" section: the same claim.
 - Any future preset decision that treats automerge as CI-gated.
+
+## Findings from the research leg
+
+The leg ran on 2026-10-09 against Renovate 44.145.1 source (the version pinned in the existing receipts),
+upstream documentation on the `main` branch, and consumer workflows on their default branches.
+
+**H1 is confirmed for Renovate's own automerge.** `resolveBranchStatus` in
+`workers/repository/update/branch/status-checks.js` asks the platform for branch status, and the GitHub
+`getBranchStatus` in `modules/platform/github/index.js` combines every commit status and every check run on the
+branch head. It ignores branch protection entirely. Any failure returns red. The branch is green only when the
+combined status is success, or there are no statuses, and every check run concluded `success`, `neutral`, or
+`skipped`. Anything still running returns yellow, and the PR automerge path refuses to merge unless the status is
+green. Successful `renovate/*` statuses do not count, so Renovate cannot satisfy its own gate.
+
+**H2 is confirmed.** With no check runs, the result depends only on the combined commit status. GitHub reports
+`pending` when a commit has no statuses, which maps to yellow, so Renovate never merges a branch that has no
+checks. `ignoreTests: true` bypasses this by returning green before checking anything. No preset in this
+repository sets `ignoreTests` or `internalChecksAsSuccess`. D016's original wording, "consumers without required
+checks merge on approval," was wrong: a consumer with no checks leaves the PR open.
+
+**H3 is narrowed, not confirmed.** Checks that never start are invisible to Renovate. If only some workflows
+trigger, Renovate gates on those alone. Skipped and neutral check runs count as passing. Classifying the
+24 workflow-bearing consumers by trigger gave:
+
+- 18 have at least one workflow that runs on pull requests to `main` without path filters, so a Renovate PR
+  always gets checks.
+- `docs`, `forgeflare`, `forgeflare-hooks`, and `tailnet-microservices` rely only on path-filtered workflows.
+  The filters cover the files Renovate usually edits (YAML, JSON, TOML, `mise.toml`, `k8s/**`). The forgeflare
+  pair and `tailnet-microservices` exclude `renovate.json`, so a Renovate change touching only that file gets no
+  checks from them.
+- `.github` and `Proxmox-OpenAPI` have no workflow that runs on pull requests; Proxmox-OpenAPI's workflows run on
+  tags, schedules, and manual dispatch. Under H2, Renovate never automerges in either unless another app reports
+  a status.
+
+This classification parses `on:` triggers only. It does not account for third-party apps such as CodeRabbit that
+post their own statuses or check runs. Those count toward Renovate's gate and could turn a check-less branch green.
+
+**New finding, not anticipated by the hypotheses: GitHub-native auto-merge runs in parallel.** `platformAutomerge`
+defaults to `true`. When a repository allows auto-merge (`allow_auto_merge` is true for Zammad-MCP, the-range,
+personal-computing, and lunar-claude), Renovate enables GitHub's auto-merge when it creates the PR. GitHub then
+merges once branch protection requirements are met, and only required checks count there. In Zammad-MCP, GitHub
+could merge after `test-and-coverage` and `security-scan` pass while other checks are still running. In the
+23 consumers without required checks, it is not known from source whether GitHub accepts the auto-merge request or
+merges immediately. GitHub generally refuses auto-merge on a PR that can already merge, and Renovate logs the
+error at debug level and falls back to its own gate. That expectation is unverified.
+
+**The local documentation mirror is current on this point.** Upstream `docs/usage/key-concepts/automerge.md`
+keeps the "Absence of tests" wording unchanged. The mirror is missing newer merge-queue and GitLab merge-train
+sections, which do not affect this question.
+
+## What the proof leg must observe
+
+The Zammad-MCP canary should answer two questions. First, whether GitHub-native auto-merge merges the approved
+runner PR when the two required checks pass, before other checks finish. Second, whether Renovate's own gate holds
+the PR while any check is still running. A second observation in a consumer without required checks, such as
+`the-range`, would settle whether GitHub-native auto-merge merges immediately there. Both are consumer edits that
+need operator approval.
 
 ## Exit condition
 

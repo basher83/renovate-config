@@ -61,8 +61,14 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   `Zammad-MCP` at `f8da4342`, and the preserved `personal-computing` 24.04 input. Runner rule results resolve to
   `GitHub-Hosted Runners`, approval, and automerge. The real `ubuntu` 24.04 to 26.04 branch resolves to
   `needs-approval` with automerge enabled, and non-runner configuration is unchanged. Merge after approval needs
-  platform branch status, so hosted automerge remains unobserved. Which checks gate automerge, and what
-  happens with none, is unverified; [open research](https://github.com/basher83/renovate-config/pull/127) covers it.
+  platform branch status, so the replay could not show it.
+- **Hosted observation:** A Zammad-MCP canary ([#392](https://github.com/basher83/Zammad-MCP/issues/392)) confirmed the policy in hosted operation on
+  2026-10-09. The `ubuntu` 24.04 to 26.04 update waited under Pending Approval, opened after approval, and
+  automerged (#394). A second run (#396) showed which checks gate the merge. Renovate enables GitHub-native
+  auto-merge, so where branch protection requires checks, GitHub merges as soon as those pass, while
+  non-required checks may still be running. Without branch protection, Renovate's own gate waits for every
+  reported check, and app checks such as CodeRabbit and GitGuardian count. The
+  [research record](https://github.com/basher83/renovate-config/pull/127) holds the details. The ungated case for consumers without CI is a separate question.
 - **Group name clarification:** Package rules apply the title-case `groupName`, but a branch holding a single
   update carries none. Renovate's `generateBranchConfig` deletes `groupName` in that case unless
   `groupSingleUpdates` is set; the branch keeps the `github-hosted-runners` slug. Receipt generation drops

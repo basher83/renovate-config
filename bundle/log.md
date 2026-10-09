@@ -2,6 +2,12 @@
 
 ## 2026-10-09
 
+* **Update**: Recorded the hosted canary result in
+  [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge). Zammad-MCP #394 confirmed
+  approval and automerge for a real runner update, and #396 showed that GitHub-native auto-merge merges on required
+  checks alone. The [runner policy](/github-hosted-runner-policy.md) now states the observed gating
+  ([Zammad-MCP #392](https://github.com/basher83/Zammad-MCP/issues/392)).
+
 * **Update**: The operator replaced runner manual merge with automerge after dashboard approval in
   [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge). A default-branch survey found
   one pinned-runner consumer among 33; the [runner policy](/github-hosted-runner-policy.md) now records it.

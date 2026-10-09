@@ -1,0 +1,331 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "a87cd2d6b4c3",
+  "session_id": "01a1181a-7f5f-7153-b479-cf8c12409702",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-09T16:07:35.821599Z",
+  "branch": "governance/d014-acceptance-receipt",
+  "checkpoints_count": 2,
+  "save_step_count": 18,
+  "files_touched": [
+    "bundle/log.md"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "cb895a764a58",
+  "checkpoint_transcript_start": 1518,
+  "transcript_lines_at_start": 1518,
+  "compact_transcript_start": 197,
+  "token_usage": {
+    "input_tokens": 25415,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 979072,
+    "output_tokens": 3531,
+    "api_call_count": 15,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 21
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-09T16:07:35.696289Z",
+    "agent_lines": 71,
+    "agent_removed": 0,
+    "human_added": 49,
+    "human_modified": 19,
+    "human_removed": 0,
+    "total_committed": 139,
+    "total_lines_changed": 139,
+    "agent_percentage": 51.07913669064749,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 806,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "sources/basher83-repo-inventory.csv": 93,
+        "sources/renovate-dependency-review.md": 374,
+        "sources/repo-dependency-map.csv": 95,
+        "sources/shared-agent-policy-repository-review.md": 244
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1259,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1259,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 142,
+      "user_lines_removed": 38,
+      "agent_lines_added": 1349,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "research/2026-10-07-runner-update-policy-candidate.md": 84,
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 14,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 44
+      },
+      "user_removed_per_file": {
+        "research/2026-10-07-runner-update-policy-candidate.md": 32,
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 6
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 142,
+      "user_lines_removed": 38,
+      "agent_lines_added": 1349,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "research/2026-10-07-runner-update-policy-candidate.md": 84,
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 14,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 44
+      },
+      "user_removed_per_file": {
+        "research/2026-10-07-runner-update-policy-candidate.md": 32,
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 6
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1458,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1458,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1458,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1458,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1458,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1458,
+      "agent_lines_removed": 7,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1533,
+      "agent_lines_removed": 9,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1531,
+      "agent_lines_removed": 8,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 14,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1531,
+      "agent_lines_removed": 8,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 15,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1531,
+      "agent_lines_removed": 8,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 16,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1531,
+      "agent_lines_removed": 8,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 17,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1531,
+      "agent_lines_removed": 8,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 18,
+      "user_lines_added": 90,
+      "user_lines_removed": 13,
+      "agent_lines_added": 1452,
+      "agent_lines_removed": 4,
+      "user_added_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 16,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 70,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      },
+      "user_removed_per_file": {
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 8,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 1,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 4
+      }
+    },
+    {
+      "checkpoint_number": 19,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1576,
+      "agent_lines_removed": 4
+    }
+  ]
+}

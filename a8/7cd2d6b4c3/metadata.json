@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "a87cd2d6b4c3",
+  "strategy": "manual-commit",
+  "branch": "governance/d014-acceptance-receipt",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "bundle/log.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a8/7cd2d6b4c3/0/metadata.json",
+      "transcript": "/a8/7cd2d6b4c3/0/full.jsonl",
+      "compact_transcript": "/a8/7cd2d6b4c3/0/transcript.jsonl",
+      "content_hash": "/a8/7cd2d6b4c3/0/content_hash.txt",
+      "prompt": "/a8/7cd2d6b4c3/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 25415,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 979072,
+    "output_tokens": 3531,
+    "api_call_count": 15,
+    "subagent_tokens_complete": true
+  }
+}

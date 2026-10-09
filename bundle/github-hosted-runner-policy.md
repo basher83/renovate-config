@@ -35,8 +35,9 @@ Every dependency extracted as `github-runner` by the `github-actions` manager re
 Renovate's inherited major separation may prefix the generated group and branch with `major-`.[^preset][^behavior]
 
 Dashboard approval is the single operator decision: it permits creation of a new runner branch/PR, which then
-automerges once Renovate sees passing checks. Which checks gate that, and what happens in a consumer
-with none, is unverified; [open research](https://github.com/basher83/renovate-config/pull/127) covers it.
+automerges. Where branch protection requires checks, a hosted canary saw a Renovate PR merge once those passed,
+while a non-required check was still running ([Zammad-MCP #392](https://github.com/basher83/Zammad-MCP/issues/392)).
+Without branch protection, Renovate's own gate waits for every check it can read, including app checks.
 The maintainer of each affected consumer owns pending approvals and image-deprecation notices. An approval
 approaching the image's first announced brownout or removal requires a migration decision or explicit
 alternative before that deadline. This policy trades unattended environment changes for

@@ -9,7 +9,8 @@ generated: { by: claude_code/Opus 5.5, at: 2026-10-09T17:39:05Z }
 
 # What gates Renovate automerge in consumers without required checks
 
-**Standing: research leg complete; proof leg partly observed.** The hypotheses below were recorded before research ran
+**Standing: research and proof legs complete; findings await operator decision.**
+The hypotheses below were recorded before research ran
 and are kept unchanged so the findings can be judged against them. Findings follow. This record establishes no policy.
 
 ## Gap
@@ -138,6 +139,15 @@ automerges, and Renovate enables GitHub-native auto-merge. It does not settle wh
 required check finished last and GitHub credits an auto-merge to the account that enabled it. Zammad-MCP #395 makes
 the canary wait five minutes on Renovate branches, so a later automerge PR can separate the two paths. The
 timeline is in [Zammad-MCP #392](https://github.com/basher83/Zammad-MCP/issues/392#issuecomment-6086628395).
+
+**Second canary run settles the merge path (Zammad-MCP #396, 2026-10-09).** With the canary delayed five minutes on
+Renovate branches, a Docker digest PR was created at 18:22:00 UTC and GitHub-native auto-merge was enabled at 18:22:03.
+The required `security-scan` and `test-and-coverage` checks passed at 18:22:35 and 18:23:52, and the PR merged at
+18:24:03 while the non-required `runner-canary` was still running. Renovate's own gate waits for every check run,
+so GitHub-native auto-merge made this merge. In a consumer with required checks and "Allow auto-merge" enabled,
+merges are gated by required checks only. Non-required checks can still be running, or can fail, after the merge.
+This supersedes the H1 framing for such consumers: H1 describes Renovate's gate, but GitHub's gate acts first.
+The observation is in [Zammad-MCP #392](https://github.com/basher83/Zammad-MCP/issues/392).
 
 **Third-party apps supply the checks that H2 assumed were missing.** The operator confirmed CodeRabbit is installed
 on every repository. On Renovate PRs it posts a `success` commit status to say it skipped a bot PR. GitGuardian

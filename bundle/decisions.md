@@ -64,10 +64,11 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   platform branch status, so the replay could not show it.
 - **Hosted observation:** A Zammad-MCP canary ([#392](https://github.com/basher83/Zammad-MCP/issues/392)) confirmed the policy in hosted operation on
   2026-10-09. The `ubuntu` 24.04 to 26.04 update waited under Pending Approval, opened after approval, and
-  automerged (#394). A second run (#396) showed which checks gate the merge. Renovate enables GitHub-native
-  auto-merge, so where branch protection requires checks, GitHub merges as soon as those pass, while
-  non-required checks may still be running. Without branch protection, Renovate's own gate waits for every
-  reported check, and app checks such as CodeRabbit and GitGuardian count. The
+  automerged (#394). A second run (#396) merged 11 seconds after the required checks passed, while a non-required
+  check was still running. Renovate enables GitHub-native auto-merge, the most likely path for that merge, so
+  non-required checks cannot be relied on to gate it. Without branch protection, Renovate's own gate waits for
+  every check it can read, and app checks such as CodeRabbit and GitGuardian count; that case was not observed
+  in a canary. The
   [research record](https://github.com/basher83/renovate-config/pull/127) holds the details. The ungated case for consumers without CI is a separate question.
 - **Group name clarification:** Package rules apply the title-case `groupName`, but a branch holding a single
   update carries none. Renovate's `generateBranchConfig` deletes `groupName` in that case unless

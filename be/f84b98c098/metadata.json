@@ -1,0 +1,24 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "bef84b98c098",
+  "strategy": "manual-commit",
+  "branch": "research/automerge-check-gating",
+  "checkpoints_count": 6,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/be/f84b98c098/0/metadata.json",
+      "transcript": "/be/f84b98c098/0/full.jsonl",
+      "compact_transcript": "/be/f84b98c098/0/transcript.jsonl",
+      "content_hash": "/be/f84b98c098/0/content_hash.txt",
+      "prompt": "/be/f84b98c098/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 342,
+    "cache_creation_tokens": 230261,
+    "cache_read_tokens": 25891921,
+    "output_tokens": 89185,
+    "api_call_count": 170
+  }
+}

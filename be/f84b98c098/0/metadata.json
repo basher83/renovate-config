@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "bef84b98c098",
+  "session_id": "223c8ed2-f973-4688-a09d-fdaaf7d408ea",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-09T18:24:56.779397Z",
+  "branch": "research/automerge-check-gating",
+  "checkpoints_count": 6,
+  "save_step_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "234ad344fe31",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 342,
+    "cache_creation_tokens": 230261,
+    "cache_read_tokens": 25891921,
+    "output_tokens": 89185,
+    "api_call_count": 170
+  },
+  "session_metrics": {
+    "turn_count": 29
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}

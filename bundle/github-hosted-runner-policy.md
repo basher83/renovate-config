@@ -22,13 +22,13 @@ sources:
 
 # GitHub-hosted runner update policy
 
-**Standing: option C selected; implementation candidate awaiting publication approval and operator PR merge.**
+**Standing: approval and manual merge selected for all extracted runner updates; implementation awaits operator PR merge.**
 [D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c) records the operator's scope.[^selection]
 
 ## Rule and maintenance responsibility
 
 Every dependency extracted as `github-runner` by the `github-actions` manager receives the
-`GitHub-hosted runners` group (`github-hosted-runners`), `dependencyDashboardApproval: true`, and
+`GitHub-Hosted Runners` group (`github-hosted-runners`), `dependencyDashboardApproval: true`, and
 `automerge: false`. The final runner-specific rule overrides the inherited group and automerge rules.
 Renovate's inherited major separation may prefix the generated group and branch with `major-`.[^preset][^behavior]
 
@@ -69,6 +69,10 @@ There is no outstanding sampled mixed PR to reconcile; consumers outside this sa
 The [behavior evaluation](../sources/evaluate/2026-10-08-runner-behavior-evaluation.md) maps the six verification
 requirements to retained evidence and distinguishes actual observations from hypothetical/fixture controls.
 Publication, consumer rollout, and operator merge acceptance require their respective evidence and authority.
+
+The [review follow-up](../sources/evaluate/2026-10-09-runner-review-receipt.json) reruns the retained recipe
+with the title-case group name. Approval, automerge, grouping, and override controls still pass; the branch
+slug and all other parsed preset fields match the earlier candidate. The original receipt is preserved.
 
 ## Rollback and revisit
 

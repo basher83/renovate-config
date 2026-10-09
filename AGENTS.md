@@ -34,8 +34,9 @@ Use Git-hosted artifact URLs for material in other repositories; do not link int
 The operator accepted Slice 1 candidate `33e5e1f29df4` on 2026-10-06;
 [decision D005](bundle/decisions.md#2026-10-06--d005-adopt-slice-1-locally) records authority and scope. The completed
 shared-policy review is [reconciled](sources/evaluate/2026-10-06-review-reconciliation.md). Shared adoption and
-dependency-policy selection remain separate. The operator selected runner option C and authorized preparation
-under [D015](bundle/decisions.md#2026-10-07--d015-select-runner-approval-policy-c); publication still requires approval.
+dependency-policy selection remain separate. The operator selected separate runner grouping, dashboard approval
+for every extracted runner update, and no automerge, and authorized preparation under
+[D015](bundle/decisions.md#2026-10-07--d015-select-runner-approval-policy-c); publication still requires approval.
 The action-input portion of #122 remains paused.
 CLAUDE.md remains a symlink to this entry point.
 

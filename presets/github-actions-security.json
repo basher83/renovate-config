@@ -85,7 +85,7 @@
       "description": "Require dashboard approval and manual merge for GitHub-hosted runner updates",
       "matchManagers": ["github-actions"],
       "matchDepTypes": ["github-runner"],
-      "groupName": "GitHub-hosted runners",
+      "groupName": "GitHub-Hosted Runners",
       "groupSlug": "github-hosted-runners",
       "dependencyDashboardApproval": true,
       "automerge": false

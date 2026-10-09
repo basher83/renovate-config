@@ -1,5 +1,14 @@
 # Repository knowledge change log
 
+## 2026-10-09
+
+* **Update**: Addressed both CodeRabbit findings on PR #125: title-case `GitHub-Hosted Runners`
+  while retaining its branch slug, and distinguish the runner implementation from paused action-input policy
+  in README. Maintained guidance now states the selected policy directly. The
+  [review receipt](../sources/evaluate/2026-10-09-runner-review-receipt.json) records a successful replay
+  against the corrected preset; the original evidence remains unchanged. Publication and operator merge
+  acceptance remain separate.
+
 ## 2026-10-08
 
 * **Update**: Finalized the runner implementation candidate through mise. All 33 bundle regressions,

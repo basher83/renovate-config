@@ -254,7 +254,8 @@ its meaning without requiring reconstruction of the full conversation.
 Historical adoption and subsequent adaptations are linked from [log.md](/log.md) and recorded with their
 scope in [decisions.md](/decisions.md). Issue #122 and dependency-policy selection remain separate workstreams.
 
-The operator subsequently selected runner option C and authorized implementation preparation under
+The operator subsequently selected separate runner grouping, dashboard approval for every extracted runner
+update, and no automerge, and authorized implementation preparation under
 [D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c). That scoped resumption does not select
 action-input policy or authorize publication; the earlier #122 pause remains historical.
 

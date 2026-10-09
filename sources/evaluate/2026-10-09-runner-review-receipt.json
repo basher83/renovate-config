@@ -1,0 +1,2377 @@
+{
+  "completed_at": "2026-10-09T15:37:53.196Z",
+  "purpose": "Verify PR 125 review remediation without rewriting the historical behavioral receipt.",
+  "review_findings": [
+    {
+      "url": "https://github.com/basher83/renovate-config/pull/125#discussion_r4214577501",
+      "disposition": "Use title case GitHub-Hosted Runners; keep groupSlug unchanged."
+    },
+    {
+      "url": "https://github.com/basher83/renovate-config/pull/125#pullrequestreview-5451297030",
+      "disposition": "README distinguishes pending runner implementation from paused action-input policy."
+    }
+  ],
+  "baseline_receipt": {
+    "resource": "sources/evaluate/2026-10-08-runner-behavior-receipt.json",
+    "sha256": "f6d6b683c5f208308d743f900b46382ff8c324f0e80e4538ce2637b850907a76"
+  },
+  "candidate_preset": {
+    "resource": "presets/github-actions-security.json",
+    "content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"description\": \"GitHub Actions security preset - pins action digests, selectively auto-merges action updates, and requires approval and manual merge for hosted runner updates\",\n  \"packageRules\": [\n    {\n      \"description\": \"Pin GitHub Actions (uses:) to commit SHA digests for security\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchDepTypes\": [\n        \"action\"\n      ],\n      \"pinDigests\": true\n    },\n    {\n      \"description\": \"Group all GitHub Actions updates together\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"groupName\": \"GitHub Actions\",\n      \"groupSlug\": \"github-actions\"\n    },\n    {\n      \"description\": \"Auto-merge ALL GitHub Actions digest updates into main (no approval)\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"digest\"\n      ],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Auto-merge non-sensitive GitHub Actions patch, minor, and major updates into main (no approval)\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"patch\",\n        \"minor\",\n        \"major\"\n      ],\n      \"matchPackageNames\": [\n        \"!/^actions\\\\/checkout/\",\n        \"!/^actions\\\\/upload-artifact/\",\n        \"!/^actions\\\\/download-artifact/\",\n        \"!/^aws-actions\\\\//\",\n        \"!/^google-github-actions\\\\//\",\n        \"!/^azure\\\\//\",\n        \"!/^docker\\\\//\"\n      ],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Require approval for security-sensitive GitHub Actions minor and major updates\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"major\",\n        \"minor\"\n      ],\n      \"dependencyDashboardApproval\": true,\n      \"matchPackageNames\": [\n        \"/^actions\\\\/checkout/\",\n        \"/^actions\\\\/upload-artifact/\",\n        \"/^actions\\\\/download-artifact/\",\n        \"/^aws-actions\\\\//\",\n        \"/^google-github-actions\\\\//\",\n        \"/^azure\\\\//\",\n        \"/^docker\\\\//\"\n      ]\n    },\n    {\n      \"description\": \"Label GitHub Actions PRs\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"addLabels\": [\n        \"github-actions\",\n        \"security\"\n      ]\n    },\n    {\n      \"description\": \"Require dashboard approval and manual merge for GitHub-hosted runner updates\",\n      \"matchManagers\": [\"github-actions\"],\n      \"matchDepTypes\": [\"github-runner\"],\n      \"groupName\": \"GitHub-Hosted Runners\",\n      \"groupSlug\": \"github-hosted-runners\",\n      \"dependencyDashboardApproval\": true,\n      \"automerge\": false\n    }\n  ]\n}\n",
+    "sha256": "85d18152bf2bf11262f0efb43a0151453e2a4c8c806bff37c52e307ca55ff84f"
+  },
+  "parsed_change": "Only final runner rule groupName differs from the October 8 candidate; all other parsed fields match.",
+  "replay_recipe": "Copy the baseline receipt into a temporary root at its original relative path. Replace its preset_inputs[presets/github-actions-security.json] content and sha256 with candidate_preset. Write baseline harness_source to verify.mjs, replacing every literal GitHub-hosted runners with GitHub-Hosted Runners for its expected name assertions. Execute using the baseline pinned Renovate 44.145.1 runtime and Node 24.11.1, passing the temporary root and Renovate package root. The harness asserts every comparison and writes the temporary receipt; it makes no platform mutations.",
+  "runtime": {
+    "version": "44.145.1",
+    "node": "v24.11.1",
+    "source": "https://github.com/renovatebot/renovate/tree/44.145.1",
+    "execution": "Direct calls to installed Renovate extraction, preset resolution, lookupUpdates, package-rule application, and branchifyUpgrades APIs; platform=local, dryRun=lookup. No platform branch/PR/dashboard mutation API invoked.",
+    "preset_resolution": "Repository preset bodies supplied from exact local before/after bytes in Renovate memory cache; built-in presets resolved by Renovate. This changes no consumer file or external preset."
+  },
+  "actual_input_comparisons": 204,
+  "fixture_comparisons": 40,
+  "results": [
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "ada30901e7d298edb8e6dde761907ed20e32719f",
+      "case": "fresh-default-branch-head",
+      "real_runner_lookups": [
+        {
+          "packageFile": ".github/workflows/ci.yml",
+          "dependency": {
+            "depName": "ubuntu",
+            "currentValue": "26.04",
+            "replaceString": "ubuntu-26.04",
+            "depType": "github-runner",
+            "datasource": "github-runners",
+            "autoReplaceStringTemplate": "{{depName}}-{{newValue}}"
+          },
+          "result": {
+            "versioning": "docker",
+            "updates": [],
+            "warnings": [],
+            "sourceUrl": "https://github.com/actions/runner-images",
+            "currentVersion": "26.04",
+            "fixedVersion": "26.04"
+          }
+        }
+      ],
+      "approval_dispositions": [],
+      "groups": [
+        {
+          "depName": "actions/checkout",
+          "depType": "action",
+          "datasource": "github-tags",
+          "currentValue": "v7",
+          "currentDigest": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "updateType": "digest",
+          "newValue": "v7",
+          "newVersion": "v7",
+          "groupName": "GitHub Actions",
+          "groupSlug": "github-actions",
+          "branchName": "renovate/github-actions",
+          "dependencyDashboardApproval": false,
+          "automerge": true,
+          "pinDigests": true,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "actions/checkout",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v7",
+              "currentDigest": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "updateType": "digest",
+              "newValue": "v7",
+              "newVersion": "v7",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise",
+              "depType": "uses-with",
+              "datasource": "github-release-attachments",
+              "currentValue": "2026.10.4",
+              "updateType": "digest",
+              "newValue": "2026.10.4",
+              "newVersion": "2026.10.4",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5",
+              "currentDigest": "2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca",
+              "updateType": "digest",
+              "newValue": "v5",
+              "newVersion": "v5",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "basher83/Zammad-MCP",
+      "revision": "f8da4342b2e81cf1c164d7fdd34863726745cee0",
+      "case": "fresh-default-branch-head",
+      "real_runner_lookups": [],
+      "approval_dispositions": [],
+      "groups": [
+        {
+          "depName": "actions/attest-build-provenance",
+          "depType": "action",
+          "datasource": "github-tags",
+          "currentValue": "v4",
+          "currentDigest": "4d101475d8b20a2381f78447822ac1eab6504dd8",
+          "updateType": "digest",
+          "newValue": "v4",
+          "newVersion": "v4",
+          "groupName": "GitHub Actions",
+          "groupSlug": "github-actions",
+          "branchName": "renovate/github-actions",
+          "dependencyDashboardApproval": false,
+          "automerge": true,
+          "pinDigests": true,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "actions/attest-build-provenance",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v4",
+              "currentDigest": "4d101475d8b20a2381f78447822ac1eab6504dd8",
+              "updateType": "digest",
+              "newValue": "v4",
+              "newVersion": "v4",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/cache",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5.1.0",
+              "currentDigest": "caa296126883cff596d87d8935842f9db880ef25",
+              "updateType": "digest",
+              "newValue": "v5.1.0",
+              "newVersion": "v5.1.0",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/cache",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5.1.0",
+              "currentDigest": "caa296126883cff596d87d8935842f9db880ef25",
+              "updateType": "digest",
+              "newValue": "v5.1.0",
+              "newVersion": "v5.1.0",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/checkout",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v6",
+              "currentDigest": "d23441a48e516b6c34aea4fa41551a30e30af803",
+              "updateType": "digest",
+              "newValue": "v6",
+              "newVersion": "v6",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/checkout",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v6",
+              "currentDigest": "d23441a48e516b6c34aea4fa41551a30e30af803",
+              "updateType": "digest",
+              "newValue": "v6",
+              "newVersion": "v6",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/checkout",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v6",
+              "currentDigest": "d23441a48e516b6c34aea4fa41551a30e30af803",
+              "updateType": "digest",
+              "newValue": "v6",
+              "newVersion": "v6",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/checkout",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v6",
+              "currentDigest": "d23441a48e516b6c34aea4fa41551a30e30af803",
+              "updateType": "digest",
+              "newValue": "v6",
+              "newVersion": "v6",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/upload-artifact",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v7",
+              "currentDigest": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+              "updateType": "digest",
+              "newValue": "v7",
+              "newVersion": "v7",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "actions/upload-artifact",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v7",
+              "currentDigest": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+              "updateType": "digest",
+              "newValue": "v7",
+              "newVersion": "v7",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "codacy/codacy-coverage-reporter-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v1.3.0",
+              "currentDigest": "89d6c85cfafaec52c72b6c5e8b2878d33104c699",
+              "updateType": "digest",
+              "newValue": "v1.3.0",
+              "newVersion": "v1.3.0",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "docker/build-push-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v7.4.0",
+              "currentDigest": "c3c9e263c25d99ce0380d002d59b67737d91b0dc",
+              "updateType": "digest",
+              "newValue": "v7.4.0",
+              "newVersion": "v7.4.0",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "docker/login-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v4.6.0",
+              "currentDigest": "dbcb813823bdd20940b903addbd779551569679f",
+              "updateType": "digest",
+              "newValue": "v4.6.0",
+              "newVersion": "v4.6.0",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "docker/metadata-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v6.2.0",
+              "currentDigest": "dc802804100637a589fabce1cb79ff13a1411302",
+              "updateType": "digest",
+              "newValue": "v6.2.0",
+              "newVersion": "v6.2.0",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "docker/setup-buildx-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v4.4.1",
+              "currentDigest": "f87e5991a6d7451dcb8d9637bfbc97413f497069",
+              "updateType": "digest",
+              "newValue": "v4.4.1",
+              "newVersion": "v4.4.1",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "github/codeql-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v4",
+              "currentDigest": "2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2",
+              "updateType": "digest",
+              "newValue": "v4",
+              "newVersion": "v4",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise",
+              "depType": "uses-with",
+              "datasource": "github-release-attachments",
+              "currentValue": "2026.10.3",
+              "updateType": "digest",
+              "newValue": "2026.10.3",
+              "newVersion": "2026.10.3",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise",
+              "depType": "uses-with",
+              "datasource": "github-release-attachments",
+              "currentValue": "2026.10.3",
+              "updateType": "digest",
+              "newValue": "2026.10.3",
+              "newVersion": "2026.10.3",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise",
+              "depType": "uses-with",
+              "datasource": "github-release-attachments",
+              "currentValue": "2026.10.3",
+              "updateType": "digest",
+              "newValue": "2026.10.3",
+              "newVersion": "2026.10.3",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5.1.1",
+              "currentDigest": "2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca",
+              "updateType": "digest",
+              "newValue": "v5.1.1",
+              "newVersion": "v5.1.1",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5.1.1",
+              "currentDigest": "2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca",
+              "updateType": "digest",
+              "newValue": "v5.1.1",
+              "newVersion": "v5.1.1",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5.1.1",
+              "currentDigest": "2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca",
+              "updateType": "digest",
+              "newValue": "v5.1.1",
+              "newVersion": "v5.1.1",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "1cb3820ce59c43b4245ecede7c6484b89858ea25",
+      "case": "preserved-pre-upgrade-replay-not-hosted-observation",
+      "real_runner_lookups": [
+        {
+          "packageFile": ".github/workflows/ci.yml",
+          "dependency": {
+            "depName": "ubuntu",
+            "currentValue": "24.04",
+            "replaceString": "ubuntu-24.04",
+            "depType": "github-runner",
+            "datasource": "github-runners",
+            "autoReplaceStringTemplate": "{{depName}}-{{newValue}}"
+          },
+          "result": {
+            "versioning": "docker",
+            "updates": [
+              {
+                "bucket": "major",
+                "newVersion": "26.04",
+                "newValue": "26.04",
+                "newMajor": 26,
+                "newMinor": 4,
+                "newPatch": null,
+                "updateType": "major",
+                "isBreaking": true
+              }
+            ],
+            "warnings": [],
+            "sourceUrl": "https://github.com/actions/runner-images",
+            "currentVersion": "24.04",
+            "isSingleVersion": true,
+            "fixedVersion": "24.04"
+          }
+        }
+      ],
+      "approval_dispositions": [
+        {
+          "kind": "Real runner lookup branch with an explicit missing-branch/no-dashboard-check platform fixture",
+          "branchName": "renovate/major-github-hosted-runners",
+          "result": {
+            "branchExists": false,
+            "result": "needs-approval"
+          },
+          "automergeResult": "no automerge"
+        }
+      ],
+      "groups": [
+        {
+          "depName": "actions/checkout",
+          "depType": "action",
+          "datasource": "github-tags",
+          "currentValue": "v7",
+          "currentDigest": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "updateType": "digest",
+          "newValue": "v7",
+          "newVersion": "v7",
+          "groupName": "GitHub Actions",
+          "groupSlug": "github-actions",
+          "branchName": "renovate/github-actions",
+          "dependencyDashboardApproval": false,
+          "automerge": true,
+          "pinDigests": true,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "actions/checkout",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v7",
+              "currentDigest": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "updateType": "digest",
+              "newValue": "v7",
+              "newVersion": "v7",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise",
+              "depType": "uses-with",
+              "datasource": "github-release-attachments",
+              "currentValue": "2026.10.2",
+              "updateType": "digest",
+              "newValue": "2026.10.2",
+              "newVersion": "2026.10.2",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            },
+            {
+              "depName": "jdx/mise-action",
+              "depType": "action",
+              "datasource": "github-tags",
+              "currentValue": "v5",
+              "currentDigest": "7a4e45a543138629540c9a1616d08632b893e492",
+              "updateType": "digest",
+              "newValue": "v5",
+              "newVersion": "v5",
+              "groupName": "GitHub Actions",
+              "groupSlug": "github-actions",
+              "branchName": "renovate/github-actions",
+              "dependencyDashboardApproval": false,
+              "automerge": true,
+              "pinDigests": true,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "newValue": "26.04",
+          "newVersion": "26.04",
+          "groupSlug": "major-github-hosted-runners",
+          "branchName": "renovate/major-github-hosted-runners",
+          "dependencyDashboardApproval": true,
+          "automerge": false,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "ubuntu",
+              "depType": "github-runner",
+              "datasource": "github-runners",
+              "currentValue": "24.04",
+              "updateType": "major",
+              "newValue": "26.04",
+              "newVersion": "26.04",
+              "groupSlug": "major-github-hosted-runners",
+              "branchName": "renovate/major-github-hosted-runners",
+              "dependencyDashboardApproval": true,
+              "automerge": false,
+              "pinDigests": false,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mixed_major_controls": [
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "ada30901e7d298edb8e6dde761907ed20e32719f",
+      "kind": "Explicit fixture with real ubuntu lookup and hypothetical major non-runner updates; verifies baseline mixed group and candidate isolation including repeated preset inheritance",
+      "groups": {
+        "before": [
+          {
+            "depName": "actions/checkout",
+            "depType": "action",
+            "datasource": "github-tags",
+            "currentValue": "v4",
+            "updateType": "major",
+            "newValue": "v99.0.0",
+            "newVersion": "99.0.0",
+            "groupName": "GitHub Actions",
+            "groupSlug": "major-github-actions",
+            "branchName": "renovate/major-github-actions",
+            "dependencyDashboardApproval": false,
+            "automerge": false,
+            "pinDigests": true,
+            "labels": [
+              "renovate"
+            ],
+            "addLabels": [
+              "github-actions",
+              "security"
+            ],
+            "upgrades": [
+              {
+                "depName": "actions/checkout",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-node",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-python",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v5",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "example/workflows",
+                "depType": "workflow",
+                "datasource": "github-tags",
+                "currentValue": "v1",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise",
+                "depType": "uses-with",
+                "datasource": "github-release-attachments",
+                "currentValue": "2026.10.2",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise-action",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v2",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "20.0.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "container",
+                "datasource": "docker",
+                "currentValue": "20",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "postgres",
+                "depType": "service",
+                "datasource": "docker",
+                "currentValue": "16",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "python",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "3.12.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "ubuntu",
+                "depType": "github-runner",
+                "datasource": "github-runners",
+                "currentValue": "24.04",
+                "updateType": "major",
+                "newValue": "26.04",
+                "newVersion": "26.04",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "depName": "actions/checkout",
+            "depType": "action",
+            "datasource": "github-tags",
+            "currentValue": "v4",
+            "updateType": "major",
+            "newValue": "v99.0.0",
+            "newVersion": "99.0.0",
+            "groupName": "GitHub Actions",
+            "groupSlug": "major-github-actions",
+            "branchName": "renovate/major-github-actions",
+            "dependencyDashboardApproval": false,
+            "automerge": false,
+            "pinDigests": true,
+            "labels": [
+              "renovate"
+            ],
+            "addLabels": [
+              "github-actions",
+              "security"
+            ],
+            "upgrades": [
+              {
+                "depName": "actions/checkout",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-node",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-python",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v5",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "example/workflows",
+                "depType": "workflow",
+                "datasource": "github-tags",
+                "currentValue": "v1",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise",
+                "depType": "uses-with",
+                "datasource": "github-release-attachments",
+                "currentValue": "2026.10.2",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise-action",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v2",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "20.0.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "container",
+                "datasource": "docker",
+                "currentValue": "20",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "postgres",
+                "depType": "service",
+                "datasource": "docker",
+                "currentValue": "16",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "python",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "3.12.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              }
+            ]
+          },
+          {
+            "depName": "ubuntu",
+            "depType": "github-runner",
+            "datasource": "github-runners",
+            "currentValue": "24.04",
+            "updateType": "major",
+            "newValue": "26.04",
+            "newVersion": "26.04",
+            "groupSlug": "major-github-hosted-runners",
+            "branchName": "renovate/major-github-hosted-runners",
+            "dependencyDashboardApproval": true,
+            "automerge": false,
+            "pinDigests": false,
+            "labels": [
+              "renovate"
+            ],
+            "addLabels": [
+              "github-actions",
+              "security"
+            ],
+            "upgrades": [
+              {
+                "depName": "ubuntu",
+                "depType": "github-runner",
+                "datasource": "github-runners",
+                "currentValue": "24.04",
+                "updateType": "major",
+                "newValue": "26.04",
+                "newVersion": "26.04",
+                "groupSlug": "major-github-hosted-runners",
+                "branchName": "renovate/major-github-hosted-runners",
+                "dependencyDashboardApproval": true,
+                "automerge": false,
+                "pinDigests": false,
+                "labels": [
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "repository": "basher83/Zammad-MCP",
+      "revision": "f8da4342b2e81cf1c164d7fdd34863726745cee0",
+      "kind": "Explicit fixture with real ubuntu lookup and hypothetical major non-runner updates; verifies baseline mixed group and candidate isolation including repeated preset inheritance",
+      "groups": {
+        "before": [
+          {
+            "depName": "actions/checkout",
+            "depType": "action",
+            "datasource": "github-tags",
+            "currentValue": "v4",
+            "updateType": "major",
+            "newValue": "v99.0.0",
+            "newVersion": "99.0.0",
+            "groupName": "GitHub Actions",
+            "groupSlug": "major-github-actions",
+            "branchName": "renovate/major-github-actions",
+            "dependencyDashboardApproval": true,
+            "automerge": false,
+            "pinDigests": true,
+            "labels": [
+              "dependencies",
+              "renovate"
+            ],
+            "addLabels": [
+              "github-actions",
+              "security",
+              "docker",
+              "dependencies"
+            ],
+            "upgrades": [
+              {
+                "depName": "actions/checkout",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-node",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-python",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v5",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "example/workflows",
+                "depType": "workflow",
+                "datasource": "github-tags",
+                "currentValue": "v1",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise",
+                "depType": "uses-with",
+                "datasource": "github-release-attachments",
+                "currentValue": "2026.10.2",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise-action",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v2",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "20.0.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "container",
+                "datasource": "docker",
+                "currentValue": "20",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": true,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies"
+                ]
+              },
+              {
+                "depName": "postgres",
+                "depType": "service",
+                "datasource": "docker",
+                "currentValue": "16",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": true,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies"
+                ]
+              },
+              {
+                "depName": "python",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "3.12.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "ubuntu",
+                "depType": "github-runner",
+                "datasource": "github-runners",
+                "currentValue": "24.04",
+                "updateType": "major",
+                "newValue": "26.04",
+                "newVersion": "26.04",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "depName": "actions/checkout",
+            "depType": "action",
+            "datasource": "github-tags",
+            "currentValue": "v4",
+            "updateType": "major",
+            "newValue": "v99.0.0",
+            "newVersion": "99.0.0",
+            "groupName": "GitHub Actions",
+            "groupSlug": "major-github-actions",
+            "branchName": "renovate/major-github-actions",
+            "dependencyDashboardApproval": true,
+            "automerge": false,
+            "pinDigests": true,
+            "labels": [
+              "dependencies",
+              "renovate"
+            ],
+            "addLabels": [
+              "github-actions",
+              "security",
+              "docker",
+              "dependencies"
+            ],
+            "upgrades": [
+              {
+                "depName": "actions/checkout",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-node",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v4",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "actions/setup-python",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v5",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "example/workflows",
+                "depType": "workflow",
+                "datasource": "github-tags",
+                "currentValue": "v1",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise",
+                "depType": "uses-with",
+                "datasource": "github-release-attachments",
+                "currentValue": "2026.10.2",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "jdx/mise-action",
+                "depType": "action",
+                "datasource": "github-tags",
+                "currentValue": "v2",
+                "updateType": "major",
+                "newValue": "v99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": false,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "20.0.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              },
+              {
+                "depName": "node",
+                "depType": "container",
+                "datasource": "docker",
+                "currentValue": "20",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": true,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies"
+                ]
+              },
+              {
+                "depName": "postgres",
+                "depType": "service",
+                "datasource": "docker",
+                "currentValue": "16",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": true,
+                "automerge": true,
+                "pinDigests": true,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "docker",
+                  "dependencies"
+                ]
+              },
+              {
+                "depName": "python",
+                "depType": "uses-with",
+                "datasource": "github-releases",
+                "currentValue": "3.12.0",
+                "updateType": "major",
+                "newValue": "99.0.0",
+                "newVersion": "99.0.0",
+                "groupName": "GitHub Actions",
+                "groupSlug": "major-github-actions",
+                "branchName": "renovate/major-github-actions",
+                "dependencyDashboardApproval": false,
+                "automerge": true,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              }
+            ]
+          },
+          {
+            "depName": "ubuntu",
+            "depType": "github-runner",
+            "datasource": "github-runners",
+            "currentValue": "24.04",
+            "updateType": "major",
+            "newValue": "26.04",
+            "newVersion": "26.04",
+            "groupSlug": "major-github-hosted-runners",
+            "branchName": "renovate/major-github-hosted-runners",
+            "dependencyDashboardApproval": true,
+            "automerge": false,
+            "pinDigests": false,
+            "labels": [
+              "dependencies",
+              "renovate"
+            ],
+            "addLabels": [
+              "github-actions",
+              "security"
+            ],
+            "upgrades": [
+              {
+                "depName": "ubuntu",
+                "depType": "github-runner",
+                "datasource": "github-runners",
+                "currentValue": "24.04",
+                "updateType": "major",
+                "newValue": "26.04",
+                "newVersion": "26.04",
+                "groupSlug": "major-github-hosted-runners",
+                "branchName": "renovate/major-github-hosted-runners",
+                "dependencyDashboardApproval": true,
+                "automerge": false,
+                "pinDigests": false,
+                "labels": [
+                  "dependencies",
+                  "renovate"
+                ],
+                "addLabels": [
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security",
+                  "github-actions",
+                  "security"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "limits": "No hosted execution of the proposed policy, portfolio census, or future workflow compatibility is claimed. Fresh 26.04 has no update; preserved 24.04 replay supplies the available major lookup. Missing-branch approval and non-runner update controls are explicit fixtures. Both sampled consumers had no open Renovate PR; reconciliation elsewhere is unobserved. No evidence exception or publication approval is inferred.",
+  "status": "All retained harness assertions passed; approval, automerge, non-runner configuration, grouping, and override controls pass with the title-case group name."
+}

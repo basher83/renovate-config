@@ -15,3 +15,7 @@ got it, see this is precisly the bit that's missing in the pr. the pr reads a bi
 ---
 
 ok i had the other agent do a clean up pass, check the repo now you should be clear to make those addations now
+
+---
+
+sigh ok, lets commit and narrow pr for the new template, agents.md, log.md that keeps that one easy. the we gotta fix whatever pre-commit bug we have and then decide on pr 125

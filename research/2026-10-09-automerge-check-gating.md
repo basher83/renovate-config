@@ -137,7 +137,7 @@ need operator approval.
 
 **Operator approval.** The operator approved the canary consumer edits in the working session on 2026-10-09
 ("open the issue and do the canary as a PR", then "do all three" for the delay). The operator merged both canary
-PRs, Zammad-MCP #393 and #395, and the removal in #397. Dashboard approval of the runner update was a separate,
+PRs, Zammad-MCP #393 and #395, and approved the removal in #397. Dashboard approval of the runner update was a separate,
 later operator action.
 
 **First canary run (Zammad-MCP #394, 2026-10-09).** After dashboard approval, Renovate created the runner PR at

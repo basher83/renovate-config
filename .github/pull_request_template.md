@@ -1,5 +1,8 @@
 <!-- rumdl-disable-file MD041 -->
 <!--
+Required for PRs that change Renovate configuration: default.json, renovate.json, or presets/*.json.
+For other PRs, replace this template with a concise summary and verification.
+
 Write this for the operator at review time. Judge every answer against the purpose of this repository:
 central management that keeps operator attention low while getting security updates in fast.
 "Latest everything, auto-merged" is not the goal. Use concrete repos and numbers, not abstractions.

@@ -3,7 +3,7 @@
   "checkpoint_id": "835cc64dfeab",
   "strategy": "manual-commit",
   "branch": "policy/github-runner-approval",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "bundle/decisions.md",
     "bundle/governance.md"
@@ -15,13 +15,20 @@
       "compact_transcript": "/83/5cc64dfeab/0/transcript.jsonl",
       "content_hash": "/83/5cc64dfeab/0/content_hash.txt",
       "prompt": "/83/5cc64dfeab/0/prompt.txt"
+    },
+    {
+      "metadata": "/83/5cc64dfeab/1/metadata.json",
+      "transcript": "/83/5cc64dfeab/1/full.jsonl",
+      "compact_transcript": "/83/5cc64dfeab/1/transcript.jsonl",
+      "content_hash": "/83/5cc64dfeab/1/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 1140781,
-    "cache_creation_tokens": 0,
-    "cache_read_tokens": 22903936,
-    "output_tokens": 111735,
-    "api_call_count": 209
+    "input_tokens": 1140805,
+    "cache_creation_tokens": 19386,
+    "cache_read_tokens": 24006717,
+    "output_tokens": 120070,
+    "api_call_count": 221
   }
 }

@@ -1,0 +1,24 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "b46888fab5bd",
+  "strategy": "manual-commit",
+  "branch": "docs/d016-hosted-observation",
+  "checkpoints_count": 3,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/b4/6888fab5bd/0/metadata.json",
+      "transcript": "/b4/6888fab5bd/0/full.jsonl",
+      "compact_transcript": "/b4/6888fab5bd/0/transcript.jsonl",
+      "content_hash": "/b4/6888fab5bd/0/content_hash.txt",
+      "prompt": "/b4/6888fab5bd/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 408,
+    "cache_creation_tokens": 263539,
+    "cache_read_tokens": 34609112,
+    "output_tokens": 105859,
+    "api_call_count": 203
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "captured_at": "2026-10-08T03:42:52.600774+00:00",
+  "method": "GitHub PR metadata read through gh pr view --json, followed by a local Git comparison of reviewed head and merged revision",
+  "acceptance_event": {
+    "baseRefName": "main",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "additions": 3,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "bundle/decisions.md",
+        "additions": 26,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "bundle/formatting.md",
+        "additions": 8,
+        "deletions": 3,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "bundle/governance.md",
+        "additions": 22,
+        "deletions": 1,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "bundle/log.md",
+        "additions": 12,
+        "deletions": 0,
+        "changeType": "MODIFIED"
+      },
+      {
+        "path": "sources/evaluate/2026-10-07-bundle-distribution-ruling.json",
+        "additions": 17,
+        "deletions": 0,
+        "changeType": "ADDED"
+      }
+    ],
+    "headRefOid": "12c33bff1fdbde1575efe0b42409b79b2ebc43f0",
+    "mergeCommit": {
+      "oid": "31c7a95655507fc649719786dcc654973744e6e9"
+    },
+    "mergedAt": "2026-10-08T03:41:43Z",
+    "mergedBy": {
+      "id": "U_kgDOB7eaQw",
+      "is_bot": false,
+      "login": "basher83",
+      "name": "basher83"
+    },
+    "state": "MERGED",
+    "url": "https://github.com/basher83/renovate-config/pull/124"
+  },
+  "accepted_scope": "D014: no standalone bundle distribution requirement; local references may leave bundle/ but remain inside this repository, including resolved symlinks; other repositories use Git-hosted artifact URLs. Includes the operator ruling receipt and corresponding governance, formatting, agent guidance, and preparation log.",
+  "revision_comparison": "The reviewed PR head and merge commit have identical Git trees.",
+  "limits": "This records operator merge acceptance of the six files listed by GitHub for PR #124. It does not accept the runner policy, D013 proposal placement, consumer changes, other repository adoption, or every source claim; it does not create a human verified marker. This subsequent acceptance receipt and log entry are outside the reviewed revision."
+}

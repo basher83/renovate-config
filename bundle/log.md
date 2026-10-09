@@ -50,6 +50,13 @@
   distinguishes fresh consumers, a preserved-input real lookup, and explicit controls. Personal-computing
   already upgraded through bot-merged PR #39; replay still demonstrates C. Publication and merge acceptance
   remain pending; action-input policy and consumer edits are separate.
+* **Update**: The operator `basher83` merged [PR #124](https://github.com/basher83/renovate-config/pull/124)
+  on 2026-10-08 at 03:41:43 UTC (2026-10-07 at 23:41:43 America/New_York), accepting the six-file D014
+  repository-bound reference change. Reviewed head `12c33bff1fdbde1575efe0b42409b79b2ebc43f0` and merged
+  revision `31c7a95655507fc649719786dcc654973744e6e9` have identical trees. The
+  [acceptance receipt](../sources/evaluate/2026-10-07-d014-pr-acceptance.json) preserves the GitHub event,
+  actor, revisions, timestamp, accepted paths, and scope. Runner policy, D013, consumer changes, adoption
+  elsewhere, and this subsequent receipt remain outside that acceptance.
 * **Update**: Recorded the operator's repository-bound reference ruling in
   [D014](/decisions.md#2026-10-07--d014-bound-local-references-to-this-repository).
   Standalone bundle distribution is not required. Local references may leave `bundle/` but stay inside this

@@ -84,6 +84,10 @@ branch head. It ignores branch protection entirely. Any failure returns red. The
 combined status is success, or there are no statuses, and every check run concluded `success`, `neutral`, or
 `skipped`. Anything still running returns yellow, and the PR automerge path refuses to merge unless the status is
 green. Successful `renovate/*` statuses do not count, so Renovate cannot satisfy its own gate.
+This assumes Renovate can read check runs. If the check-runs request returns 403, Renovate logs "No permission
+to view check runs", treats the list as empty, and decides from commit statuses alone. The hosted Renovate app's
+check-read permission was not verified here. If it were missing, a pending or failing check run would be invisible,
+and a `success` status, such as CodeRabbit's, would make the branch green.
 
 **H2 is confirmed.** With no check runs, the result depends only on the combined commit status. GitHub reports
 `pending` when a commit has no statuses, which maps to yellow, so Renovate never merges a branch that has no
@@ -131,6 +135,11 @@ need operator approval.
 
 ## Proof leg observations
 
+**Operator approval.** The operator approved the canary consumer edits in the working session on 2026-10-09
+("open the issue and do the canary as a PR", then "do all three" for the delay). The operator merged both canary
+PRs, Zammad-MCP #393 and #395, and the removal in #397. Dashboard approval of the runner update was a separate,
+later operator action.
+
 **First canary run (Zammad-MCP #394, 2026-10-09).** After dashboard approval, Renovate created the runner PR at
 18:04:49 UTC and enabled GitHub-native auto-merge (squash) at 18:04:52. Every check passed between 18:04:56 and
 18:06:46. The last was the required `test-and-coverage`, and the PR merged at 18:07:33 with `renovate[bot]` as the
@@ -160,7 +169,9 @@ The last eight merged Renovate PRs in each consumer without pull-request workflo
   CodeQL, and the CodeRabbit status.
 
 So H2 holds in Renovate's code but not in practice for these consumers. A branch is never check-less, and these
-repositories automerge with no functional CI. Every automerge rule in the presets is effectively ungated there.
+repositories automerge with no functional CI. App reports may still gate Renovate's decision: a failing CodeQL or
+Codacy run would block it. Nothing verifies that an update actually builds or passes tests, though. The records
+do not show which reports Renovate could read for each merge, or which merge path handled it.
 Each merge came hours after PR creation, not seconds. That fits Renovate merging on a later scheduled run rather
 than GitHub-native auto-merge, which would merge almost at once in a repository with no branch protection. It does
 not establish that GitHub refused the auto-merge request.

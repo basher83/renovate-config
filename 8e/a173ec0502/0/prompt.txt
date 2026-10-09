@@ -123,3 +123,7 @@ perfect, lets knock out the runner-policy then
 ---
 
 approved
+
+---
+
+ok i was looking at the pr and the way it's written is confusing because its reffered to as "the operator selected option C..." that makes no sense to an outside reader without context of A and B. Either simply state what C is or you must include A and B as well. Also theres incoming changes from remote to reconcile as well as code rabbit comments on the pr

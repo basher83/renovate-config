@@ -1,5 +1,12 @@
 # Repository knowledge change log
 
+## 2026-10-09
+
+* **Creation**: Added a pull request template at the operator's request. Renovate configuration PR bodies must state concrete
+  consumer blast radius, required consumer changes, and operator attention cost, judged against central
+  management with low attention and fast security updates. AGENTS.md requires agents to use it.
+  Prompted by PR 125: its body omitted that only one of about twenty-five workflow-bearing consumers pins a runner.
+
 ## 2026-10-07
 
 * **Update**: Recorded the operator's repository-bound reference ruling in

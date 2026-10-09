@@ -61,6 +61,9 @@ for binding versus derivation, provenance, and the human PR acceptance needed to
 - Obtain separate approval of the concrete result before each push, merge, publication, or external change.
 - For shared preset behavior changes, require representative consumer evidence or an explicit operator exception.
 - Preserve unrelated work and distinguish preparation, adoption, implementation, commit, and publication authority.
+- Write every PR body to the [pull request template](.github/pull_request_template.md), passing it to
+  `gh pr create`. Survey actual consumer default branches before writing; report blast radius, required
+  consumer changes, and operator attention cost against the goal of low attention with fast security updates.
 - Keep decisions and rationale discoverable; do not manufacture historical approval for operative JSON.
 - Specialist capability and tool access do not authorize consumer edits, organization changes, or new enforcement.
 

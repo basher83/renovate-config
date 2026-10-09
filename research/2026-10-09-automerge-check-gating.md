@@ -9,7 +9,7 @@ generated: { by: claude_code/Opus 5.5, at: 2026-10-09T17:39:05Z }
 
 # What gates Renovate automerge in consumers without required checks
 
-**Standing: research leg complete; proof leg pending.** The hypotheses below were recorded before research ran
+**Standing: research leg complete; proof leg partly observed.** The hypotheses below were recorded before research ran
 and are kept unchanged so the findings can be judged against them. Findings follow. This record establishes no policy.
 
 ## Gap
@@ -127,6 +127,33 @@ runner PR when the two required checks pass, before other checks finish. Second,
 the PR while any check is still running. A second observation in a consumer without required checks, such as
 `the-range`, would settle whether GitHub-native auto-merge merges immediately there. Both are consumer edits that
 need operator approval.
+
+## Proof leg observations
+
+**First canary run (Zammad-MCP #394, 2026-10-09).** After dashboard approval, Renovate created the runner PR at
+18:04:49 UTC and enabled GitHub-native auto-merge (squash) at 18:04:52. Every check passed between 18:04:56 and
+18:06:46. The last was the required `test-and-coverage`, and the PR merged at 18:07:33 with `renovate[bot]` as the
+actor. This run confirms three things in hosted operation: dashboard approval holds the PR, an approved runner PR
+automerges, and Renovate enables GitHub-native auto-merge. It does not settle which path merged, because a
+required check finished last and GitHub credits an auto-merge to the account that enabled it. Zammad-MCP #395 makes
+the canary wait five minutes on Renovate branches, so a later automerge PR can separate the two paths. The
+timeline is in [Zammad-MCP #392](https://github.com/basher83/Zammad-MCP/issues/392#issuecomment-6086628395).
+
+**Third-party apps supply the checks that H2 assumed were missing.** The operator confirmed CodeRabbit is installed
+on every repository. On Renovate PRs it posts a `success` commit status to say it skipped a bot PR. GitGuardian
+posts a check run, and Codacy and CodeQL default setup do the same where enabled. Renovate's gate counts all of these.
+The last eight merged Renovate PRs in each consumer without pull-request workflows show the effect:
+
+- `.github` #91 to #98 automerged with only `GitGuardian Security Checks` and the CodeRabbit status. These were
+  mise tool, uv, prek, Action version, and digest updates.
+- `Proxmox-OpenAPI` #112 to #125 automerged reusable-workflow digest updates with only GitGuardian, Codacy,
+  CodeQL, and the CodeRabbit status.
+
+So H2 holds in Renovate's code but not in practice for these consumers. A branch is never check-less, and these
+repositories automerge with no functional CI. Every automerge rule in the presets is effectively ungated there.
+Each merge came hours after PR creation, not seconds. That fits Renovate merging on a later scheduled run rather
+than GitHub-native auto-merge, which would merge almost at once in a repository with no branch protection. It does
+not establish that GitHub refused the auto-merge request.
 
 ## Exit condition
 

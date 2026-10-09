@@ -1,0 +1,25 @@
+I have a question there's an open pr 125, the repo sources/ has supplemental info, but isn't pr 125 simply rejecting auto merge in favor of individual repos having to make thier own call on wha gets merged? I feel like thats whats happening here? The point of this repo is to centralize configs not have each repo have to maintain thier own. granted my previous auto merge across most repos was probably to broad but i feel this may be swinging back the other way too far
+
+---
+
+yeah survey which repos pin runners vs ubuntu-latest
+
+---
+
+ok so let me see if I understand; it's not a bad rule for the point of having a central renovate config and won't incur burdens i am trying to avoid (lots of manual prs) but for it to work properly I need to make adjustments in all my other repos?
+
+---
+
+got it, see this is precisly the bit that's missing in the pr. the pr reads a bit too abstract I guess for me. which i think means I need a rule or template for these prs. because me having a convo with an agent in the terminal about choices then picking one to pr is fine and all but that's honestly where i am most distracted. the pr review is when i'l digging in hard to details. hence why i fired you up and asked these questions the pr isn't answering for me. i need ot know the blast radious and tradeoffs. basically if i accept this pr i need to know what does it actually do, what changes should or do i need to change in other repos, what mainatenece burden am i accepting on my attention. all of those tradeoffs should be measured against the point to this repo; central management reducing operator attention while maximizing security updates. I don't need the latest everything auto merged and thats actually not a good posture at all. I need less attention spent on manually approving security updates via pr. thats the point. keep my repos safe as possible and let me focus on spending my attention on prs like this one that require me to dig into them
+
+---
+
+ok i had the other agent do a clean up pass, check the repo now you should be clear to make those addations now
+
+---
+
+sigh ok, lets commit and narrow pr for the new template, agents.md, log.md that keeps that one easy. the we gotta fix whatever pre-commit bug we have and then decide on pr 125
+
+---
+
+yea i think second option makes sense to me as well

@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "5bcca51b0c3c",
+  "strategy": "manual-commit",
+  "branch": "policy/github-runner-approval",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "bundle/decisions.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/5b/cca51b0c3c/0/metadata.json",
+      "transcript": "/5b/cca51b0c3c/0/full.jsonl",
+      "compact_transcript": "/5b/cca51b0c3c/0/transcript.jsonl",
+      "content_hash": "/5b/cca51b0c3c/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 150,
+    "cache_creation_tokens": 134941,
+    "cache_read_tokens": 7103685,
+    "output_tokens": 35854,
+    "api_call_count": 75
+  }
+}

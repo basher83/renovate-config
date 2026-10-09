@@ -1,0 +1,677 @@
+{
+  "purpose": "Replay D016 (dashboard approval, then automerge) against the retained consumer inputs, and determine why runner branch results lack groupName.",
+  "completed_at": "2026-10-09T17:27:50.154Z",
+  "baseline_receipt": "sources/evaluate/2026-10-08-runner-behavior-receipt.json",
+  "candidate_preset": {
+    "path": "presets/github-actions-security.json",
+    "sha256": "f8b7551a0ae2f57c9053600f85b8e0eb10e060a299e204502be3a033c8e74671",
+    "content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"description\": \"GitHub Actions security preset - pins action digests, selectively auto-merges action updates, and requires approval, then automerges passing hosted runner updates\",\n  \"packageRules\": [\n    {\n      \"description\": \"Pin GitHub Actions (uses:) to commit SHA digests for security\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchDepTypes\": [\n        \"action\"\n      ],\n      \"pinDigests\": true\n    },\n    {\n      \"description\": \"Group all GitHub Actions updates together\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"groupName\": \"GitHub Actions\",\n      \"groupSlug\": \"github-actions\"\n    },\n    {\n      \"description\": \"Auto-merge ALL GitHub Actions digest updates into main (no approval)\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"digest\"\n      ],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Auto-merge non-sensitive GitHub Actions patch, minor, and major updates into main (no approval)\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"patch\",\n        \"minor\",\n        \"major\"\n      ],\n      \"matchPackageNames\": [\n        \"!/^actions\\\\/checkout/\",\n        \"!/^actions\\\\/upload-artifact/\",\n        \"!/^actions\\\\/download-artifact/\",\n        \"!/^aws-actions\\\\//\",\n        \"!/^google-github-actions\\\\//\",\n        \"!/^azure\\\\//\",\n        \"!/^docker\\\\//\"\n      ],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Require approval for security-sensitive GitHub Actions minor and major updates\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"matchUpdateTypes\": [\n        \"major\",\n        \"minor\"\n      ],\n      \"dependencyDashboardApproval\": true,\n      \"matchPackageNames\": [\n        \"/^actions\\\\/checkout/\",\n        \"/^actions\\\\/upload-artifact/\",\n        \"/^actions\\\\/download-artifact/\",\n        \"/^aws-actions\\\\//\",\n        \"/^google-github-actions\\\\//\",\n        \"/^azure\\\\//\",\n        \"/^docker\\\\//\"\n      ]\n    },\n    {\n      \"description\": \"Label GitHub Actions PRs\",\n      \"matchManagers\": [\n        \"github-actions\"\n      ],\n      \"addLabels\": [\n        \"github-actions\",\n        \"security\"\n      ]\n    },\n    {\n      \"description\": \"Require dashboard approval for GitHub-hosted runner updates, then automerge when checks pass\",\n      \"matchManagers\": [\"github-actions\"],\n      \"matchDepTypes\": [\"github-runner\"],\n      \"groupName\": \"GitHub-Hosted Runners\",\n      \"groupSlug\": \"github-hosted-runners\",\n      \"dependencyDashboardApproval\": true,\n      \"automerge\": true\n    }\n  ]\n}"
+  },
+  "runtime": {
+    "version": "44.145.1",
+    "node": "v24.11.1",
+    "source": "https://github.com/renovatebot/renovate/tree/44.145.1",
+    "execution": "Direct calls to installed Renovate extraction, preset resolution, lookupUpdates, package-rule application, and branchifyUpgrades APIs; platform=local, dryRun=lookup. No platform branch/PR/dashboard mutation API invoked.",
+    "preset_resolution": "Repository preset bodies supplied from exact local before/after bytes in Renovate memory cache; built-in presets resolved by Renovate. This changes no consumer file or external preset."
+  },
+  "replay_recipe": "Copy the baseline receipt into a temporary root at its original relative path. Replace its preset_inputs[presets/github-actions-security.json] content and sha256 with candidate_preset. Write baseline harness_source to verify.mjs and apply harness_diff. Execute with Renovate 44.145.1 and Node 24.11.1, passing the temporary root and Renovate package root. No platform mutation API is invoked.",
+  "harness_diff": "--- /private/tmp/claude-501/-Users-basher8383-3I-lab-renovate-config/223c8ed2-f973-4688-a09d-fdaaf7d408ea/scratchpad/verify.mjs\t2026-10-09 13:26:57\n+++ /private/tmp/claude-501/-Users-basher8383-3I-lab-renovate-config/223c8ed2-f973-4688-a09d-fdaaf7d408ea/scratchpad/verify-d016.mjs\t2026-10-09 13:27:44\n@@ -64,7 +64,7 @@\n    const left=await applyPackageRules({...before.config,...dep,packageName:dep.packageName??dep.depName,manager:'github-actions',packageFile:file.packageFile,updateType});\n    const right=await applyPackageRules({...after.config,...dep,packageName:dep.packageName??dep.depName,manager:'github-actions',packageFile:file.packageFile,updateType});\n    if(dep.depType==='github-runner') {\n-    assert.equal(right.groupSlug,'github-hosted-runners');assert.equal(right.dependencyDashboardApproval,true);assert.equal(right.automerge,false);\n+    assert.equal(right.groupSlug,'github-hosted-runners');assert.equal(right.groupName,'GitHub-Hosted Runners');assert.equal(right.dependencyDashboardApproval,true);assert.equal(right.automerge,true);\n    } else { const a={...left};const b={...right};delete a.packageRules;delete b.packageRules;delete a.description;delete b.description;assert.deepEqual(a,b); }\n    comparisons.push({packageFile:file.packageFile,kind:'hypothetical update-type control over actual extracted dependency',before:project(left),after:dep.depType==='github-runner'?project(right):{same_as:'before'}});\n   }\n@@ -87,16 +87,16 @@\n   groups[variant]=grouping.branches.map(b=>({...project(b),upgrades:b.upgrades.map(project)}));\n   if(variant==='after') for(const b of grouping.branches) {\n    const runners=b.upgrades.filter(u=>u.depType==='github-runner');\n-   if(runners.length) {assert.equal(runners.length,b.upgrades.length);assert.equal(b.automerge,false);assert.equal(b.dependencyDashboardApproval,true);\n+   if(runners.length) {assert.equal(runners.length,b.upgrades.length);assert.equal(b.automerge,true);assert.equal(b.dependencyDashboardApproval,true);\n     const result=await processBranch(b); assert.equal(result.result,'needs-approval');\n-    const automergeResult=await tryBranchAutomerge({...b,automergeType:'branch'});assert.equal(automergeResult,'no automerge');\n+    const automergeResult='not exercised: requires platform branch status';\n     approvalDispositions.push({kind:'Real runner lookup branch with an explicit missing-branch/no-dashboard-check platform fixture',branchName:b.branchName,result,automergeResult});\n    }\n   }\n  }\n  const globalConfig=structuredClone(after.config);globalConfig.major={...globalConfig.major,automerge:true,dependencyDashboardApproval:false};\n  const globalResult=await branchifyUpgrades(globalConfig,structuredClone({'github-actions':files}));\n- for(const b of globalResult.branches.filter(b=>b.upgrades.some(u=>u.depType==='github-runner'))) {assert.equal(b.automerge,false);assert.equal(b.dependencyDashboardApproval,true);}\n+ for(const b of globalResult.branches.filter(b=>b.upgrades.some(u=>u.depType==='github-runner'))) {assert.equal(b.automerge,true);assert.equal(b.dependencyDashboardApproval,true);}\n  const overrideConfig=structuredClone(after.config);overrideConfig.packageRules.push({matchManagers:['github-actions'],matchDepTypes:['github-runner'],automerge:true,dependencyDashboardApproval:false,groupName:'Consumer runner override',groupSlug:'consumer-runner-override'});\n  const overrideResult=await branchifyUpgrades(overrideConfig,structuredClone({'github-actions':files}));\n  for(const b of overrideResult.branches.filter(b=>b.upgrades.some(u=>u.depType==='github-runner'))) {assert.equal(b.automerge,true);assert.equal(b.dependencyDashboardApproval,false);assert(b.groupSlug.endsWith('consumer-runner-override')); }\n@@ -123,7 +123,7 @@\n   const grouping=await branchifyUpgrades(cfg,structuredClone({'github-actions':files}));\n   groups[name]=grouping.branches.map(b=>({...project(b),upgrades:b.upgrades.map(project)}));\n   if(name==='before') assert(grouping.branches.some(b=>b.upgrades.some(u=>u.depType==='github-runner') && b.upgrades.some(u=>u.depType!=='github-runner')));\n-  else for(const b of grouping.branches.filter(b=>b.upgrades.some(u=>u.depType==='github-runner'))) { assert(b.upgrades.every(u=>u.depType==='github-runner'));assert.equal(b.automerge,false);assert.equal(b.dependencyDashboardApproval,true); }\n+  else for(const b of grouping.branches.filter(b=>b.upgrades.some(u=>u.depType==='github-runner'))) { assert(b.upgrades.every(u=>u.depType==='github-runner'));assert.equal(b.automerge,true);assert.equal(b.dependencyDashboardApproval,true); }\n  }\n  mixedMajorControls.push({repository:consumer.repository,revision:consumer.revision,kind:'Explicit fixture with real ubuntu lookup and hypothetical major non-runner updates; verifies baseline mixed group and candidate isolation including repeated preset inheritance',groups});\n }",
+  "consumers": [
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "ada30901e7d298edb8e6dde761907ed20e32719f",
+      "case": "fresh-default-branch-head",
+      "runner_rule_results": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "26.04",
+          "updateType": "digest",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "26.04",
+          "updateType": "major",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "26.04",
+          "updateType": "minor",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "26.04",
+          "updateType": "patch",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "26.04",
+          "updateType": "pin",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "26.04",
+          "updateType": "replacement",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        }
+      ],
+      "runner_branches": [],
+      "approval_dispositions": [],
+      "global_major_override_control": [],
+      "later_local_override_control": []
+    },
+    {
+      "repository": "basher83/Zammad-MCP",
+      "revision": "f8da4342b2e81cf1c164d7fdd34863726745cee0",
+      "case": "fresh-default-branch-head",
+      "runner_rule_results": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "latest",
+          "updateType": "digest",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security",
+            "github-actions",
+            "security"
+          ],
+          "skipReason": "invalid-version",
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "latest",
+          "updateType": "major",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security",
+            "github-actions",
+            "security"
+          ],
+          "skipReason": "invalid-version",
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "latest",
+          "updateType": "minor",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security",
+            "github-actions",
+            "security"
+          ],
+          "skipReason": "invalid-version",
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "latest",
+          "updateType": "patch",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security",
+            "github-actions",
+            "security"
+          ],
+          "skipReason": "invalid-version",
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "latest",
+          "updateType": "pin",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security",
+            "github-actions",
+            "security"
+          ],
+          "skipReason": "invalid-version",
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "latest",
+          "updateType": "replacement",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security",
+            "github-actions",
+            "security"
+          ],
+          "skipReason": "invalid-version",
+          "enabled": true
+        }
+      ],
+      "runner_branches": [],
+      "approval_dispositions": [],
+      "global_major_override_control": [],
+      "later_local_override_control": []
+    },
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "1cb3820ce59c43b4245ecede7c6484b89858ea25",
+      "case": "preserved-pre-upgrade-replay-not-hosted-observation",
+      "runner_rule_results": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "digest",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "minor",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "patch",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "pin",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        },
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "replacement",
+          "groupName": "GitHub-Hosted Runners",
+          "groupSlug": "github-hosted-runners",
+          "branchName": "{{{branchPrefix}}}{{{additionalBranchPrefix}}}{{{branchTopic}}}",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "enabled": true
+        }
+      ],
+      "runner_branches": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "newValue": "26.04",
+          "newVersion": "26.04",
+          "groupSlug": "major-github-hosted-runners",
+          "branchName": "renovate/major-github-hosted-runners",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "ubuntu",
+              "depType": "github-runner",
+              "datasource": "github-runners",
+              "currentValue": "24.04",
+              "updateType": "major",
+              "newValue": "26.04",
+              "newVersion": "26.04",
+              "groupSlug": "major-github-hosted-runners",
+              "branchName": "renovate/major-github-hosted-runners",
+              "dependencyDashboardApproval": true,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        }
+      ],
+      "approval_dispositions": [
+        {
+          "kind": "Real runner lookup branch with an explicit missing-branch/no-dashboard-check platform fixture",
+          "branchName": "renovate/major-github-hosted-runners",
+          "result": {
+            "branchExists": false,
+            "result": "needs-approval"
+          },
+          "automergeResult": "not exercised: requires platform branch status"
+        }
+      ],
+      "global_major_override_control": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "newValue": "26.04",
+          "newVersion": "26.04",
+          "groupSlug": "major-github-hosted-runners",
+          "branchName": "renovate/major-github-hosted-runners",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ]
+        }
+      ],
+      "later_local_override_control": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "newValue": "26.04",
+          "newVersion": "26.04",
+          "groupSlug": "major-consumer-runner-override",
+          "branchName": "renovate/major-consumer-runner-override",
+          "dependencyDashboardApproval": false,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ]
+        }
+      ]
+    }
+  ],
+  "mixed_major_controls": [
+    {
+      "repository": "basher83/personal-computing",
+      "revision": "ada30901e7d298edb8e6dde761907ed20e32719f",
+      "runner_branches": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "newValue": "26.04",
+          "newVersion": "26.04",
+          "groupSlug": "major-github-hosted-runners",
+          "branchName": "renovate/major-github-hosted-runners",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "ubuntu",
+              "depType": "github-runner",
+              "datasource": "github-runners",
+              "currentValue": "24.04",
+              "updateType": "major",
+              "newValue": "26.04",
+              "newVersion": "26.04",
+              "groupSlug": "major-github-hosted-runners",
+              "branchName": "renovate/major-github-hosted-runners",
+              "dependencyDashboardApproval": true,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "basher83/Zammad-MCP",
+      "revision": "f8da4342b2e81cf1c164d7fdd34863726745cee0",
+      "runner_branches": [
+        {
+          "depName": "ubuntu",
+          "depType": "github-runner",
+          "datasource": "github-runners",
+          "currentValue": "24.04",
+          "updateType": "major",
+          "newValue": "26.04",
+          "newVersion": "26.04",
+          "groupSlug": "major-github-hosted-runners",
+          "branchName": "renovate/major-github-hosted-runners",
+          "dependencyDashboardApproval": true,
+          "automerge": true,
+          "pinDigests": false,
+          "labels": [
+            "dependencies",
+            "renovate"
+          ],
+          "addLabels": [
+            "github-actions",
+            "security"
+          ],
+          "upgrades": [
+            {
+              "depName": "ubuntu",
+              "depType": "github-runner",
+              "datasource": "github-runners",
+              "currentValue": "24.04",
+              "updateType": "major",
+              "newValue": "26.04",
+              "newVersion": "26.04",
+              "groupSlug": "major-github-hosted-runners",
+              "branchName": "renovate/major-github-hosted-runners",
+              "dependencyDashboardApproval": true,
+              "automerge": true,
+              "pinDigests": false,
+              "labels": [
+                "dependencies",
+                "renovate"
+              ],
+              "addLabels": [
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security",
+                "github-actions",
+                "security"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "group_name_finding": {
+    "observation": "Package-rule results carry groupName GitHub-Hosted Runners; single-update runner branches carry no groupName.",
+    "cause": "Renovate generateBranchConfig deletes groupName when a group branch holds one update and groupSingleUpdates is not true. The branch keeps the group slug. Receipt generation projects groupName whenever present and drops nothing.",
+    "renovate_source": "node_modules/renovate/dist/workers/repository/updates/generate.js (44.145.1), lines 163-189",
+    "excerpt": "\tconst groupEligible = depNames.length > 1 || toVersions.length > 1 || !toVersions[0] && newValue.length > 1;\n\tconst typesGroup = depNames.length > 1 && !hasGroupName && isTypesGroup(branchUpgrades);\n\tlogger.trace(`groupEligible: ${groupEligible}`);\n\tconst singleUpdateGroup = hasGroupName && !groupEligible && !branchUpgrades[0].sharedVariableName;\n\tlogger.trace(`singleUpdateGroup: ${singleUpdateGroup}`);\n\tconst useGroupSettings = hasGroupName && (groupEligible || singleUpdateGroup && branchUpgrades[0].groupSingleUpdates === true);\n\tlogger.trace(`useGroupSettings: ${useGroupSettings}`);\n\tlet releaseTimestamp;\n\tif (depTypes.size) config.depTypes = Array.from(depTypes).sort();\n\tfor (const branchUpgrade of branchUpgrades) {\n\t\tlet upgrade = { ...branchUpgrade };\n\t\tupgrade.depTypes = config.depTypes;\n\t\tif (newValue.length > 1 && !groupEligible) upgrade.commitMessageExtra = `to v${toVersions[0]}`;\n\t\tconst pendingVersionsLength = upgrade.pendingVersions?.length;\n\t\tif (pendingVersionsLength) {\n\t\t\tupgrade.displayPending = `\\`${upgrade.pendingVersions.at(-1)}\\``;\n\t\t\tif (pendingVersionsLength > 1) upgrade.displayPending += ` (+${pendingVersionsLength - 1})`;\n\t\t} else upgrade.displayPending = \"\";\n\t\tupgrade.prettyDepType = upgrade.prettyDepType ?? upgrade.depType ?? \"dependency\";\n\t\tif (useGroupSettings) {\n\t\t\tupgrade = mergeChildConfig(upgrade, upgrade.group);\n\t\t\tupgrade.isGroup = true;\n\t\t\tif (singleUpdateGroup) {\n\t\t\t\tdelete upgrade.commitMessageExtra;\n\t\t\t\tupgrade.recreateClosed = upgrade.recreateWhen !== \"never\";\n\t\t\t}\n\t\t} else delete upgrade.groupName;"
+  },
+  "limits": "Approval disposition (needs-approval) and automerge=true on runner branches are exercised. tryBranchAutomerge is not exercised because it needs platform branch status; hosted automerge after approval remains unobserved. Consumers without required checks merge on approval. No consumer edit or publication is implied.",
+  "status": "All retained harness assertions pass with automerge=true; runner package-rule results assert groupName GitHub-Hosted Runners."
+}

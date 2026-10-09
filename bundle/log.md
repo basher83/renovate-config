@@ -7,6 +7,11 @@
   one pinned-runner consumer among 33; the [runner policy](/github-hosted-runner-policy.md) now records it.
   Strict validation passes; hosted automerge after approval remains unobserved.
 
+* **Update**: Addressed both operator-endorsed CodeRabbit findings on PR #125. A new
+  [D016 replay receipt](../sources/evaluate/2026-10-09-d016-automerge-receipt.json) supplies representative-consumer
+  evidence with automerge enabled. It also traces the missing branch `groupName` to Renovate's single-update
+  ungrouping rather than to receipt generation. D016 records both; earlier receipts are unchanged.
+
 * **Update**: Addressed both CodeRabbit findings on PR #125: title-case `GitHub-Hosted Runners`
   while retaining its branch slug, and distinguish the runner implementation from paused action-input policy
   in README. Maintained guidance now states the selected policy directly. The

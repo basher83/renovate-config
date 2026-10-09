@@ -56,8 +56,17 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   The approval stays the deliberate decision on a CI environment change; the merge click added attention without
   adding review. A survey of consumer default branches found that only `personal-computing` pins a runner, so this
   affects one consumer today and keeps per-consumer cost low if more repositories pin later.
-- **Evidence and limits:** Strict validation passes. The D015 replay exercised approval with automerge disabled;
-  hosted automerge after approval remains unobserved. Consumers without required checks merge on approval.
+- **Evidence and limits:** The [D016 replay receipt](../sources/evaluate/2026-10-09-d016-automerge-receipt.json)
+  reruns the retained harness with Renovate 44.145.1 and Node 24.11.1 against `personal-computing` at `ada30901`,
+  `Zammad-MCP` at `f8da4342`, and the preserved `personal-computing` 24.04 input. Runner rule results resolve to
+  `GitHub-Hosted Runners`, approval, and automerge. The real `ubuntu` 24.04 to 26.04 branch resolves to
+  `needs-approval` with automerge enabled, and non-runner configuration is unchanged. Merge after approval needs
+  platform branch status, so hosted automerge remains unobserved. Consumers without required checks merge on approval.
+- **Group name clarification:** Package rules apply the title-case `groupName`, but a branch holding a single
+  update carries none. Renovate's `generateBranchConfig` deletes `groupName` in that case unless
+  `groupSingleUpdates` is set; the branch keeps the `github-hosted-runners` slug. Receipt generation drops
+  nothing. A single runner update therefore gets an ordinary single-dependency PR title, not the group name.
+  The historical [review receipt](../sources/evaluate/2026-10-09-runner-review-receipt.json) is unchanged.
 - **Revisit conditions:** An approved runner upgrade that merges and breaks a consumer, or consumers adopting
   pinned runners widely.
 

@@ -67,7 +67,9 @@ Action-input policy and sensitive-action coupling remain separate questions in #
 Renovate 44.145.1 extraction, preset resolution, rule processing, lookup, grouping, and branch approval
 processing were exercised. Personal-computing's preserved 24.04 workflow produces a real major 26.04 lookup;
 the proposed runner branch returns `needs-approval` under an explicit missing-branch/no-approval fixture.
-That replay ran with automerge disabled; the automerge setting under D016 has strict validation, not replay.
+That replay ran with automerge disabled. The
+[D016 replay](../sources/evaluate/2026-10-09-d016-automerge-receipt.json) repeats it with automerge enabled
+and confirms that Renovate drops `groupName` from single-update branches while keeping the group slug.
 Non-runner behavioral configuration compares equal, apart from descriptive metadata. Repeated inheritance,
 mixed major groups, global update options, and later local overrides have explicit controls.[^behavior]
 

@@ -1,0 +1,110 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "38e15aff1ced",
+  "session_id": "223c8ed2-f973-4688-a09d-fdaaf7d408ea",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-09T16:12:40.222521Z",
+  "branch": "docs/pr-template",
+  "checkpoints_count": 1,
+  "save_step_count": 5,
+  "files_touched": [
+    ".github/pull_request_template.md",
+    "AGENTS.md",
+    "bundle/log.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "26dcc3fde5ad",
+  "checkpoint_transcript_start": 116,
+  "transcript_lines_at_start": 116,
+  "compact_transcript_start": 18,
+  "token_usage": {
+    "input_tokens": 32,
+    "cache_creation_tokens": 11010,
+    "cache_read_tokens": 1227990,
+    "output_tokens": 4265,
+    "api_call_count": 16
+  },
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-09T16:12:40.207997Z",
+    "agent_lines": 34,
+    "agent_removed": 0,
+    "human_added": 2,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 36,
+    "total_lines_changed": 36,
+    "agent_percentage": 94.44444444444444,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1529,
+      "user_lines_removed": 4,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "AGENTS.md": 3,
+        "bundle/decisions.md": 22,
+        "bundle/formatting.md": 4,
+        "bundle/governance.md": 18,
+        "bundle/log.md": 19,
+        "sources/basher83-repo-inventory.csv": 93,
+        "sources/evaluate/2026-10-07-policy-evidence-evaluation.md": 153,
+        "sources/evaluate/2026-10-07-policy-evidence-receipt.json": 192,
+        "sources/evaluate/2026-10-07-runner-candidate-review-reconciliation.md": 83,
+        "sources/evaluate/2026-10-07-runner-update-policy-candidate.md": 226,
+        "sources/evaluate/index.md": 3,
+        "sources/renovate-dependency-review.md": 374,
+        "sources/repo-dependency-map.csv": 95,
+        "sources/shared-agent-policy-repository-review.md": 244
+      },
+      "user_removed_per_file": {
+        "bundle/formatting.md": 2,
+        "bundle/governance.md": 2
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1529,
+      "agent_lines_removed": 4
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1529,
+      "agent_lines_removed": 4
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1529,
+      "agent_lines_removed": 4
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 47,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 1,
+      "user_lines_removed": 0,
+      "agent_lines_added": 57,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".github/pull_request_template.md": 1
+      }
+    }
+  ]
+}

@@ -125,7 +125,8 @@ def main() -> int:
     if args.include_intake:
         sys.path.insert(0, "bundle/references/attesters")
         from check_bundle import SNAPSHOTS
-        files += [f for f in sorted(Path("sources/evaluate").glob("*.md")) if f.name not in SNAPSHOTS]
+        intake = Path("sources/evaluate")
+        files += [f for f in sorted(intake.rglob("*.md")) if f.relative_to(intake).as_posix() not in SNAPSHOTS]
     total = 0
     for file in files:
         if file.name in RESERVED:

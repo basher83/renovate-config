@@ -2,6 +2,10 @@
 
 ## 2026-10-09
 
+* **Update**: Addressed review findings on PR #131. The [runner policy](/github-hosted-runner-policy.md)
+  standing now records the operator's merge of PR #125 in place of a pending merge, and the audit entry below
+  names the governed checker as the enforcement boundary.
+
 * **Update**: Addressed both review findings on the conformance audit. D016 in the
   [decision record](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) and the
   [runner policy](/github-hosted-runner-policy.md) now carry keyed sources and footnotes for the amendment,
@@ -12,8 +16,9 @@
   coverage. Moved `tags` ahead of `status` in [enforcement](/enforcement.md) to match the documented field order,
   and corrected `generated` in the [decision record](/decisions.md) and
   [runner policy](/github-hosted-runner-policy.md) to their last content revision, `c41023a`, and its producing
-  harness. Field order, source-entry order, and generation freshness remain unenforced by code; the stale
-  timestamps in governance and the preset guide await producer attribution.
+  harness. Field order, source-entry order, and generation freshness remain unenforced by the governed bundle
+  checker; the advisory audit script reports them but is not a commit gate. The stale timestamps in governance
+  and the preset guide await producer attribution.
 
 * **Update**: Recorded the hosted canary result in
   [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge). Zammad-MCP #394 confirmed

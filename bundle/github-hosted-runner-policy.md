@@ -4,7 +4,7 @@ title: GitHub-hosted runner update policy
 description: This policy requires separate grouping and dashboard approval, then automerge after passing checks, for extracted GitHub-hosted runner updates.
 tags: [presets]
 status: draft
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T20:54:28-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T23:01:25-04:00 }
 sources:
   - id: selection
     resource: /decisions.md#2026-10-07--d015-select-runner-approval-policy-c
@@ -41,7 +41,7 @@ sources:
 # GitHub-hosted runner update policy
 
 **Standing: approval, then automerge after passing checks, selected for all extracted runner updates;
-implementation awaits operator PR merge.**
+the operator merged the implementation in PR #125 on 2026-10-09.**[^consumer-survey]
 [D015](/decisions.md#2026-10-07--d015-select-runner-approval-policy-c) records the original selection;[^selection]
 [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) replaces its manual merge.[^amendment]
 
@@ -113,13 +113,14 @@ cannot undo runner versions already merged in consumers. Consumer remediation re
 Revisit this policy if approvals approach retirement dates, backlog impedes maintenance, grouping affects
 non-runners, a consumer needs an exception, or Renovate changes extraction/versioning behavior.
 
+[^consumer-survey]: PR #125, merged by the operator; its body reports the survey of 33 consumers found by code
+    search, and raw survey output is not retained.
 [^selection]: D015 records exact operator selection; it does not substitute for PR merge acceptance.
 [^amendment]: D016 records the operator's amendment; the session selection has no separate repository capture.
 [^preset]: Shared Actions preset with the runner-specific rule placed last.
 [^behavior]: Versioned runtime evidence and immutable consumer inputs, with replay and fixture limits retained.
 [^hosted-canary]: Hosted Zammad-MCP canary issue tracking PRs #394 and #396.
 [^check-gating]: Draft research record; its findings await operator decision.
-[^consumer-survey]: Survey as reported in the PR body for 33 consumers found by code search; raw output is not retained.
 [^proposal]: Original runner policy recommendation, alternatives, and external review reconciliation.
 [^automerge-replay]: D016 replay with automerge enabled, including the single-update `groupName` trace.
 [^runner-review]: Review follow-up receipt replaying the corrected preset.

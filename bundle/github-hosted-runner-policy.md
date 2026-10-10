@@ -4,7 +4,7 @@ title: GitHub-hosted runner update policy
 description: This policy requires separate grouping and dashboard approval, then automerge after passing checks, for extracted GitHub-hosted runner updates.
 tags: [presets]
 status: draft
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T23:01:25-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T23:13:27-04:00 }
 sources:
   - id: selection
     resource: /decisions.md#2026-10-07--d015-select-runner-approval-policy-c
@@ -116,7 +116,7 @@ non-runners, a consumer needs an exception, or Renovate changes extraction/versi
 [^consumer-survey]: PR #125, merged by the operator; its body reports the survey of 33 consumers found by code
     search, and raw survey output is not retained.
 [^selection]: D015 records exact operator selection; it does not substitute for PR merge acceptance.
-[^amendment]: D016 records the operator's amendment; the session selection has no separate repository capture.
+[^amendment]: D016 records the operator's amendment and cites the captured session selection.
 [^preset]: Shared Actions preset with the runner-specific rule placed last.
 [^behavior]: Versioned runtime evidence and immutable consumer inputs, with replay and fixture limits retained.
 [^hosted-canary]: Hosted Zammad-MCP canary issue tracking PRs #394 and #396.

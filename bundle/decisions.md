@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T20:54:28-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T23:13:27-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -32,6 +32,9 @@ sources:
   - id: runner-selection
     resource: ../sources/evaluate/2026-10-08-runner-behavior-receipt.json
     title: Exact option C selection and implementation evidence
+  - id: amendment-selection
+    resource: ../sources/evaluate/2026-10-09-d016-selection-receipt.json
+    title: Exact operator selection of approval followed by automerge
   - id: runner-amendment
     resource: https://github.com/basher83/renovate-config/pull/125
     title: Reported consumer survey and operator merge of the automerge amendment
@@ -66,7 +69,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   central management that minimizes operator attention while keeping security updates fast.
 - **Outcome: operator-selected amendment.** Keep the separate group and `dependencyDashboardApproval: true`;
   set `automerge: true` so an approved runner PR merges once required checks pass. The operator chose this
-  one-gate option in a terminal review session on 2026-10-09.[^runner-amendment]
+  one-gate option in a terminal review session on 2026-10-09.[^amendment-selection]
 - **Scope and rationale:** Only the runner-specific rule in the shared Actions preset and its documentation.
   The approval stays the deliberate decision on a CI environment change; the merge click added attention without
   adding review. A survey of consumer default branches found that only `personal-computing` pins a runner, so this
@@ -424,8 +427,8 @@ identify what must be preserved first; this adoption does not delete either file
 The [local contract](/governance.md) defines the adopted authority and verification boundaries reflected
 in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the metadata style.
 
-[^runner-amendment]: PR body reports the 33-consumer survey; the operator merged it on 2026-10-09. The session
-    selection has no separate repository capture.
+[^amendment-selection]: Exact operator messages and the presented options, extracted from the session transcript.
+[^runner-amendment]: PR body reports the 33-consumer survey; the operator merged it on 2026-10-09.
 [^automerge-replay]: D016 replay with automerge enabled, including the single-update `groupName` trace.
 [^hosted-canary]: Hosted Zammad-MCP canary issue tracking PRs #394 and #396.
 [^check-gating]: Draft research record; its findings await operator decision.

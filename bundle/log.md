@@ -2,6 +2,12 @@
 
 ## 2026-10-09
 
+* **Creation**: Captured the operator's D016 selection in a
+  [selection receipt](../sources/evaluate/2026-10-09-d016-selection-receipt.json), extracted verbatim from the
+  Entire session transcript with the options it answered.
+  [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) now cites it; the entry
+  below that reports no capture is superseded.
+
 * **Update**: Addressed review findings on PR #131. The [runner policy](/github-hosted-runner-policy.md)
   standing now records the operator's merge of PR #125 in place of a pending merge, and the audit entry below
   names the governed checker as the enforcement boundary.

@@ -51,8 +51,11 @@ Then check what they do not enforce:
   agent and model). When the checkpoint lists more than one session, leave the stamp and report it.
 - Editing a body is itself a content change: set `generated` to your own harness and model and the current
   time in the house form, for example `claude_agent/Opus 5.5` or `codex_agent/GPT 6.1 Sol`.
-- Never write an evidence record for an approval or selection you did not witness. Cite what is
-  addressable, say in the footnote what has no capture, and report the gap.
+- Never write an evidence record from your own account of an approval or selection you did not witness.
+  A session decision is captured by extracting the operator's exact messages from the Entire transcript
+  (`entire checkpoint explain <id> --transcript`) into a receipt in `sources/evaluate/`, following
+  `2026-10-09-d016-selection-receipt.json`. If no transcript holds it, cite what is addressable and
+  report the gap.
 - A source that lives in this repository outside `bundle/` and `sources/` (for example `research/`) passes
   the real check but fails `bundle:test`, whose fixtures copy only those two trees. Cite it by a
   commit-pinned GitHub URL, and do not edit the tests to make a local path pass.

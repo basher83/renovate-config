@@ -2,6 +2,12 @@
 
 ## 2026-10-09
 
+* **Update**: Addressed both review findings on the conformance audit. D016 in the
+  [decision record](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) and the
+  [runner policy](/github-hosted-runner-policy.md) now carry keyed sources and footnotes for the amendment,
+  reported consumer survey, automerge replay, review follow-up, hosted canary, and check-gating research.
+  The operator's session selection of D016 still has no separate repository capture.
+
 * **Update**: Audited the bundle against the [formatting conventions](/formatting.md) beyond the checker's
   coverage. Moved `tags` ahead of `status` in [enforcement](/enforcement.md) to match the documented field order,
   and corrected `generated` in the [decision record](/decisions.md) and

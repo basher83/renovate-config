@@ -4,7 +4,7 @@ title: GitHub-hosted runner update policy
 description: This policy requires separate grouping and dashboard approval, then automerge after passing checks, for extracted GitHub-hosted runner updates.
 tags: [presets]
 status: draft
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:55:09-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T14:50:03-04:00 }
 sources:
   - id: selection
     resource: /decisions.md#2026-10-07--d015-select-runner-approval-policy-c

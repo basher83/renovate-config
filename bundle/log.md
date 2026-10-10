@@ -2,6 +2,13 @@
 
 ## 2026-10-09
 
+* **Update**: Audited the bundle against the [formatting conventions](/formatting.md) beyond the checker's
+  coverage. Moved `tags` ahead of `status` in [enforcement](/enforcement.md) to match the documented field order,
+  and corrected `generated` in the [decision record](/decisions.md) and
+  [runner policy](/github-hosted-runner-policy.md) to their last content revision, `c41023a`, and its producing
+  harness. Field order, source-entry order, and generation freshness remain unenforced by code; the stale
+  timestamps in governance and the preset guide await producer attribution.
+
 * **Update**: Recorded the hosted canary result in
   [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge). Zammad-MCP #394 confirmed
   approval and automerge for a real runner update, and #396 merged on required checks while a non-required check was

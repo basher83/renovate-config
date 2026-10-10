@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "fb03ddfc681c",
+  "strategy": "manual-commit",
+  "branch": "bb/orchestrate-coding-agents-thr_8twyqeridf",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".agents/skills/bundle-conformance-audit/scripts/audit_unenforced.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/fb/03ddfc681c/0/metadata.json",
+      "transcript": "/fb/03ddfc681c/0/full.jsonl",
+      "compact_transcript": "/fb/03ddfc681c/0/transcript.jsonl",
+      "content_hash": "/fb/03ddfc681c/0/content_hash.txt",
+      "prompt": "/fb/03ddfc681c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 130,
+    "cache_creation_tokens": 328386,
+    "cache_read_tokens": 6276543,
+    "output_tokens": 45603,
+    "api_call_count": 57
+  }
+}

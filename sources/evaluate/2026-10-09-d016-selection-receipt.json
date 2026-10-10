@@ -1,0 +1,22 @@
+{
+  "captured_at": "2026-10-10T03:13:27.314522+00:00",
+  "session_id": "223c8ed2-f973-4688-a09d-fdaaf7d408ea",
+  "method": "Exact messages extracted from entire checkpoint explain 835cc64dfeab --transcript (Claude Code session)",
+  "operator_messages": [
+    {
+      "timestamp": "2026-10-09T15:49:43.417Z",
+      "text": "yeah survey which repos pin runners vs ubuntu-latest"
+    },
+    {
+      "timestamp": "2026-10-09T16:14:17.754Z",
+      "text": "yea i think second option makes sense to me as well"
+    }
+  ],
+  "options_presented": {
+    "timestamp": "2026-10-09T16:13:02.977Z",
+    "author": "claude_agent/Opus 5.5",
+    "text": "**PR 125:** the question from our survey is still open. Only `personal-computing` pins a runner version, and the other repos with workflows use `ubuntu-latest` or other floating labels. You can choose between three options:\n\n1. **Close it.** Floating runners stay as they are, and you accept that GitHub moves `ubuntu-latest` on its own schedule.\n2. **Merge it, but switch to one gate.** Keep the dashboard approval and allow automerge once CI passes, so each OS jump costs one click per repo instead of two steps. This works best if you might pin runners in more repos later.\n3. **Merge it as written.** It's harmless today, but manual merges become a burden if you ever pin runners widely.\n\nI'd go with the second option: it costs nothing now and stays cheap if you pin more repos later. Whichever you pick, I'll rewrite #125's description to the new template so the record shows the real blast radius."
+  },
+  "ruling_summary": "The operator asked for a survey of which consumers pin runners, then selected the second of three presented options for PR #125: keep dashboard approval and allow automerge once CI passes, replacing D015's manual merge.",
+  "limits": "This records a scoped operator selection, not a PR acceptance event or human verified marker. The second operator message is meaningful only with the options text it answers, which is agent-authored. Survey output is not captured here. No other dependency policy, consumer edit, or publication is authorized."
+}

@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: codex_agent/GPT 6.1 Sol, at: 2026-10-07T23:55:09-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T23:13:27-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -32,6 +32,24 @@ sources:
   - id: runner-selection
     resource: ../sources/evaluate/2026-10-08-runner-behavior-receipt.json
     title: Exact option C selection and implementation evidence
+  - id: amendment-selection
+    resource: ../sources/evaluate/2026-10-09-d016-selection-receipt.json
+    title: Exact operator selection of approval followed by automerge
+  - id: runner-amendment
+    resource: https://github.com/basher83/renovate-config/pull/125
+    title: Reported consumer survey and operator merge of the automerge amendment
+  - id: automerge-replay
+    resource: ../sources/evaluate/2026-10-09-d016-automerge-receipt.json
+    title: Replay of the retained runner harness with automerge enabled
+  - id: runner-review
+    resource: ../sources/evaluate/2026-10-09-runner-review-receipt.json
+    title: Review follow-up replay with the title-case group name
+  - id: hosted-canary
+    resource: https://github.com/basher83/Zammad-MCP/issues/392
+    title: Hosted canary of approval and automerge for a runner update
+  - id: check-gating
+    resource: https://github.com/basher83/renovate-config/blob/09d32da0cbd806816725c369e77b4a3d79b6eea4/research/2026-10-09-automerge-check-gating.md
+    title: Research record on what gates Renovate automerge
 ---
 
 # Renovate-config prospective decisions
@@ -51,30 +69,31 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   central management that minimizes operator attention while keeping security updates fast.
 - **Outcome: operator-selected amendment.** Keep the separate group and `dependencyDashboardApproval: true`;
   set `automerge: true` so an approved runner PR merges once required checks pass. The operator chose this
-  one-gate option in a terminal review session on 2026-10-09.
+  one-gate option in a terminal review session on 2026-10-09.[^amendment-selection]
 - **Scope and rationale:** Only the runner-specific rule in the shared Actions preset and its documentation.
   The approval stays the deliberate decision on a CI environment change; the merge click added attention without
   adding review. A survey of consumer default branches found that only `personal-computing` pins a runner, so this
-  affects one consumer today and keeps per-consumer cost low if more repositories pin later.
+  affects one consumer today and keeps per-consumer cost low if more repositories pin later.[^runner-amendment]
 - **Evidence and limits:** The [D016 replay receipt](../sources/evaluate/2026-10-09-d016-automerge-receipt.json)
   reruns the retained harness with Renovate 44.145.1 and Node 24.11.1 against `personal-computing` at `ada30901`,
   `Zammad-MCP` at `f8da4342`, and the preserved `personal-computing` 24.04 input. Runner rule results resolve to
   `GitHub-Hosted Runners`, approval, and automerge. The real `ubuntu` 24.04 to 26.04 branch resolves to
   `needs-approval` with automerge enabled, and non-runner configuration is unchanged. Merge after approval needs
-  platform branch status, so the replay could not show it.
+  platform branch status, so the replay could not show it.[^automerge-replay]
 - **Hosted observation:** A Zammad-MCP canary ([#392](https://github.com/basher83/Zammad-MCP/issues/392)) confirmed the policy in hosted operation on
   2026-10-09. The `ubuntu` 24.04 to 26.04 update waited under Pending Approval, opened after approval, and
   automerged (#394). A second run (#396) merged 11 seconds after the required checks passed, while a non-required
   check was still running. Renovate enables GitHub-native auto-merge, the most likely path for that merge, so
-  non-required checks cannot be relied on to gate it. Without branch protection, Renovate's own gate waits for
-  every check it can read, and app checks such as CodeRabbit and GitGuardian count; that case was not observed
+  non-required checks cannot be relied on to gate it.[^hosted-canary] Without branch protection, Renovate's own
+  gate waits for every check it can read, and app checks such as CodeRabbit and GitGuardian count; that case was not observed
   in a canary. The
-  [research record](https://github.com/basher83/renovate-config/pull/127) holds the details. The ungated case for consumers without CI is a separate question.
+  [research record](https://github.com/basher83/renovate-config/pull/127) holds the details. The ungated case for consumers without CI is a separate
+  question.[^check-gating]
 - **Group name clarification:** Package rules apply the title-case `groupName`, but a branch holding a single
   update carries none. Renovate's `generateBranchConfig` deletes `groupName` in that case unless
   `groupSingleUpdates` is set; the branch keeps the `github-hosted-runners` slug. Receipt generation drops
-  nothing. A single runner update therefore gets an ordinary single-dependency PR title, not the group name.
-  The historical [review receipt](../sources/evaluate/2026-10-09-runner-review-receipt.json) is unchanged.
+  nothing. A single runner update therefore gets an ordinary single-dependency PR title, not the group name.[^automerge-replay]
+  The historical [review receipt](../sources/evaluate/2026-10-09-runner-review-receipt.json) is unchanged.[^runner-review]
 - **Revisit conditions:** An approved runner upgrade that merges and breaks a consumer, or consumers adopting
   pinned runners widely.
 
@@ -408,6 +427,12 @@ identify what must be preserved first; this adoption does not delete either file
 The [local contract](/governance.md) defines the adopted authority and verification boundaries reflected
 in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the metadata style.
 
+[^amendment-selection]: Exact operator messages and the presented options, extracted from the session transcript.
+[^runner-amendment]: PR body reports the 33-consumer survey; the operator merged it on 2026-10-09.
+[^automerge-replay]: D016 replay with automerge enabled, including the single-update `groupName` trace.
+[^hosted-canary]: Hosted Zammad-MCP canary issue tracking PRs #394 and #396.
+[^check-gating]: Draft research record; its findings await operator decision.
+[^runner-review]: Historical review follow-up receipt, retained unchanged.
 [^runner-selection]: Current-session option C selection and preparation authority,
     with observed behavior and explicit fixture limits.
 [^distribution-ruling]: Exact current-session operator ruling on repository containment and no standalone distribution requirement.

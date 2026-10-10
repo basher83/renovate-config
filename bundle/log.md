@@ -2,6 +2,30 @@
 
 ## 2026-10-09
 
+* **Creation**: Captured the operator's D016 selection in a
+  [selection receipt](../sources/evaluate/2026-10-09-d016-selection-receipt.json), extracted verbatim from the
+  Entire session transcript with the options it answered.
+  [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) now cites it; the entry
+  below that reports no capture is superseded.
+
+* **Update**: Addressed review findings on PR #131. The [runner policy](/github-hosted-runner-policy.md)
+  standing now records the operator's merge of PR #125 in place of a pending merge, and the audit entry below
+  names the governed checker as the enforcement boundary.
+
+* **Update**: Addressed both review findings on the conformance audit. D016 in the
+  [decision record](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge) and the
+  [runner policy](/github-hosted-runner-policy.md) now carry keyed sources and footnotes for the amendment,
+  reported consumer survey, automerge replay, review follow-up, hosted canary, and check-gating research.
+  The operator's session selection of D016 still has no separate repository capture.
+
+* **Update**: Audited the bundle against the [formatting conventions](/formatting.md) beyond the checker's
+  coverage. Moved `tags` ahead of `status` in [enforcement](/enforcement.md) to match the documented field order,
+  and corrected `generated` in the [decision record](/decisions.md) and
+  [runner policy](/github-hosted-runner-policy.md) to their last content revision, `c41023a`, and its producing
+  harness. Field order, source-entry order, and generation freshness remain unenforced by the governed bundle
+  checker; the advisory audit script reports them but is not a commit gate. The stale timestamps in governance
+  and the preset guide await producer attribution.
+
 * **Update**: Recorded the hosted canary result in
   [D016](/decisions.md#2026-10-09--d016-replace-runner-manual-merge-with-automerge). Zammad-MCP #394 confirmed
   approval and automerge for a real runner update, and #396 merged on required checks while a non-required check was

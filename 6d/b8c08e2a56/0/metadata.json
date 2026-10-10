@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "6db8c08e2a56",
+  "session_id": "e899c5e9-26fa-410d-af29-8203f6203f60",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T00:55:37.343799Z",
+  "branch": "bb/orchestrate-coding-agents-thr_8twyqeridf",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "bundle/decisions.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "b645f8277a60",
+  "checkpoint_transcript_start": 132,
+  "transcript_lines_at_start": 132,
+  "compact_transcript_start": 27,
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 25305,
+    "cache_read_tokens": 1398046,
+    "output_tokens": 10247,
+    "api_call_count": 12
+  },
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T00:55:37.322401Z",
+    "agent_lines": 0,
+    "agent_removed": 1,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 16,
+    "total_committed": 2,
+    "total_lines_changed": 25,
+    "agent_percentage": 4,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 67,
+      "user_lines_removed": 16,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "bundle/decisions.md": 29,
+        "bundle/github-hosted-runner-policy.md": 32,
+        "bundle/log.md": 6
+      },
+      "user_removed_per_file": {
+        "bundle/decisions.md": 8,
+        "bundle/github-hosted-runner-policy.md": 8
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+[bb system]
+
+@thread:thr_crhwq2zi9v completed:
+
+The four changes in the diff are correct. The independent sweep found **two serious provenance issues that the audit missed**, and no additional minor findings. No files were edited or committed.
+
+Reviewed `09d32da0cbd806816725c369e77b4a3d79b6eea4..9185ec1643b263b683a8a7bfd60eb2b22d3afd9d`, plus all six root concepts, `log.md`, all six bundle indexes, and the supporting contents of `references/`.
+
+The provenance corrections are independently supported:
+
+- `c41023a1f88f794f7fca5ebe345e04bcf399ed63` changed the bodies of both `decisions.md` and `github-hosted-runner-policy.md`. Their subsequent change in the reviewed diff is metadata-only.
+- Its author and commit timestamps are both `2026-10-09T14:50:03-04:00`, matching the corrected `generated.at`.
+- Its trailer identifies checkpoint `b46888fab5bd`. The checkpoint reports exactly one session, `223c8ed2-f973-4688-a09d-fdaaf7d408ea`, with agent **Claude Code** and model **`claude-opus-5-5`**.
+- The checkpoint transcript contains the actual replacements in both files and the commit command for this change. Attribution therefore rests on recorded authoring activity as well as checkpoint metadata. `claude_agent/Opus 5.5` conforms to the repository’s actor convention.
+
+Moving `tags` before `status` in `enforcement.md` matches the documented field order. The new log entry follows the required date grouping, flat-list structure, accepted leading label, and bundle-absolute links.
+
+The missed issues are:
+
+1. **Serious — D016’s derivation and operator authority are not represented by addressable, keyed provenance.**  
+   File: [bundle/decisions.md:49](/Users/basher8383/.bb/plugins/environment-git-worktree/host-data/worktrees/thr_8twyqeridf-1/renovate-config/bundle/decisions.md:49), particularly lines 49–77.
+
+   D016 attributes the amendment to a terminal review session and relies on a consumer survey, a new replay receipt, hosted observations, and a research record. None of those D016 materials appears in this concept’s `sources`. The existing `runner-selection` entry points to the earlier D015 receipt.
+
+   The operator selection and survey do appear in the Entire transcript, so this finding does **not** dispute that they happened. The problem is that the maintained decision gives no addressable evidence pointer for that selection or survey, while the replay and research materials appear only as ordinary body links. This falls short of `formatting.md` lines 139–149 and the [operator’s distinction between derivation sources and ordinary relationships](https://github.com/basher83/renovate-config/pull/123#discussion_r4200239152).
+
+   **Suggested correction:** preserve an addressable record of the D016 selection and survey, add stable `sources` entries for the D016 derivation materials, and attach matching footnotes to the claims they support. Keep the original D015 source and historical rationale intact.
+
+2. **Serious — The runner policy’s keyed sources still describe D015 while its claims include D016 and later evidence.**  
+   File: [bundle/github-hosted-runner-policy.md:28](/Users/basher8383/.bb/plugins/environment-git-worktree/host-data/worktrees/thr_8twyqeridf-1/renovate-config/bundle/github-hosted-runner-policy.md:28), also lines 37–51 and 69–89.
+
+   Line 28 attaches `[^selection]` to the D016 replacement of manual merge, but `selection.resource` targets **D015**, and its footnote explicitly describes D015’s selection. Likewise, the paragraph ending at line 76 includes the newer replay with automerge enabled but carries `[^behavior]`, whose source is the older replay with automerge disabled. The hosted observation, consumer survey, D016 replay, and review follow-up are absent from `sources`.
+
+   These joins resolve structurally, but they do not accurately attribute the newer claims. A consumer following the keyed provenance reaches evidence for the earlier policy or experiment.
+
+   **Suggested correction:** add separate source IDs for D016 selection, the con
+
+[... output truncated ...]
+
+---
+
+[bb system]
+
+@thread:thr_crhwq2zi9v completed:
+
+Yes—the proposed sources can resolve both serious findings, provided the footnotes are attached to the claims each source actually supports.
+
+I verified that [PR #125](https://github.com/basher83/renovate-config/pull/125) contains the 33-repository survey and describes dashboard approval followed by automerge. GitHub records its merge by `basher83` at `2026-10-09T17:47:42Z`, with merge commit `e04e0b2cbad38372f13ebd3e739e901a10713fb8`. It is suitable evidence for **the reported survey and operator merge acceptance of that scoped implementation**. It does not independently establish the exact earlier terminal-session selection.
+
+Two details matter:
+
+- Leave existing source entries intact, but move the **footnote uses** where necessary. The D016 amendment should receive its new attribution rather than `[^selection]` pointing to D015. Claims about the replay with automerge enabled should cite the D016 receipt rather than relying on the earlier `[^behavior]` receipt.
+- Describe the survey as reported in the PR body, covering the 33 consumers found through GitHub code search on that date. The PR body is an addressable summary, not retained raw survey output or proof of complete portfolio coverage. Also avoid using its historical verification section or generated release notes for the later check-gating conclusions; cite the research record and #392 for those.
+
+With that attribution and an explicit statement that the earlier session selection has no separate repository capture, I would consider both **serious findings resolved**. Report the missing capture as a remaining historical provenance limitation; there is no need to reconstruct an approval you did not witness.
+
+My original review did independently see the selection in the Entire transcript. The gap is its absence from the document’s addressable provenance, not evidence that the selection never occurred.

@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "6db8c08e2a56",
+  "strategy": "manual-commit",
+  "branch": "bb/orchestrate-coding-agents-thr_8twyqeridf",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "bundle/decisions.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6d/b8c08e2a56/0/metadata.json",
+      "transcript": "/6d/b8c08e2a56/0/full.jsonl",
+      "compact_transcript": "/6d/b8c08e2a56/0/transcript.jsonl",
+      "content_hash": "/6d/b8c08e2a56/0/content_hash.txt",
+      "prompt": "/6d/b8c08e2a56/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 25305,
+    "cache_read_tokens": 1398046,
+    "output_tokens": 10247,
+    "api_call_count": 12
+  }
+}

@@ -1,0 +1,5 @@
+the push triggers coderabbit right away you can either let rabbit auto resolve or address by @ in the commit to coderabbit
+
+---
+
+check comments now, not sure the priors were auto resolved lets look

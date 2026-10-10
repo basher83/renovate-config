@@ -1,0 +1,21 @@
+why are we refing local commits there?
+
+---
+
+ok so what we have now should be the new skill and some fixes then right?
+
+---
+
+cool, push branch and pr
+
+---
+
+from the rabbit: Actionable comments posted: 4
+
+---
+
+we do have addressable captures though; agentsview the look like this: https://brents-mac-studio.tailfb3ea.ts.net/sessions/e899c5e9-26fa-410d-af29-8203f6203f60?date_from=2026-09-10&date_to=2026-10-09&window_days=30 the real question being do i want to use that for this
+
+---
+
+fair, use the entire one then

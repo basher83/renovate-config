@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "60623eae949f",
+  "strategy": "manual-commit",
+  "branch": "bb/orchestrate-coding-agents-thr_8twyqeridf",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".agents/skills/bundle-conformance-audit/SKILL.md",
+    ".agents/skills/bundle-conformance-audit/scripts/audit_unenforced.py",
+    ".bb/skills/task-and-review/SKILL.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/60/623eae949f/0/metadata.json",
+      "transcript": "/60/623eae949f/0/full.jsonl",
+      "compact_transcript": "/60/623eae949f/0/transcript.jsonl",
+      "content_hash": "/60/623eae949f/0/content_hash.txt",
+      "prompt": "/60/623eae949f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 18,
+    "cache_creation_tokens": 17211,
+    "cache_read_tokens": 974483,
+    "output_tokens": 11442,
+    "api_call_count": 7
+  }
+}

@@ -11,6 +11,7 @@ okf_version: "0.2"
 * [Bundle document formatting](/formatting.md) - This framework defines local OKF metadata, provenance, navigation, and history conventions.
 * [GitHub-hosted runner update policy](/github-hosted-runner-policy.md) - This policy requires separate grouping and dashboard approval, then automerge after passing checks, for extracted GitHub-hosted runner updates.
 * [Renovate-config operating contract](/governance.md) - This contract defines the exemplar purpose, authority, knowledge boundaries, and agent and code responsibilities.
+* [mise language runtime and tool update policy](/mise-language-runtime-policy.md) - This policy separates mise language runtimes from allowlisted tools, gates runtime and 0.x tool bumps, and plans a personal-computing canary after publication.
 * [Preset Management Strategy](/preset-management.md) - This guide applies the operating contract to preset changes, consumer evidence, and validation.
 
 ## Directories

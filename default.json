@@ -23,6 +23,7 @@
     "labels": [
       "security"
     ],
-    "automerge": true
+    "automerge": true,
+    "minimumReleaseAge": null
   }
 }

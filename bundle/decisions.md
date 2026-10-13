@@ -62,6 +62,35 @@ For each material decision, record the question and prior position, outcome, aut
 rationale, evidence, implementation and verification state, and revisit or supersession conditions.
 Keep routine maintenance records proportionate. Preserve prior rationale when superseding an entry.
 
+## 2026-10-13 — D017: mise runtime/tool split and Terraform required_provider matching
+
+- **Question and prior position:** Issue [#132](https://github.com/basher83/renovate-config/issues/132) documented
+  an auto-merged mise bundle (personal-computing#47) that upgraded Python, `uv`, and Node together. The shared
+  `mise.json` preset matched all mise dependencies with one automerge group. Separately, `terraform-tofu.json`
+  matched `depType: provider`, while Renovate extracts `required_provider` for typical `required_providers`
+  blocks, leaving provider rules inert in Triangulum/Supernova.
+- **Outcome: operator-directed preparation.** Split mise language runtimes from an allowlisted tool set; require
+  dashboard approval for runtime minor/major and for 0.x semver tool minor/major; automerge other allowlisted tool
+  patch/minor updates after three days unless superseded by vulnerability alerts. Match both `required_provider`
+  and `provider` in terraform provider rules. Document a personal-computing hosted canary after publication.
+- **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`
+  (`vulnerabilityAlerts.minimumReleaseAge`), policy and survey receipts. Stack caps in `python-mcp.json` and
+  `ansible.json` stay unchanged. Consumer-local `packageRules` remain the consumer owner's responsibility; replay
+  includes Zammad-MCP grouping/caps.
+- **Evidence and limits:** Live survey of **17** repositories with explicit `renovate.json` extending this preset
+  (27 active repos visible to the preparation token) is in
+  [2026-10-13-d017-consumer-survey.json](../sources/evaluate/2026-10-13-d017-consumer-survey.json). Renovate
+  **44.145.1** replay in
+  [2026-10-13-d017-mise-terraform-receipt.json](../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json)
+  shows personal-computing#47's three updates would not automerge and would split runtime vs tool groups; terraform
+  `required_provider` patch automerges; `provider`-block deps remain supported per Renovate 44 `dep-types`. Hosted
+  canary and private-repo coverage are not observed in this preparation pass.
+- **Implementation and verification state:** Prepared on branch `cursor/mise-terraform-preset-fixes-47f1` for PR #133.
+  Publication and merge remain operator decisions.
+- **Revisit conditions:** After merge, run the personal-computing canary in
+  [mise language runtime policy](/mise-language-runtime-policy.md); widen the tool allowlist when new mise plugins
+  appear in consumers; revisit the three-day `minimumReleaseAge` if security patches lag in hosted dashboards.
+
 ## 2026-10-09 — D016: Replace runner manual merge with automerge
 
 - **Question and prior position:** D015 required both dashboard approval and manual merge for runner updates.

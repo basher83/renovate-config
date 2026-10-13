@@ -1,0 +1,790 @@
+{
+  "meta": {
+    "surveyed_at": "2026-10-13T00:00:00Z",
+    "method": "gh api default-branch reads for all non-archived basher83 repos visible to the cloud-agent token; excluded archived Sombrero-Edge-Control, Hallowbranch-Restore, Proxmox-OpenAPI by operator list (not in active set)",
+    "limits": "Token sees 27 active repos only; personal-computing and other private repos return 404 and are listed from issue #132 / retained receipts separately.",
+    "repos_visible": 27,
+    "extends_count": 17
+  },
+  "repos": [
+    {
+      "repo": ".github",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "actionlint",
+        "git-cliff",
+        "shellcheck"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\"\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": ".github-private",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [],
+      "has_mise": false,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": []
+    },
+    {
+      "repo": "Hercules-Power-Templates",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "eza",
+        "fd",
+        "pre-commit",
+        "prettier",
+        "rg",
+        "shellcheck"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 11,
+          "title": "chore(deps): update mise tools"
+        }
+      ],
+      "config_content": "{\n    \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n    \"extends\": [\n        \"local>basher83/renovate-config\"\n    ]\n}\n",
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "Omni-Scale",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "kubernetes.json"
+      ],
+      "mise_tools": [
+        "actionlint",
+        "fd",
+        "git-cliff",
+        "omnictl",
+        "pipx:rumdl",
+        "pre-commit",
+        "python",
+        "rg",
+        "shellcheck",
+        "shfmt",
+        "uv"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 31,
+          "title": "chore(deps): update talos cluster"
+        },
+        {
+          "number": 30,
+          "title": "chore(deps): update tailscale/tailscale:latest docker digest to c507f3a"
+        },
+        {
+          "number": 28,
+          "title": "chore(deps): pin dependencies"
+        }
+      ],
+      "config_content": "{\n    \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n    \"description\": \"Example config for repos with custom Talos cluster layout (clusters/*.yaml with nested talos.version/kubernetes.version)\",\n    \"extends\": [\n        \"local>basher83/renovate-config\",\n        \"local>basher83/renovate-config//presets/kubernetes.json\"\n    ],\n    \"customManagers\": [\n        {\n            \"customType\": \"regex\",\n            \"description\": \"Update Talos version in cluster configs (nested talos.version format)\",\n            \"managerFilePatterns\": [\n                \"/clusters/.+\\\\.ya?ml$/\"\n            ],\n            \"matchStrings\": [\n                \"talos:\\\\s*\\\\n\\\\s*version:\\\\s*['\\\"]?(?<currentValue>v[\\\\d.]+)['\\\"]?\"\n            ],\n            \"depNameTemplate\": \"siderolabs/talos\",\n            \"datasourceTemplate\": \"github-releases\"\n        },\n        {\n            \"customType\": \"regex\",\n            \"description\": \"Update Kubernetes version in cluster configs (nested kubernetes.version format)\",\n            \"managerFilePatterns\": [\n                \"/clusters/.+\\\\.ya?ml$/\"\n            ],\n            \"matchStrings\": [\n                \"kubernetes:\\\\s*\\\\n\\\\s*version:\\\\s*['\\\"]?(?<currentValue>v[\\\\d.]+)['\\\"]?\"\n            ],\n            \"depNameTemplate\": \"kubernetes/kubernetes\",\n            \"datasourceTemplate\": \"github-releases\"\n        }\n    ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "ProxSyncBox",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [
+        "markdownlint-cli2",
+        "node",
+        "pre-commit",
+        "prettier",
+        "python",
+        "ruff",
+        "uv"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [],
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "Supernova-MicroK8s-Infra",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "python.json",
+        "ansible.json",
+        "terraform-tofu.json",
+        "github-actions-security.json"
+      ],
+      "mise_tools": [
+        "cosign",
+        "eza",
+        "fd",
+        "git-cliff",
+        "markdownlint-cli2",
+        "opentofu",
+        "python",
+        "rg",
+        "shellcheck",
+        "terraform-docs",
+        "tflint",
+        "uv",
+        "yamlfmt",
+        "yamllint"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 84,
+          "title": "chore(deps): lock file maintenance"
+        },
+        {
+          "number": 83,
+          "title": "chore(deps): update terraform proxmox to ~> 0.116.0"
+        },
+        {
+          "number": 76,
+          "title": "chore(deps): update terraform infisical to v0.20.3"
+        }
+      ],
+      "config_content": "{\n    \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n    \"extends\": [\n        \"local>basher83/renovate-config\",\n        \"local>basher83/renovate-config//presets/python.json\",\n        \"local>basher83/renovate-config//presets/ansible.json\",\n        \"local>basher83/renovate-config//presets/terraform-tofu.json\",\n        \"local>basher83/renovate-config//presets/github-actions-security.json\"\n    ]\n}\n",
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "Triangulum-Prime",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "terraform-tofu.json",
+        "github-actions-security.json"
+      ],
+      "mise_tools": [
+        "git-cliff",
+        "terraform-docs",
+        "tflint"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 113,
+          "title": "chore(deps): update terraform scalr to v3.19.0"
+        },
+        {
+          "number": 111,
+          "title": "chore(deps): update terraform proxmox to v0.116.0"
+        }
+      ],
+      "config_content": "{\n    \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n    \"extends\": [\n        \"local>basher83/renovate-config\",\n        \"local>basher83/renovate-config//presets/terraform-tofu.json\",\n        \"local>basher83/renovate-config//presets/github-actions-security.json\"\n    ]\n}\n",
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "Virgo-Core",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "python.json",
+        "ansible.json",
+        "terraform-tofu.json"
+      ],
+      "mise_tools": [
+        "eza",
+        "fd",
+        "git-cliff",
+        "opentofu",
+        "pipx:rumdl",
+        "python",
+        "rg",
+        "shellcheck",
+        "terraform-docs",
+        "tflint",
+        "uv",
+        "yamlfmt",
+        "yamllint"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 79,
+          "title": "chore(deps): update python docker tag to v3.15"
+        },
+        {
+          "number": 76,
+          "title": "chore(deps): update github actions"
+        },
+        {
+          "number": 70,
+          "title": "chore(deps): update mise tools"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\",\n    \"local>basher83/renovate-config//presets/python.json\",\n    \"local>basher83/renovate-config//presets/ansible.json\",\n    \"local>basher83/renovate-config//presets/terraform-tofu.json\"\n  ]\n}\n",
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "Zammad-MCP",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "python-mcp.json",
+        "github-actions-security.json",
+        "docker.json"
+      ],
+      "mise_tools": [
+        "eza",
+        "fd",
+        "git-cliff",
+        "hk",
+        "prek",
+        "python",
+        "rg",
+        "shellcheck",
+        "uv"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": true,
+      "open_renovate_prs": [
+        {
+          "number": 400,
+          "title": "chore(deps): Update dependency uv to v0.13.0"
+        }
+      ],
+      "config_content": "{\n    \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n    \"extends\": [\n        \"local>basher83/renovate-config\",\n        \"local>basher83/renovate-config//presets/python-mcp.json\",\n        \"local>basher83/renovate-config//presets/github-actions-security.json\",\n        \"local>basher83/renovate-config//presets/docker.json\"\n    ],\n    \"labels\": [\n        \"dependencies\",\n        \"renovate\"\n    ],\n    \"assignees\": [\n        \"basher83\"\n    ],\n    \"commitMessagePrefix\": \"chore(deps):\",\n    \"packageRules\": [\n        {\n            \"description\": \"Keep Python pinned below 3.14 until MCP SDK v1.x officially supports it\",\n            \"matchDepNames\": [\n                \"python\"\n            ],\n            \"allowedVersions\": \"<3.14\"\n        },\n        {\n            \"description\": \"Update the uv pins in mise.toml and the uv-pre-commit hook in one PR (scripts/validate.sh fails when they differ)\",\n            \"matchDepNames\": [\n                \"uv\",\n                \"astral-sh/uv-pre-commit\"\n            ],\n            \"groupName\": \"uv version pins\"\n        },\n        {\n            \"description\": \"Require approval for FastMCP major updates; they move together with the MCP SDK major (#353)\",\n            \"matchPackageNames\": [\n                \"fastmcp\"\n            ],\n            \"matchUpdateTypes\": [\n                \"major\"\n            ],\n            \"dependencyDashboardApproval\": true\n        },\n        {\n            \"description\": \"Require approval for major Zammad API updates\",\n            \"matchPackageNames\": [\n                \"zammad-py\"\n            ],\n            \"matchUpdateTypes\": [\n                \"major\"\n            ],\n            \"dependencyDashboardApproval\": true\n        }\n    ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "assets",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [
+        "cosign",
+        "eza",
+        "fd",
+        "markdownlint-cli2",
+        "rg",
+        "shellcheck",
+        "yamlfmt",
+        "yamllint"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 16,
+          "title": "chore(deps): update dependency eza to v0.23.5"
+        },
+        {
+          "number": 15,
+          "title": "chore(deps): update dependency rg to v15"
+        },
+        {
+          "number": 14,
+          "title": "chore(deps): update dependency fd to v10.5.0"
+        },
+        {
+          "number": 13,
+          "title": "chore(deps): update dependency cosign to v3"
+        },
+        {
+          "number": 12,
+          "title": "chore(deps): update dependency yamllint to v1.38.0"
+        },
+        {
+          "number": 11,
+          "title": "chore(deps): update dependency yamlfmt to v0.21.0"
+        },
+        {
+          "number": 10,
+          "title": "chore(deps): update dependency markdownlint-cli2 to v0.23.3"
+        },
+        {
+          "number": 9,
+          "title": "chore(deps): update dependency cosign to v2.6.5"
+        }
+      ],
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "automation-scripts",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [
+        "golang",
+        "mdbook",
+        "node",
+        "python",
+        "shellcheck",
+        "shfmt",
+        "task"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 43,
+          "title": "chore(deps): update astral-sh/setup-uv action to v10"
+        },
+        {
+          "number": 41,
+          "title": "chore(deps): update actions/setup-python action to v7"
+        },
+        {
+          "number": 40,
+          "title": "chore(deps): update actions/checkout action to v7"
+        },
+        {
+          "number": 38,
+          "title": "chore(deps): update dependency shfmt to v3.14.1"
+        },
+        {
+          "number": 37,
+          "title": "chore(deps): update dependency python to v3.15.0"
+        },
+        {
+          "number": 36,
+          "title": "chore(deps): update actions/setup-python action to v6.3.0"
+        },
+        {
+          "number": 34,
+          "title": "chore(deps): update actions/checkout digest to fbc6f39"
+        },
+        {
+          "number": 33,
+          "title": "chore(deps): update astral-sh/setup-uv action to v7.6.0"
+        },
+        {
+          "number": 32,
+          "title": "chore(deps): update dependency golang to v1.27.2"
+        }
+      ],
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "basher83",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [],
+      "has_mise": false,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 11,
+          "title": "Update actions/setup-python action to v7"
+        },
+        {
+          "number": 8,
+          "title": "Update dependency python to 3.15"
+        }
+      ]
+    },
+    {
+      "repo": "docs",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "act",
+        "aqua:koalaman/shellcheck",
+        "eza",
+        "fd",
+        "jq",
+        "markdownlint-cli2",
+        "node",
+        "npm:markdown-link-check",
+        "npm:markdown-magic",
+        "npm:tree-node-cli",
+        "prek",
+        "prettier",
+        "rg"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 221,
+          "title": "chore(deps): update dependency markdownlint-cli2 to v0.23.3"
+        },
+        {
+          "number": 216,
+          "title": "chore(deps): update dependency prettier to v3.9.9"
+        },
+        {
+          "number": 214,
+          "title": "chore(deps): update ghcr.io/devcontainers/features/docker-in-docker docker tag to v4"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\"\n  ]\n}\n",
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "domain-chassis",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [],
+      "has_mise": false,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 2,
+          "title": "chore: Configure Renovate"
+        }
+      ]
+    },
+    {
+      "repo": "dotfiles",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [],
+      "has_mise": false,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": []
+    },
+    {
+      "repo": "forgeflare",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "rust.json"
+      ],
+      "mise_tools": [
+        "cargo:cargo-audit",
+        "ripgrep",
+        "rust"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 17,
+          "title": "chore(deps): update rust crate tempfile to v3.27.0"
+        },
+        {
+          "number": 16,
+          "title": "chore(deps): update rust crate clap to v4.6.7"
+        },
+        {
+          "number": 15,
+          "title": "chore(deps): update github actions"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\",\n    \"local>basher83/renovate-config//presets/rust.json\"\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "forgeflare-hooks",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "rust.json"
+      ],
+      "mise_tools": [
+        "cargo:cargo-audit",
+        "ripgrep",
+        "rust"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 114,
+          "title": "fix(deps): update rust crate toml to v1"
+        },
+        {
+          "number": 113,
+          "title": "fix(deps): update serde ecosystem"
+        },
+        {
+          "number": 112,
+          "title": "fix(deps): update rust crate reqwest to 0.13"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\",\n    \"local>basher83/renovate-config//presets/rust.json\"\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "github-actions",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [],
+      "has_mise": false,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": []
+    },
+    {
+      "repo": "hello-komodo",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "ansible.json"
+      ],
+      "mise_tools": [
+        "actionlint",
+        "eza",
+        "fd",
+        "git-cliff",
+        "markdownlint-cli2",
+        "node",
+        "pre-commit",
+        "python",
+        "rg",
+        "uv",
+        "yamlfmt",
+        "yamllint"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\",\n    \"local>basher83/renovate-config//presets/ansible.json\"\n  ]\n}\n",
+      "mise_file": ".mise.toml"
+    },
+    {
+      "repo": "lunar-claude",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "age",
+        "fd",
+        "fnox",
+        "git-cliff",
+        "hk",
+        "lychee",
+        "pipx:rumdl",
+        "pkl",
+        "python",
+        "rg",
+        "ruff",
+        "shellcheck",
+        "uv"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 86,
+          "title": "chore(deps): lock file maintenance"
+        },
+        {
+          "number": 85,
+          "title": "chore(deps): update github actions"
+        },
+        {
+          "number": 84,
+          "title": "chore(deps): update mise tools"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\"local>basher83/renovate-config\"]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "lunar-research",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [
+        "eza",
+        "fd",
+        "git-cliff",
+        "pipx:rumdl",
+        "prek",
+        "python",
+        "rg",
+        "ruff",
+        "uv"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 1,
+          "title": "chore: Configure Renovate"
+        }
+      ],
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "mothership-gitops",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "kubernetes.json"
+      ],
+      "mise_tools": [
+        "helm",
+        "kubeconform",
+        "pre-commit",
+        "ripgrep",
+        "yq"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 47,
+          "title": "chore(deps): update argocd charts (minor)"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\",\n    \"local>basher83/renovate-config//presets/kubernetes.json\"\n  ],\n  \"argocd\": {\n    \"managerFilePatterns\": [\"/^apps/.*\\\\.ya?ml$/\"]\n  },\n  \"packageRules\": [\n    {\n      \"description\": \"Auto-merge ArgoCD-managed chart patch updates (PR merge)\",\n      \"matchManagers\": [\"argocd\"],\n      \"matchUpdateTypes\": [\"patch\"],\n      \"automerge\": true\n    },\n    {\n      \"description\": \"Radar chart: require manual review at every update level\",\n      \"matchManagers\": [\"argocd\"],\n      \"matchPackageNames\": [\"radar\"],\n      \"automerge\": false\n    },\n    {\n      \"description\": \"Group ArgoCD-managed chart minor updates for Monday review\",\n      \"matchManagers\": [\"argocd\"],\n      \"matchUpdateTypes\": [\"minor\"],\n      \"groupName\": \"ArgoCD Charts (Minor)\",\n      \"schedule\": [\"before 5am on Monday\"]\n    },\n    {\n      \"description\": \"Require approval for ArgoCD-managed chart major updates\",\n      \"matchManagers\": [\"argocd\"],\n      \"matchUpdateTypes\": [\"major\"],\n      \"dependencyDashboardApproval\": true\n    },\n    {\n      \"description\": \"Substrate charts (storage, secrets): no automerge at any level\",\n      \"matchManagers\": [\"argocd\"],\n      \"matchPackageNames\": [\"longhorn\", \"external-secrets\"],\n      \"automerge\": false\n    },\n    {\n      \"description\": \"Label ArgoCD chart PRs\",\n      \"matchManagers\": [\"argocd\"],\n      \"addLabels\": [\"kubernetes\", \"infrastructure\"]\n    }\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "omni-infra-provider-proxmox",
+      "extends_config": false,
+      "config_file": null,
+      "extends_presets": [],
+      "mise_tools": [],
+      "has_mise": false,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": []
+    },
+    {
+      "repo": "radiant-filament",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "git-cliff",
+        "pandoc",
+        "prek",
+        "python",
+        "ruff",
+        "uv"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 28,
+          "title": "chore(deps): lock file maintenance"
+        },
+        {
+          "number": 20,
+          "title": "chore(deps): update mise tools"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\"\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "renovate-config",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "eza",
+        "fd",
+        "git-cliff",
+        "lychee",
+        "prek",
+        "rg",
+        "shellcheck"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 22,
+          "title": "chore(deps): update dependency rg to v15"
+        },
+        {
+          "number": 18,
+          "title": "chore(deps): update github actions"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\"\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "tailnet-microservices",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [
+        "rust.json"
+      ],
+      "mise_tools": [
+        "cargo:cargo-audit",
+        "cargo:cargo-zigbuild",
+        "kubeconform",
+        "pipx:mitmproxy",
+        "rust"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [
+        {
+          "number": 54,
+          "title": "chore(deps): update debian:bookworm-slim docker digest to 7c7b2c9"
+        },
+        {
+          "number": 52,
+          "title": "chore(deps): update rust:1-bookworm docker digest to 114c7a4"
+        },
+        {
+          "number": 51,
+          "title": "chore(deps): pin ghcr.io/basher83/tailnet-microservices/anthropic-oauth-proxy docker tag to 8a20e59"
+        }
+      ],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\n    \"local>basher83/renovate-config\",\n    \"local>basher83/renovate-config//presets/rust.json\"\n  ]\n}\n",
+      "mise_file": "mise.toml"
+    },
+    {
+      "repo": "the-agent-toolshed",
+      "extends_config": true,
+      "config_file": "renovate.json",
+      "extends_presets": [],
+      "mise_tools": [
+        "git-cliff",
+        "hk",
+        "pkl"
+      ],
+      "has_mise": true,
+      "has_terraform": false,
+      "local_package_rules_mise": false,
+      "open_renovate_prs": [],
+      "config_content": "{\n  \"$schema\": \"https://docs.renovatebot.com/renovate-schema.json\",\n  \"extends\": [\"local>basher83/renovate-config\"]\n}\n",
+      "mise_file": "mise.toml"
+    }
+  ]
+}

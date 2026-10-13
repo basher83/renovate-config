@@ -1,5 +1,11 @@
 # Repository knowledge change log
 
+## 2026-10-13
+
+* **Update**: Prepared D017 mise runtime/tool split and terraform `required_provider` matching for PR #133, with live
+  consumer survey, Renovate 44.145.1 replay receipt, and [mise language runtime policy](/mise-language-runtime-policy.md).
+  Publication remains pending operator review.
+
 ## 2026-10-09
 
 * **Creation**: Captured the operator's D016 selection in a

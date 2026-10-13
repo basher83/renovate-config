@@ -1,0 +1,144 @@
+{
+  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups.",
+  "completed_at": "2026-10-13T03:36:14.538Z",
+  "runtime": {
+    "version": "44.145.1",
+    "node": "v22.14.0",
+    "execution": "node scripts/replay-d017.mjs against installed Renovate dist; applyPackageRules only."
+  },
+  "replay_recipe": "npm install renovate@44.145.1 --prefix /tmp/renovate44 && node scripts/replay-d017.mjs /tmp/renovate44/node_modules/renovate/dist $PWD",
+  "candidate_presets": {
+    "presets/mise.json": {
+      "sha256": "a5f0bbc75f4b8b7724647c48c8308a1c7fa01fe135e14dee500795d465903c62"
+    },
+    "presets/terraform-tofu.json": {
+      "sha256": "1a7a8f7d750d564a0fc2f6953eea39094b9b676e86b9ba8d3d167c3331be7ac5"
+    }
+  },
+  "personal_computing_47": [
+    {
+      "dep": {
+        "depName": "python",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "3.14.8"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "mise language runtimes",
+        "groupSlug": "mise-runtimes",
+        "minimumReleaseAge": null
+      }
+    },
+    {
+      "dep": {
+        "depName": "uv",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "0.12.23"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "mise tools",
+        "groupSlug": "mise-tools",
+        "minimumReleaseAge": null
+      }
+    },
+    {
+      "dep": {
+        "depName": "node",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "26.10.0"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "mise language runtimes",
+        "groupSlug": "mise-runtimes",
+        "minimumReleaseAge": null
+      }
+    }
+  ],
+  "terraform_required_provider_patch": {
+    "dep": {
+      "depName": "aws",
+      "manager": "terraform",
+      "depType": "required_provider",
+      "updateType": "patch",
+      "currentValue": "5.92.0",
+      "packageName": "hashicorp/aws"
+    },
+    "after": {
+      "automerge": true,
+      "dependencyDashboardApproval": false,
+      "groupName": null,
+      "groupSlug": null,
+      "minimumReleaseAge": null
+    }
+  },
+  "zammad_mcp_mise": [
+    {
+      "dep": {
+        "depName": "python",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "3.13.2"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "mise language runtimes",
+        "groupSlug": "mise-runtimes",
+        "minimumReleaseAge": null,
+        "allowedVersions": "<3.14"
+      }
+    },
+    {
+      "dep": {
+        "depName": "uv",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "0.12.23"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "uv version pins",
+        "groupSlug": "uv-version-pins",
+        "minimumReleaseAge": null
+      }
+    }
+  ],
+  "vulnerability_alert_control": {
+    "dep": "uv patch vulnerability alert",
+    "after": {
+      "automerge": true,
+      "dependencyDashboardApproval": false,
+      "groupName": "mise tools",
+      "groupSlug": "mise-tools",
+      "minimumReleaseAge": null
+    },
+    "note": "minimumReleaseAge on automerge rules should not block when isVulnerabilityAlert is set; verify hosted."
+  },
+  "limits": "Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. No branchify or dashboard replay.",
+  "terraform_provider_block_patch": {
+    "dep": {
+      "depName": "aws",
+      "manager": "terraform",
+      "depType": "provider",
+      "updateType": "patch",
+      "currentValue": "5.92.0",
+      "packageName": "hashicorp/aws"
+    },
+    "after": {
+      "automerge": true,
+      "dependencyDashboardApproval": false,
+      "groupName": null,
+      "groupSlug": null,
+      "minimumReleaseAge": null
+    }
+  }
+}

@@ -9,6 +9,12 @@ import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
 
 const [runtime, root] = process.argv.slice(2);
+if (!runtime || !root) {
+  console.error(
+    'Usage: node scripts/replay-d017.mjs <renovate-dist-dir> <renovate-config-repo-root>',
+  );
+  process.exit(1);
+}
 const load = (rel) => import(pathToFileURL(path.join(runtime, rel)).href);
 const { init: initLogger } = await load('logger/index.js');
 process.env.LOG_LEVEL = 'error';
@@ -147,7 +153,24 @@ assert.ok(
 );
 assert.equal(results.zammad_mcp_mise[1].after.automerge, false);
 
-const vulnUv = await apply(base, {
+const vulnerabilityAlerts = readJson('default.json').vulnerabilityAlerts;
+assert.equal(
+  vulnerabilityAlerts?.minimumReleaseAge,
+  null,
+  'default.json vulnerabilityAlerts.minimumReleaseAge',
+);
+const vulnBase = mergeChildConfig(base, {
+  packageRules: [
+    {
+      description: 'Simulated platform vulnerability alert rule (Renovate init)',
+      matchManagers: ['mise'],
+      matchDepNames: ['uv'],
+      isVulnerabilityAlert: true,
+      force: { ...vulnerabilityAlerts },
+    },
+  ],
+});
+const vulnUv = await apply(vulnBase, {
   depName: 'uv',
   manager: 'mise',
   updateType: 'patch',
@@ -155,9 +178,11 @@ const vulnUv = await apply(base, {
   isVulnerabilityAlert: true,
 });
 results.vulnerability_alert_control = {
-  dep: 'uv patch vulnerability alert',
+  dep: 'uv patch vulnerability alert (simulated alert packageRule + force)',
+  default_vulnerability_alerts: { minimumReleaseAge: vulnerabilityAlerts.minimumReleaseAge },
   after: vulnUv,
-  note: 'minimumReleaseAge on automerge rules should not block when isVulnerabilityAlert is set; verify hosted.',
+  note: 'Preset must not use isVulnerabilityAlert as a matcher; hosted alerts apply force from vulnerabilityAlerts.',
 };
+assert.equal(vulnUv.minimumReleaseAge, null, 'vulnerability alert force clears minimumReleaseAge');
 
 console.log(JSON.stringify(results, null, 2));

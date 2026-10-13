@@ -4,9 +4,7 @@
   "packageRules": [
     {
       "description": "Group mise-managed language runtimes separately from tools",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "python",
         "node",
@@ -27,9 +25,7 @@
     },
     {
       "description": "Require Dependency Dashboard approval for mise language runtime minor and major updates",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "python",
         "node",
@@ -54,9 +50,7 @@
     },
     {
       "description": "Auto-merge mise language runtime patch updates after minimum release age",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "python",
         "node",
@@ -80,9 +74,7 @@
     },
     {
       "description": "Conservative default for mise plugins not on the tool allowlist (treat like runtimes)",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "!python",
         "!node",
@@ -149,9 +141,7 @@
     },
     {
       "description": "Group allowlisted mise development tools",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "act",
         "actionlint",
@@ -199,9 +189,7 @@
     },
     {
       "description": "Require approval for allowlisted mise tools on 0.x semver minor and major (0.y bumps are breaking)",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "act",
         "actionlint",
@@ -254,9 +242,7 @@
     },
     {
       "description": "Auto-merge allowlisted mise tool patch and minor updates after minimum release age (1.x+ only for minor)",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "act",
         "actionlint",
@@ -309,9 +295,7 @@
     },
     {
       "description": "Auto-merge allowlisted mise tool patch updates on 0.x semver after minimum release age",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "act",
         "actionlint",
@@ -363,9 +347,7 @@
     },
     {
       "description": "Do not auto-merge allowlisted mise tool major updates (1.x+ semver)",
-      "matchManagers": [
-        "mise"
-      ],
+      "matchManagers": ["mise"],
       "matchDepNames": [
         "act",
         "actionlint",
@@ -412,19 +394,6 @@
         "major"
       ],
       "automerge": false
-    },
-    {
-      "description": "Do not delay vulnerability-alert mise updates with minimum release age",
-      "matchManagers": [
-        "mise"
-      ],
-      "matchUpdateTypes": [
-        "patch",
-        "minor",
-        "major"
-      ],
-      "isVulnerabilityAlert": true,
-      "minimumReleaseAge": null
     }
   ]
 }

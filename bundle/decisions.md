@@ -70,8 +70,9 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   matched `depType: provider`, while Renovate extracts `required_provider` for typical `required_providers`
   blocks, leaving provider rules inert in Triangulum/Supernova.
 - **Outcome: operator-directed preparation.** Split mise language runtimes from an allowlisted tool set; require
-  dashboard approval for runtime minor/major and for 0.x semver tool minor/major; automerge other allowlisted tool
-  patch/minor updates after three days unless superseded by vulnerability alerts. Match both `required_provider`
+  dashboard approval for runtime minor/major and for 0.x semver tool minor/major; automerge **1.x+** allowlisted tool
+  patch/minor after three days (0.x tool **patches** use a separate automerge rule; 0.x minors/majors require approval).
+  Vulnerability timing uses `vulnerabilityAlerts` in `default.json`, not mise `packageRules`. Match both `required_provider`
   and `provider` in terraform provider rules. Plan a **lunar-claude** hosted mise canary after publication
   (`personal-computing` no longer extends this preset).
 - **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`
@@ -83,8 +84,8 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   [2026-10-12-d017-consumer-inventory.json](../sources/evaluate/2026-10-12-d017-consumer-inventory.json) with human
   summary in PR #133 body.
   **30** extend `local>basher83/renovate-config` (all unpinned); **4** extend `terraform-tofu.json`; **35** have
-  mise/.tool-versions; **25** open Renovate mise/terraform PRs across **13** repos (**13** PRs on **9** extenders;
-  **12** PRs on **4** independent configs — out of preset blast radius). `personal-computing` is **independent**
+  mise/.tool-versions; **25** open Renovate mise/terraform PRs across **13** repos (**12** PRs on **9** extenders;
+  **13** PRs on **4** independent configs — out of preset blast radius). `personal-computing` is **independent**
   (`config:best-practices` + `workarounds:all`) and is not a consumer. Renovate **44.145.1** replay in
   [2026-10-13-d017-mise-terraform-receipt.json](../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json)
   retains **personal-computing#47** as historical regression evidence only; terraform `required_provider` patch

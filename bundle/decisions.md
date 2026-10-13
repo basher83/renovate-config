@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T12:27:47-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T16:58:30-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -59,6 +59,9 @@ sources:
   - id: branch-config
     resource: https://github.com/renovatebot/renovate/blob/44.145.1/lib/workers/repository/updates/generate.ts
     title: Renovate 44.145.1 branch configuration generation
+  - id: d017-canary
+    resource: https://github.com/basher83/lunar-claude/issues/87
+    title: Hosted canary of the D017 mise split in lunar-claude
 ---
 
 # Renovate-config prospective decisions
@@ -78,17 +81,17 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   `mise.json` preset matched all mise dependencies with one automerge group. Separately, `terraform-tofu.json`
   matched `depType: provider`, while Renovate extracts `required_provider` for typical `required_providers`
   blocks, leaving provider rules inert in Triangulum/Supernova.
-- **Outcome: prepared for operator selection.** The candidate combines response options listed in #132; the
-  issue presents them as unadopted options, and no separate selection record exists. Operator merge of PR #133 is
-  the selection and acceptance event. Split mise language runtimes from an allowlisted tool set. Runtime patches
-  automerge after three days; runtime minor/major updates require dashboard approval. Allowlisted **1.x+** tool
-  patch/minor updates automerge after three days, as do **0.x** tool patches; 0.x tool minor/major updates require
-  approval, and tool majors do not automerge. Approval-gated runtime and tool updates use their own groups
-  (`mise language runtimes (approval)`, `mise tools (approval)`), because Renovate requires approval for a whole
-  branch when any grouped update needs it and automerges a branch only when every grouped update
+- **Outcome: selected by operator merge.** The candidate combines response options listed in #132; the issue presents
+  them as unadopted options, and no separate selection record exists. The operator merged PR #133 on 2026-10-13 at
+  20:15 UTC (`1880ee5`); that merge is the selection and acceptance event. Split mise language runtimes from an
+  allowlisted tool set. Runtime patches automerge after three days; runtime minor/major updates require dashboard
+  approval. Allowlisted **1.x+** tool patch/minor updates automerge after three days, as do **0.x** tool patches; 0.x
+  tool minor/major updates require approval, and tool majors do not automerge. Approval-gated runtime and tool updates
+  use their own groups (`mise language runtimes (approval)`, `mise tools (approval)`), because Renovate requires
+  approval for a whole branch when any grouped update needs it and automerges a branch only when every grouped update
   does.[^branch-config] Minor/major updates of mise plugins outside both lists require approval in
-  `mise plugins (unspecified)`; their patches are neither grouped nor automerged. Match both `required_provider`
-  and `provider` in terraform provider rules. Plan a **lunar-claude** hosted mise canary after publication
+  `mise plugins (unspecified)`; their patches are neither grouped nor automerged. Match both `required_provider` and
+  `provider` in terraform provider rules. Run a **lunar-claude** hosted mise canary after publication
   (`personal-computing` no longer extends this preset).
 - **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`, policy, and survey
   receipts. `vulnerabilityAlerts.minimumReleaseAge: null` in `default.json` restates Renovate's default for
@@ -112,13 +115,28 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   rates all four as minor updates. With the
   base preset the provider rules stay inert, and the replay reproduces the live branch names (`proxmox-0.x`,
   `scalr-3.x`, `infisical-0.x`). With the candidate, each repository's pair joins one `Terraform Providers (Minor)`
-  branch scheduled before 5am on Monday, without approval or automerge.[^d017-replay] Hosted canary not yet
-  observed.
-- **Implementation and verification state:** Prepared on branch `cursor/mise-terraform-preset-fixes-47f1` for PR #133.
-  Selection, merge, and publication remain operator decisions.
-- **Revisit conditions:** After merge, run the **lunar-claude** canary in
-  [mise language runtime policy](/mise-language-runtime-policy.md); widen the tool allowlist when new mise plugins
-  appear in consumers; revisit the three-day `minimumReleaseAge` if security patches lag in hosted dashboards.
+  branch scheduled before 5am on Monday, without approval or automerge.[^d017-replay]
+- **Hosted observation:** A `lunar-claude` canary ([#87](https://github.com/basher83/lunar-claude/issues/87))
+  confirmed the mise split on 2026-10-13. A dashboard rerun request ran Renovate at 20:19 UTC, four minutes after
+  the merge. `python` 3.15.0 waited under Pending Approval in `renovate/mise-runtimes-approval`, and `uv` 0.13.0
+  with `ruff` 0.17.0 waited in `renovate/mise-tools-approval`. The open grouped PR #84 was rebased to the eight
+  remaining tool updates, kept automerge enabled, and passed `renovate/stability-days`. The `hk` v2 major stayed in
+  `renovate/major-mise-tools` without approval. After the operator approved both items, each branch held only its
+  expected pins, and PR #88 (`python`) reported automerge disabled by config. PR #89 (`uv`, `ruff`) has a truncated
+  body that omits its automerge line, so only its staying unmerged confirms that result. #84 has not automerged:
+  the consumer's own `ci` check already fails on its `main`. The approved branches also waited under Pending
+  Status Checks until the operator ticked "unpend", because `prCreation: "not-pending"` waits for branch checks and
+  this consumer's workflows run only on pull requests; Renovate otherwise opens such PRs after `prNotPendingHours`
+  (default 25 hours). Mise lock-file maintenance left the `mise tools` group; its new branch was not observed. The
+  Terraform rules were not part of this canary.[^d017-canary]
+- **Implementation and verification state:** Merged to `main` through PR #133 (`1880ee5`) on 2026-10-13; consumers
+  extending `local>basher83/renovate-config` read it from the default branch. The mise split is observed in one
+  hosted consumer; the Terraform matching rests on the replay until a provider update runs on a `terraform-tofu`
+  consumer.
+- **Revisit conditions:** Observe #84 automerging once `lunar-claude` CI passes, and the next Terraform provider
+  update on `Triangulum-Prime` or `Supernova-MicroK8s-Infra`. Widen the tool allowlist when new mise plugins appear
+  in consumers. Revisit the three-day `minimumReleaseAge` if security patches lag in hosted dashboards, and the
+  `prCreation` setting if approved branches in pull-request-only CI repositories wait too long.
 
 ## 2026-10-09 — D016: Replace runner manual merge with automerge
 
@@ -488,6 +506,7 @@ in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the 
 [^branch-config]: Upstream source at the replayed version: any upgrade's approval gates the branch; all must automerge.
 [^d017-inventory]: Read-only inventory of default branches; its three bossjones entries are out of scope.
 [^d017-replay]: Local package-rule replay with branch grouping; it does not run lookup, branchify filtering, or the dashboard.
+[^d017-canary]: Agent-recorded observations of hosted Renovate on the consumer's dashboard, branches, and PRs.
 [^amendment-selection]: Exact operator messages and the presented options, extracted from the session transcript.
 [^runner-amendment]: PR body reports the 33-consumer survey; the operator merged it on 2026-10-09.
 [^automerge-replay]: D016 replay with automerge enabled, including the single-update `groupName` trace.

@@ -2,6 +2,10 @@
 
 ## 2026-10-13
 
+* **Update**: Recorded the D017 hosted canary in `lunar-claude`
+  ([#87](https://github.com/basher83/lunar-claude/issues/87)) after the operator merged PR #133. Runtime and 0.x
+  tool minors waited in separate approval branches, the remaining tool updates stayed in automergeable #84, and the
+  approved `python` PR reported automerge disabled. #84's automerge and the Terraform rules remain unobserved.
 * **Update**: Prepared D017 mise runtime/tool split and terraform `required_provider` matching for PR #133, with the
   2026-10-12 ET consumer inventory (86 repos), Renovate 44.145.1 replay receipt, and
   [mise language runtime policy](/mise-language-runtime-policy.md). Hosted canary target: `lunar-claude` (#84).

@@ -1,6 +1,6 @@
 {
   "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, branch-level grouping for two extending consumers, and open Terraform provider PRs on two terraform-tofu consumers.",
-  "completed_at": "2026-10-13T15:51:17.344Z",
+  "completed_at": "2026-10-13T16:27:46.279Z",
   "runtime": {
     "version": "44.145.1",
     "node": "v24.11.1"
@@ -124,7 +124,7 @@
     },
     "note": "Preset must not use isVulnerabilityAlert as a matcher; hosted alerts apply force from vulnerabilityAlerts."
   },
-  "limits": "Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. Branch replay groups fixture upgrades with generateBranchName and generateBranchConfig; it does not run lookup, branchify filtering, or the dashboard.",
+  "limits": "Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. Branch replay groups fixture upgrades with generateBranchName and generateBranchConfig; it does not run lookup, branchify filtering, or the dashboard. Terraform update types are derived from the fixture current and new versions with Renovate classifyRelease and hashicorp versioning, not from lookup; range pins (proxmox ~> 0.90, ~> 0.111.0) use the range floor as the current version, and 0.x steps such as infisical 0.19.20 to 0.20.3 classify as minor.",
   "terraform_provider_block_patch": {
     "dep": {
       "depName": "aws",
@@ -143,7 +143,7 @@
     }
   },
   "terraform_consumer_replay": {
-    "source": "Provider pins and open PR targets from the 2026-10-12 inventory; all four updates are minor.",
+    "source": "Provider pins and open PR targets from the 2026-10-12 inventory. Update types come from Renovate classifyRelease with hashicorp versioning; range current versions use the range floor.",
     "consumers": [
       {
         "repo": "basher83/Triangulum-Prime",
@@ -153,6 +153,9 @@
             "branchName": "renovate/proxmox-0.x",
             "prs": [
               111
+            ],
+            "updateTypes": [
+              "minor"
             ],
             "groupName": null,
             "schedule": [
@@ -165,6 +168,9 @@
             "branchName": "renovate/scalr-3.x",
             "prs": [
               113
+            ],
+            "updateTypes": [
+              "minor"
             ],
             "groupName": null,
             "schedule": [
@@ -180,6 +186,10 @@
             "prs": [
               111,
               113
+            ],
+            "updateTypes": [
+              "minor",
+              "minor"
             ],
             "groupName": "Terraform Providers (Minor)",
             "schedule": [
@@ -199,6 +209,9 @@
             "prs": [
               83
             ],
+            "updateTypes": [
+              "minor"
+            ],
             "groupName": null,
             "schedule": [
               "at any time"
@@ -210,6 +223,9 @@
             "branchName": "renovate/infisical-0.x",
             "prs": [
               76
+            ],
+            "updateTypes": [
+              "minor"
             ],
             "groupName": null,
             "schedule": [
@@ -225,6 +241,10 @@
             "prs": [
               83,
               76
+            ],
+            "updateTypes": [
+              "minor",
+              "minor"
             ],
             "groupName": "Terraform Providers (Minor)",
             "schedule": [

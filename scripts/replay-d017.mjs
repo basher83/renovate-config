@@ -24,6 +24,8 @@ const { mergeChildConfig } = await load('config/utils.js');
 const { getConfig } = await load('config/defaults.js');
 const { generateBranchName } = await load('workers/repository/updates/branch-name.js');
 const { generateBranchConfig } = await load('workers/repository/updates/generate.js');
+const { classifyRelease } = await load('workers/repository/process/lookup/update-type.js');
+const { api: hashicorp } = await load('modules/versioning/hashicorp/index.js');
 
 function sha256File(rel) {
   return createHash('sha256').update(fs.readFileSync(path.join(root, rel))).digest('hex');
@@ -109,7 +111,7 @@ const results = {
   zammad_mcp_mise: [],
   vulnerability_alert_control: null,
   limits:
-    'Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. Branch replay groups fixture upgrades with generateBranchName and generateBranchConfig; it does not run lookup, branchify filtering, or the dashboard.',
+    'Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. Branch replay groups fixture upgrades with generateBranchName and generateBranchConfig; it does not run lookup, branchify filtering, or the dashboard. Terraform update types are derived from the fixture current and new versions with Renovate classifyRelease and hashicorp versioning, not from lookup; range pins (proxmox ~> 0.90, ~> 0.111.0) use the range floor as the current version, and 0.x steps such as infisical 0.19.20 to 0.20.3 classify as minor.',
 };
 
 const base = buildBaseConfig();
@@ -163,6 +165,7 @@ const tfConsumers = [
         depName: 'proxmox',
         packageName: 'bpg/proxmox',
         currentValue: '~> 0.90',
+        currentVersion: '0.90.0',
         newValue: '~> 0.116',
         newVersion: '0.116.0',
       },
@@ -172,6 +175,7 @@ const tfConsumers = [
         depName: 'scalr',
         packageName: 'scalr/scalr',
         currentValue: '3.12.0',
+        currentVersion: '3.12.0',
         newValue: '3.19.0',
         newVersion: '3.19.0',
       },
@@ -188,6 +192,7 @@ const tfConsumers = [
         depName: 'proxmox',
         packageName: 'bpg/proxmox',
         currentValue: '~> 0.111.0',
+        currentVersion: '0.111.0',
         newValue: '~> 0.116.0',
         newVersion: '0.116.0',
       },
@@ -197,6 +202,7 @@ const tfConsumers = [
         depName: 'infisical',
         packageName: 'infisical/infisical',
         currentValue: '0.19.20',
+        currentVersion: '0.19.20',
         newValue: '0.20.3',
         newVersion: '0.20.3',
       },
@@ -211,12 +217,14 @@ async function replayTerraformBranches(consumer, tfRules) {
   const branches = new Map();
   for (const { pr, headRef: _headRef, ...d } of consumer.deps) {
     const [newMajor, newMinor] = d.newVersion.split('.').map(Number);
+    const updateType = classifyRelease(hashicorp, d.currentVersion, d.newVersion);
+    assert.equal(updateType, 'minor', `${consumer.repo} #${pr} classification`);
     const upgrade = await applyPackageRules({
       ...cfg,
       ...d,
       manager: 'terraform',
       depType: 'required_provider',
-      updateType: 'minor',
+      updateType,
       depNameSanitized: d.depName,
       packageFile: 'versions.tf',
       newMajor,
@@ -232,6 +240,7 @@ async function replayTerraformBranches(consumer, tfRules) {
     return {
       branchName,
       prs: upgrades.map((u) => u.pr),
+      updateTypes: upgrades.map((u) => u.updateType),
       groupName: branch.groupName ?? null,
       schedule: branch.schedule,
       dependencyDashboardApproval: branch.dependencyDashboardApproval,
@@ -241,7 +250,8 @@ async function replayTerraformBranches(consumer, tfRules) {
 }
 
 results.terraform_consumer_replay = {
-  source: 'Provider pins and open PR targets from the 2026-10-12 inventory; all four updates are minor.',
+  source:
+    'Provider pins and open PR targets from the 2026-10-12 inventory. Update types come from Renovate classifyRelease with hashicorp versioning; range current versions use the range floor.',
   consumers: [],
 };
 for (const consumer of tfConsumers) {

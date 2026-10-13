@@ -24,7 +24,7 @@
       "groupSlug": "mise-runtimes"
     },
     {
-      "description": "Require Dependency Dashboard approval for mise language runtime minor and major updates",
+      "description": "Require Dependency Dashboard approval for mise language runtime minor and major updates in a separate group so approval does not hold back runtime patches",
       "matchManagers": ["mise"],
       "matchDepNames": [
         "python",
@@ -46,7 +46,9 @@
         "major"
       ],
       "dependencyDashboardApproval": true,
-      "automerge": false
+      "automerge": false,
+      "groupName": "mise language runtimes (approval)",
+      "groupSlug": "mise-runtimes-approval"
     },
     {
       "description": "Auto-merge mise language runtime patch updates after minimum release age",
@@ -73,7 +75,7 @@
       "automerge": true
     },
     {
-      "description": "Conservative default for mise plugins not on the tool allowlist (treat like runtimes)",
+      "description": "Require approval for minor and major updates of mise plugins outside the runtime list and tool allowlist; their patches are neither grouped nor automerged",
       "matchManagers": ["mise"],
       "matchDepNames": [
         "!python",
@@ -99,6 +101,7 @@
         "!eza",
         "!fd",
         "!fnox",
+        "!gh-aw",
         "!git-cliff",
         "!helm",
         "!hk",
@@ -123,9 +126,11 @@
         "!ruff",
         "!shellcheck",
         "!shfmt",
+        "!taplo",
         "!terraform-docs",
         "!tflint",
         "!uv",
+        "!watchexec",
         "!yamlfmt",
         "!yamllint",
         "!yq"
@@ -153,6 +158,7 @@
         "eza",
         "fd",
         "fnox",
+        "gh-aw",
         "git-cliff",
         "helm",
         "hk",
@@ -177,9 +183,11 @@
         "ruff",
         "shellcheck",
         "shfmt",
+        "taplo",
         "terraform-docs",
         "tflint",
         "uv",
+        "watchexec",
         "yamlfmt",
         "yamllint",
         "yq"
@@ -188,7 +196,7 @@
       "groupSlug": "mise-tools"
     },
     {
-      "description": "Require approval for allowlisted mise tools on 0.x semver minor and major (0.y bumps are breaking)",
+      "description": "Require approval for allowlisted mise tools on 0.x semver minor and major (0.y bumps are breaking) in a separate group so approval does not hold back automerged tool updates",
       "matchManagers": ["mise"],
       "matchDepNames": [
         "act",
@@ -201,6 +209,7 @@
         "eza",
         "fd",
         "fnox",
+        "gh-aw",
         "git-cliff",
         "helm",
         "hk",
@@ -225,9 +234,11 @@
         "ruff",
         "shellcheck",
         "shfmt",
+        "taplo",
         "terraform-docs",
         "tflint",
         "uv",
+        "watchexec",
         "yamlfmt",
         "yamllint",
         "yq"
@@ -238,7 +249,9 @@
         "major"
       ],
       "dependencyDashboardApproval": true,
-      "automerge": false
+      "automerge": false,
+      "groupName": "mise tools (approval)",
+      "groupSlug": "mise-tools-approval"
     },
     {
       "description": "Auto-merge allowlisted mise tool patch and minor updates after minimum release age (1.x+ only for minor)",
@@ -254,6 +267,7 @@
         "eza",
         "fd",
         "fnox",
+        "gh-aw",
         "git-cliff",
         "helm",
         "hk",
@@ -278,9 +292,11 @@
         "ruff",
         "shellcheck",
         "shfmt",
+        "taplo",
         "terraform-docs",
         "tflint",
         "uv",
+        "watchexec",
         "yamlfmt",
         "yamllint",
         "yq"
@@ -307,6 +323,7 @@
         "eza",
         "fd",
         "fnox",
+        "gh-aw",
         "git-cliff",
         "helm",
         "hk",
@@ -331,9 +348,11 @@
         "ruff",
         "shellcheck",
         "shfmt",
+        "taplo",
         "terraform-docs",
         "tflint",
         "uv",
+        "watchexec",
         "yamlfmt",
         "yamllint",
         "yq"
@@ -359,6 +378,7 @@
         "eza",
         "fd",
         "fnox",
+        "gh-aw",
         "git-cliff",
         "helm",
         "hk",
@@ -383,9 +403,11 @@
         "ruff",
         "shellcheck",
         "shfmt",
+        "taplo",
         "terraform-docs",
         "tflint",
         "uv",
+        "watchexec",
         "yamlfmt",
         "yamllint",
         "yq"

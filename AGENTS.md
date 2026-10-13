@@ -254,7 +254,8 @@ explicitly per repository. This list describes configured behavior, not an inven
 - `javascript.json` — Auto-merges patches, groups linters, test tools, and TypeScript type definitions (npm & Bun)
 - `github-actions-security.json` — Separately groups runners with dashboard approval, then automerge;
   retains action digest pinning and selective automerge
-- `mise.json` — Groups and auto-merges mise-managed development tool updates
+- `mise.json` — Splits mise runtimes from allowlisted tools; automerges runtime and allowlisted tool patches and
+  1.x+ tool minors after three days and requires dashboard approval for runtime and 0.x tool minor/major updates
 - `ansible.json` — Ansible collection/role updates with an Ansible-specific mise Python cap
 - `terraform-tofu.json` — Terraform/OpenTofu provider and module rules
 

@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-09T23:13:27-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T11:34:57-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -50,6 +50,15 @@ sources:
   - id: check-gating
     resource: https://github.com/basher83/renovate-config/blob/09d32da0cbd806816725c369e77b4a3d79b6eea4/research/2026-10-09-automerge-check-gating.md
     title: Research record on what gates Renovate automerge
+  - id: d017-inventory
+    resource: ../sources/evaluate/2026-10-12-d017-consumer-inventory.json
+    title: D017 consumer inventory of default branches, 2026-10-12 ET
+  - id: d017-replay
+    resource: ../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json
+    title: D017 Renovate 44.145.1 package-rule and branch-grouping replay
+  - id: branch-config
+    resource: https://github.com/renovatebot/renovate/blob/44.145.1/lib/workers/repository/updates/generate.ts
+    title: Renovate 44.145.1 branch configuration generation
 ---
 
 # Renovate-config prospective decisions
@@ -69,29 +78,38 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   `mise.json` preset matched all mise dependencies with one automerge group. Separately, `terraform-tofu.json`
   matched `depType: provider`, while Renovate extracts `required_provider` for typical `required_providers`
   blocks, leaving provider rules inert in Triangulum/Supernova.
-- **Outcome: operator-directed preparation.** Split mise language runtimes from an allowlisted tool set; require
-  dashboard approval for runtime minor/major and for 0.x semver tool minor/major; automerge **1.x+** allowlisted tool
-  patch/minor after three days (0.x tool **patches** use a separate automerge rule; 0.x minors/majors require approval).
-  Vulnerability timing uses `vulnerabilityAlerts` in `default.json`, not mise `packageRules`. Match both `required_provider`
+- **Outcome: prepared for operator selection.** The candidate combines response options listed in #132; the
+  issue presents them as unadopted options, and no separate selection record exists. Operator merge of PR #133 is
+  the selection and acceptance event. Split mise language runtimes from an allowlisted tool set. Runtime patches
+  automerge after three days; runtime minor/major updates require dashboard approval. Allowlisted **1.x+** tool
+  patch/minor updates automerge after three days, as do **0.x** tool patches; 0.x tool minor/major updates require
+  approval, and tool majors do not automerge. Approval-gated runtime and tool updates use their own groups
+  (`mise language runtimes (approval)`, `mise tools (approval)`), because Renovate requires approval for a whole
+  branch when any grouped update needs it and automerges a branch only when every grouped update
+  does.[^branch-config] Minor/major updates of mise plugins outside both lists require approval in
+  `mise plugins (unspecified)`; their patches are neither grouped nor automerged. Match both `required_provider`
   and `provider` in terraform provider rules. Plan a **lunar-claude** hosted mise canary after publication
   (`personal-computing` no longer extends this preset).
-- **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`
-  (`vulnerabilityAlerts.minimumReleaseAge`), policy and survey receipts. Stack caps in `python-mcp.json` and
-  `ansible.json` stay unchanged. Consumer-local `packageRules` remain the consumer owner's responsibility; replay
-  includes Zammad-MCP grouping/caps.
-- **Evidence and limits:** Authoritative inventory of **86** non-archived `basher83/*` repos (default branches,
-  2026-10-12 ET, steward read-only auth) is in
-  [2026-10-12-d017-consumer-inventory.json](../sources/evaluate/2026-10-12-d017-consumer-inventory.json) with human
-  summary in PR #133 body.
+- **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`, policy, and survey
+  receipts. `vulnerabilityAlerts.minimumReleaseAge: null` in `default.json` restates Renovate's default for
+  vulnerability alerts; it documents that alert PRs bypass the three-day gate and changes no behavior. Stack caps
+  in `python-mcp.json` and `ansible.json` stay unchanged. Consumer-local `packageRules` remain the consumer owner's
+  responsibility; a later local `groupName` without `groupSlug` still replaces the preset group, which the
+  Zammad-MCP `uv version pins` replay shows.
+- **Evidence and limits:** The inventory covers **86** non-archived `basher83/*` repos (default branches,
+  2026-10-12 ET, steward read-only auth), with a human summary in the PR #133 body.[^d017-inventory]
   **30** extend `local>basher83/renovate-config` (all unpinned); **4** extend `terraform-tofu.json`; **35** have
-  mise/.tool-versions; **25** open Renovate mise/terraform PRs across **13** repos (**12** PRs on **9** extenders;
-  **13** PRs on **4** independent configs — out of preset blast radius). `personal-computing` is **independent**
-  (`config:best-practices` + `workarounds:all`) and is not a consumer. Renovate **44.145.1** replay in
-  [2026-10-13-d017-mise-terraform-receipt.json](../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json)
-  retains **personal-computing#47** as historical regression evidence only; terraform `required_provider` patch
-  automerges. Hosted canary not yet observed.
+  mise/.tool-versions. The inventory counts **25** open Renovate mise/terraform PRs across **13** repos: **12** PRs
+  on **9** extenders and **13** PRs on **4** independent configs outside the preset blast radius. One of the 12,
+  Virgo-Core #79, updates a Docker `python` tag and is neither a mise nor a Terraform update. `personal-computing`
+  is **independent** (`config:best-practices` + `workarounds:all`) and is not a consumer. The tool allowlist covers
+  every tool pinned by an extending consumer, including `watchexec`, `gh-aw`, and `taplo`. The Renovate
+  **44.145.1** replay on Node 24.11.1 keeps **personal-computing#47** only as historical regression evidence.
+  Terraform `required_provider` patches automerge in it. It also replays tool and fallback cases, plus branch
+  grouping for `prompting-eval-workbench` at `55d2017d` and `lunar-claude` at `e81cabf8`, using their inventory
+  pins and hypothetical update targets.[^d017-replay] Hosted canary not yet observed.
 - **Implementation and verification state:** Prepared on branch `cursor/mise-terraform-preset-fixes-47f1` for PR #133.
-  Publication and merge remain operator decisions.
+  Selection, merge, and publication remain operator decisions.
 - **Revisit conditions:** After merge, run the **lunar-claude** canary in
   [mise language runtime policy](/mise-language-runtime-policy.md); widen the tool allowlist when new mise plugins
   appear in consumers; revisit the three-day `minimumReleaseAge` if security patches lag in hosted dashboards.
@@ -461,6 +479,9 @@ identify what must be preserved first; this adoption does not delete either file
 The [local contract](/governance.md) defines the adopted authority and verification boundaries reflected
 in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the metadata style.
 
+[^branch-config]: Upstream source at the replayed version: any upgrade's approval gates the branch; all must automerge.
+[^d017-inventory]: Read-only inventory of default branches; its three bossjones entries are out of scope.
+[^d017-replay]: Local package-rule replay with branch grouping; it does not run lookup, branchify filtering, or the dashboard.
 [^amendment-selection]: Exact operator messages and the presented options, extracted from the session transcript.
 [^runner-amendment]: PR body reports the 33-consumer survey; the operator merged it on 2026-10-09.
 [^automerge-replay]: D016 replay with automerge enabled, including the single-update `groupName` trace.

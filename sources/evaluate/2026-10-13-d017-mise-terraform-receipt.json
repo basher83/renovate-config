@@ -1,13 +1,13 @@
 {
-  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups.",
-  "completed_at": "2026-10-13T14:54:24.651Z",
+  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, and branch-level grouping for two extending consumers.",
+  "completed_at": "2026-10-13T15:32:49.581Z",
   "runtime": {
     "version": "44.145.1",
-    "node": "v22.14.0"
+    "node": "v24.11.1"
   },
   "candidate_presets": {
     "presets/mise.json": {
-      "sha256": "ae3d5c636f6f38802bde71c39e88a6a8dd99ec28690f6c3a287f05c4b9bd4119"
+      "sha256": "6b46401a3bd33b004a5c65c924a1930b6c0098694b30e99b5bb1d2d987a1fbfa"
     },
     "presets/terraform-tofu.json": {
       "sha256": "1a7a8f7d750d564a0fc2f6953eea39094b9b676e86b9ba8d3d167c3331be7ac5"
@@ -24,8 +24,8 @@
       "after": {
         "automerge": false,
         "dependencyDashboardApproval": true,
-        "groupName": "mise language runtimes",
-        "groupSlug": "mise-runtimes",
+        "groupName": "mise language runtimes (approval)",
+        "groupSlug": "mise-runtimes-approval",
         "minimumReleaseAge": null
       }
     },
@@ -39,8 +39,8 @@
       "after": {
         "automerge": false,
         "dependencyDashboardApproval": true,
-        "groupName": "mise tools",
-        "groupSlug": "mise-tools",
+        "groupName": "mise tools (approval)",
+        "groupSlug": "mise-tools-approval",
         "minimumReleaseAge": null
       }
     },
@@ -54,8 +54,8 @@
       "after": {
         "automerge": false,
         "dependencyDashboardApproval": true,
-        "groupName": "mise language runtimes",
-        "groupSlug": "mise-runtimes",
+        "groupName": "mise language runtimes (approval)",
+        "groupSlug": "mise-runtimes-approval",
         "minimumReleaseAge": null
       }
     }
@@ -88,8 +88,8 @@
       "after": {
         "automerge": false,
         "dependencyDashboardApproval": true,
-        "groupName": "mise language runtimes",
-        "groupSlug": "mise-runtimes",
+        "groupName": "mise language runtimes (approval)",
+        "groupSlug": "mise-runtimes-approval",
         "minimumReleaseAge": null,
         "allowedVersions": "<3.14"
       }
@@ -124,7 +124,7 @@
     },
     "note": "Preset must not use isVulnerabilityAlert as a matcher; hosted alerts apply force from vulnerabilityAlerts."
   },
-  "limits": "Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. No branchify or dashboard replay.",
+  "limits": "Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. Branch replay groups fixture upgrades with generateBranchName and generateBranchConfig; it does not run lookup, branchify filtering, or the dashboard.",
   "terraform_provider_block_patch": {
     "dep": {
       "depName": "aws",
@@ -141,5 +141,158 @@
       "groupSlug": null,
       "minimumReleaseAge": null
     }
+  },
+  "tool_and_fallback_cases": [
+    {
+      "dep": {
+        "depName": "uv",
+        "manager": "mise",
+        "updateType": "patch",
+        "currentValue": "0.12.23"
+      },
+      "after": {
+        "automerge": true,
+        "dependencyDashboardApproval": false,
+        "groupName": "mise tools",
+        "groupSlug": "mise-tools",
+        "minimumReleaseAge": "3 days"
+      }
+    },
+    {
+      "dep": {
+        "depName": "rg",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "15.1.0"
+      },
+      "after": {
+        "automerge": true,
+        "dependencyDashboardApproval": false,
+        "groupName": "mise tools",
+        "groupSlug": "mise-tools",
+        "minimumReleaseAge": "3 days"
+      }
+    },
+    {
+      "dep": {
+        "depName": "gh-aw",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "0.82.14"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "mise tools (approval)",
+        "groupSlug": "mise-tools-approval",
+        "minimumReleaseAge": null
+      }
+    },
+    {
+      "dep": {
+        "depName": "npm:llm-checker",
+        "manager": "mise",
+        "updateType": "minor",
+        "currentValue": "3.8.1"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": true,
+        "groupName": "mise plugins (unspecified)",
+        "groupSlug": "mise-unspecified",
+        "minimumReleaseAge": null
+      }
+    },
+    {
+      "dep": {
+        "depName": "npm:llm-checker",
+        "manager": "mise",
+        "updateType": "patch",
+        "currentValue": "3.8.1"
+      },
+      "after": {
+        "automerge": false,
+        "dependencyDashboardApproval": false,
+        "groupName": null,
+        "groupSlug": null,
+        "minimumReleaseAge": null
+      }
+    }
+  ],
+  "branch_replay": {
+    "source": "Pins from the 2026-10-12 inventory; update targets are hypothetical.",
+    "consumers": [
+      {
+        "repo": "basher83/prompting-eval-workbench",
+        "sha": "55d2017d1f07b95ef51e86dc7ef289632836183e",
+        "branches": [
+          {
+            "branchName": "renovate/mise-runtimes",
+            "deps": [
+              "python patch"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": true
+          },
+          {
+            "branchName": "renovate/mise-runtimes-approval",
+            "deps": [
+              "node minor"
+            ],
+            "dependencyDashboardApproval": true,
+            "automerge": false
+          },
+          {
+            "branchName": "renovate/mise-tools-approval",
+            "deps": [
+              "uv minor"
+            ],
+            "dependencyDashboardApproval": true,
+            "automerge": false
+          },
+          {
+            "branchName": "renovate/mise-tools",
+            "deps": [
+              "ruff patch",
+              "hk minor",
+              "watchexec patch"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": true
+          }
+        ]
+      },
+      {
+        "repo": "basher83/lunar-claude",
+        "sha": "e81cabf81e7c58eb90b2dc656c8bc15d4a23227b",
+        "branches": [
+          {
+            "branchName": "renovate/mise-runtimes-approval",
+            "deps": [
+              "python minor"
+            ],
+            "dependencyDashboardApproval": true,
+            "automerge": false
+          },
+          {
+            "branchName": "renovate/mise-tools-approval",
+            "deps": [
+              "uv minor"
+            ],
+            "dependencyDashboardApproval": true,
+            "automerge": false
+          },
+          {
+            "branchName": "renovate/mise-tools",
+            "deps": [
+              "rg minor",
+              "fnox patch"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": true
+          }
+        ]
+      }
+    ]
   }
 }

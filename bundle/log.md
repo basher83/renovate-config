@@ -6,6 +6,10 @@
   2026-10-12 ET consumer inventory (86 repos), Renovate 44.145.1 replay receipt, and
   [mise language runtime policy](/mise-language-runtime-policy.md). Hosted canary target: `lunar-claude` (#84).
   Publication remains pending operator review.
+* **Update**: Review of PR #133 moved approval-gated runtime and 0.x tool updates into their own groups, because
+  Renovate gates a whole branch on any grouped approval. It added `watchexec`, `gh-aw`, and `taplo` to the tool
+  allowlist and regenerated the replay receipt with tool, fallback, and branch-grouping cases. D017 now records
+  preparation pending operator selection, and the policy source anchor resolves.
 
 ## 2026-10-09
 

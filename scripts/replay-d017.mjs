@@ -22,6 +22,8 @@ await initLogger();
 const { applyPackageRules } = await load('util/package-rules/index.js');
 const { mergeChildConfig } = await load('config/utils.js');
 const { getConfig } = await load('config/defaults.js');
+const { generateBranchName } = await load('workers/repository/updates/branch-name.js');
+const { generateBranchConfig } = await load('workers/repository/updates/generate.js');
 
 function sha256File(rel) {
   return createHash('sha256').update(fs.readFileSync(path.join(root, rel))).digest('hex');
@@ -95,7 +97,7 @@ const pc47 = [
 
 const results = {
   purpose:
-    'Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups.',
+    'Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, and branch-level grouping for two extending consumers.',
   completed_at: new Date().toISOString(),
   runtime: { version: '44.145.1', node: process.version },
   candidate_presets: {
@@ -107,7 +109,7 @@ const results = {
   zammad_mcp_mise: [],
   vulnerability_alert_control: null,
   limits:
-    'Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. No branchify or dashboard replay.',
+    'Merged local preset bytes only; built-in preset expansion differs from hosted preset fetch. Branch replay groups fixture upgrades with generateBranchName and generateBranchConfig; it does not run lookup, branchify filtering, or the dashboard.',
 };
 
 const base = buildBaseConfig();
@@ -184,5 +186,109 @@ results.vulnerability_alert_control = {
   note: 'Preset must not use isVulnerabilityAlert as a matcher; hosted alerts apply force from vulnerabilityAlerts.',
 };
 assert.equal(vulnUv.minimumReleaseAge, null, 'vulnerability alert force clears minimumReleaseAge');
+
+// Per-dependency coverage requested in review: 0.x tool patch, 1.x+ tool minor, unlisted plugin.
+results.tool_and_fallback_cases = [];
+for (const [dep, expected] of [
+  [
+    { depName: 'uv', manager: 'mise', updateType: 'patch', currentValue: '0.12.23' },
+    { automerge: true, dependencyDashboardApproval: false, groupSlug: 'mise-tools' },
+  ],
+  [
+    { depName: 'rg', manager: 'mise', updateType: 'minor', currentValue: '15.1.0' },
+    { automerge: true, dependencyDashboardApproval: false, groupSlug: 'mise-tools' },
+  ],
+  [
+    { depName: 'gh-aw', manager: 'mise', updateType: 'minor', currentValue: '0.82.14' },
+    { automerge: false, dependencyDashboardApproval: true, groupSlug: 'mise-tools-approval' },
+  ],
+  [
+    { depName: 'npm:llm-checker', manager: 'mise', updateType: 'minor', currentValue: '3.8.1' },
+    { automerge: false, dependencyDashboardApproval: true, groupSlug: 'mise-unspecified' },
+  ],
+  [
+    { depName: 'npm:llm-checker', manager: 'mise', updateType: 'patch', currentValue: '3.8.1' },
+    { automerge: false, dependencyDashboardApproval: false, groupSlug: null },
+  ],
+]) {
+  const after = await apply(base, dep);
+  results.tool_and_fallback_cases.push({ dep, after });
+  for (const [key, value] of Object.entries(expected)) {
+    assert.equal(after[key] ?? null, value, `${dep.depName} ${dep.updateType} ${key}`);
+  }
+}
+
+// Branch-level replay: Renovate sets branch approval when any grouped update needs it and
+// automerge only when every grouped update automerges (generateBranchConfig), so each
+// update's own result must survive grouping.
+const consumers = [
+  {
+    repo: 'basher83/prompting-eval-workbench',
+    sha: '55d2017d1f07b95ef51e86dc7ef289632836183e',
+    deps: [
+      { depName: 'python', updateType: 'patch', currentValue: '3.14.7', newValue: '3.14.8' },
+      { depName: 'node', updateType: 'minor', currentValue: '24.19.0', newValue: '24.20.0' },
+      { depName: 'uv', updateType: 'minor', currentValue: '0.12.3', newValue: '0.13.0' },
+      { depName: 'ruff', updateType: 'patch', currentValue: '0.16.2', newValue: '0.16.3' },
+      { depName: 'hk', updateType: 'minor', currentValue: '1.54.1', newValue: '1.55.0' },
+      { depName: 'watchexec', updateType: 'patch', currentValue: '2.5.1', newValue: '2.5.2' },
+    ],
+  },
+  {
+    repo: 'basher83/lunar-claude',
+    sha: 'e81cabf81e7c58eb90b2dc656c8bc15d4a23227b',
+    deps: [
+      { depName: 'python', updateType: 'minor', currentValue: '3.14.6', newValue: '3.15.0' },
+      { depName: 'uv', updateType: 'minor', currentValue: '0.11.28', newValue: '0.13.0' },
+      { depName: 'rg', updateType: 'minor', currentValue: '15.1.0', newValue: '15.2.0' },
+      { depName: 'fnox', updateType: 'patch', currentValue: '1.29.0', newValue: '1.29.1' },
+    ],
+  },
+];
+results.branch_replay = { source: 'Pins from the 2026-10-12 inventory; update targets are hypothetical.', consumers: [] };
+for (const consumer of consumers) {
+  const branches = new Map();
+  for (const d of consumer.deps) {
+    const [newMajor, newMinor] = d.newValue.split('.').map(Number);
+    const upgrade = await applyPackageRules({
+      ...base,
+      ...d,
+      manager: 'mise',
+      packageName: d.depName,
+      depNameSanitized: d.depName,
+      packageFile: 'mise.toml',
+      newVersion: d.newValue,
+      newMajor,
+      newMinor,
+    });
+    generateBranchName(upgrade);
+    assert.ok(upgrade.branchName, `${d.depName} branchName`);
+    if (!branches.has(upgrade.branchName)) branches.set(upgrade.branchName, []);
+    branches.get(upgrade.branchName).push(upgrade);
+  }
+  const out = [];
+  for (const [branchName, upgrades] of branches) {
+    const branch = generateBranchConfig(upgrades);
+    out.push({
+      branchName,
+      deps: upgrades.map((u) => `${u.depName} ${u.updateType}`),
+      dependencyDashboardApproval: branch.dependencyDashboardApproval,
+      automerge: branch.automerge,
+    });
+    for (const u of upgrades) {
+      assert.equal(
+        Boolean(u.automerge),
+        branch.automerge,
+        `${consumer.repo} ${branchName}: ${u.depName} automerge is overridden by its group`,
+      );
+      assert.equal(
+        Boolean(u.dependencyDashboardApproval),
+        branch.dependencyDashboardApproval,
+        `${consumer.repo} ${branchName}: ${u.depName} approval is overridden by its group`,
+      );
+    }
+  }
+  results.branch_replay.consumers.push({ repo: consumer.repo, sha: consumer.sha, branches: out });
+}
 
 console.log(JSON.stringify(results, null, 2));

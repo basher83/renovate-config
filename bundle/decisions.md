@@ -72,22 +72,26 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
 - **Outcome: operator-directed preparation.** Split mise language runtimes from an allowlisted tool set; require
   dashboard approval for runtime minor/major and for 0.x semver tool minor/major; automerge other allowlisted tool
   patch/minor updates after three days unless superseded by vulnerability alerts. Match both `required_provider`
-  and `provider` in terraform provider rules. Document a personal-computing hosted canary after publication.
+  and `provider` in terraform provider rules. Plan a **lunar-claude** hosted mise canary after publication
+  (`personal-computing` no longer extends this preset).
 - **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`
   (`vulnerabilityAlerts.minimumReleaseAge`), policy and survey receipts. Stack caps in `python-mcp.json` and
   `ansible.json` stay unchanged. Consumer-local `packageRules` remain the consumer owner's responsibility; replay
   includes Zammad-MCP grouping/caps.
-- **Evidence and limits:** Live survey of **17** repositories with explicit `renovate.json` extending this preset
-  (27 active repos visible to the preparation token) is in
-  [2026-10-13-d017-consumer-survey.json](../sources/evaluate/2026-10-13-d017-consumer-survey.json). Renovate
-  **44.145.1** replay in
+- **Evidence and limits:** Authoritative inventory of **86** non-archived `basher83/*` repos (default branches,
+  2026-10-12 ET, steward read-only auth) is in
+  [2026-10-12-d017-consumer-inventory.json](../sources/evaluate/2026-10-12-d017-consumer-inventory.json) with human
+  summary in PR #133 body.
+  **30** extend `local>basher83/renovate-config` (all unpinned); **4** extend `terraform-tofu.json`; **35** have
+  mise/.tool-versions; **25** open Renovate mise/terraform PRs across **13** repos (**13** PRs on **9** extenders;
+  **12** PRs on **4** independent configs — out of preset blast radius). `personal-computing` is **independent**
+  (`config:best-practices` + `workarounds:all`) and is not a consumer. Renovate **44.145.1** replay in
   [2026-10-13-d017-mise-terraform-receipt.json](../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json)
-  shows personal-computing#47's three updates would not automerge and would split runtime vs tool groups; terraform
-  `required_provider` patch automerges; `provider`-block deps remain supported per Renovate 44 `dep-types`. Hosted
-  canary and private-repo coverage are not observed in this preparation pass.
+  retains **personal-computing#47** as historical regression evidence only; terraform `required_provider` patch
+  automerges. Hosted canary not yet observed.
 - **Implementation and verification state:** Prepared on branch `cursor/mise-terraform-preset-fixes-47f1` for PR #133.
   Publication and merge remain operator decisions.
-- **Revisit conditions:** After merge, run the personal-computing canary in
+- **Revisit conditions:** After merge, run the **lunar-claude** canary in
   [mise language runtime policy](/mise-language-runtime-policy.md); widen the tool allowlist when new mise plugins
   appear in consumers; revisit the three-day `minimumReleaseAge` if security patches lag in hosted dashboards.
 

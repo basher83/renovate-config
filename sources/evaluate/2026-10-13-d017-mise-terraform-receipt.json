@@ -1,5 +1,6 @@
 {
-  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups.",
+  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle (historical #132 regression only; repo no longer extends renovate-config), terraform required_provider patch, Zammad-MCP local caps/groups.",
+  "consumer_inventory": "sources/evaluate/2026-10-12-d017-consumer-inventory.json",
   "completed_at": "2026-10-13T03:36:14.538Z",
   "runtime": {
     "version": "44.145.1",

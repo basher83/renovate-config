@@ -4,7 +4,7 @@ title: mise language runtime and tool update policy
 description: This policy separates mise language runtimes from allowlisted tools, gates runtime and 0.x tool bumps, and plans a lunar-claude canary after publication.
 tags: [presets]
 status: draft
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T11:34:57-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T11:51:31-04:00 }
 sources:
   - id: selection
     resource: /decisions.md#2026-10-13--d017-mise-runtimetool-split-and-terraform-required_provider-matching
@@ -54,9 +54,10 @@ After merge of PR #133:
    automerge of the remaining tool updates after three days.
 2. **Secondary:** **`Zammad-MCP`** ([#400](https://github.com/basher83/Zammad-MCP/pull/400) `uv` bump): local caps
    and **uv version pins** grouping on top of the shared rules (replay covers caps and the local group).
-3. **Terraform (preset extenders only):** **`Triangulum-Prime`** or **`Supernova-MicroK8s-Infra`**: open provider
-   PRs should pick up `required_provider` rules. **`lunar-claude`** has `required_providers` in examples but does
-   **not** extend `terraform-tofu.json`; the terraform fix does not apply there.
+3. **Terraform (preset extenders only):** **`Triangulum-Prime`** or **`Supernova-MicroK8s-Infra`**: their two open
+   provider minors should merge into one Monday `Terraform Providers (Minor)` branch per repository, as replayed.
+   **`lunar-claude`** has `required_providers` in examples but does **not** extend `terraform-tofu.json`; the
+   terraform fix does not apply there.
 
 Record hosted outcomes in `bundle/decisions.md` or a follow-up evidence receipt; do not treat merge alone as proof.
 
@@ -67,8 +68,9 @@ The [consumer inventory](../sources/evaluate/2026-10-12-d017-consumer-inventory.
 [2026-10-13-d017-mise-terraform-receipt.json](../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json)
 models that bundle, but the repo no longer extends this preset. Its branch replay uses inventory pins from
 `prompting-eval-workbench` and `lunar-claude` with hypothetical update targets; it does not run lookup or the
-dashboard. Terraform `provider` depType remains valid for `provider` blocks; `required_provider` is the common case
-in `required_providers` blocks.[^replay]
+dashboard. Its Terraform replay uses the open provider PRs on `Triangulum-Prime` and `Supernova-MicroK8s-Infra`
+at their inventory revisions; the base-preset run reproduces their live branch names. Terraform `provider` depType
+remains valid for `provider` blocks; `required_provider` is the common case in `required_providers` blocks.[^replay]
 
 [^selection]: D017 records preparation scope; operator merge is the selection and acceptance event.
 [^survey]: Authoritative inventory captured 2026-10-12 ET; bossjones repos are out of scope for this repository.

@@ -97,7 +97,7 @@ const pc47 = [
 
 const results = {
   purpose:
-    'Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, and branch-level grouping for two extending consumers.',
+    'Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, branch-level grouping for two extending consumers, and open Terraform provider PRs on two terraform-tofu consumers.',
   completed_at: new Date().toISOString(),
   runtime: { version: '44.145.1', node: process.version },
   candidate_presets: {
@@ -141,6 +141,125 @@ results.terraform_provider_block_patch = {
   after: await apply(tfCfg, providerBlockDep),
 };
 assert.equal(results.terraform_provider_block_patch.after.automerge, true);
+
+// Terraform consumer replay: open provider PRs at the inventory revisions, with the candidate preset
+// and the base preset (identical except that its provider rules omit required_provider).
+const tfPreset = readJson('presets/terraform-tofu.json');
+const legacyTfPreset = structuredClone(tfPreset);
+for (const rule of legacyTfPreset.packageRules) {
+  if (rule.matchDepTypes) {
+    rule.matchDepTypes = rule.matchDepTypes.filter((t) => t !== 'required_provider');
+  }
+}
+const tfConsumers = [
+  {
+    repo: 'basher83/Triangulum-Prime',
+    sha: '32c06140ca203fa8bfa73204b50c7144dfa82a16',
+    presets: [],
+    deps: [
+      {
+        pr: 111,
+        headRef: 'renovate/proxmox-0.x',
+        depName: 'proxmox',
+        packageName: 'bpg/proxmox',
+        currentValue: '~> 0.90',
+        newValue: '~> 0.116',
+        newVersion: '0.116.0',
+      },
+      {
+        pr: 113,
+        headRef: 'renovate/scalr-3.x',
+        depName: 'scalr',
+        packageName: 'scalr/scalr',
+        currentValue: '3.12.0',
+        newValue: '3.19.0',
+        newVersion: '3.19.0',
+      },
+    ],
+  },
+  {
+    repo: 'basher83/Supernova-MicroK8s-Infra',
+    sha: '68e15d0d058f923fb0d9cd1804a39027c4e7bf0c',
+    presets: ['presets/python.json', 'presets/ansible.json'],
+    deps: [
+      {
+        pr: 83,
+        headRef: 'renovate/proxmox-0.x',
+        depName: 'proxmox',
+        packageName: 'bpg/proxmox',
+        currentValue: '~> 0.111.0',
+        newValue: '~> 0.116.0',
+        newVersion: '0.116.0',
+      },
+      {
+        pr: 76,
+        headRef: 'renovate/infisical-0.x',
+        depName: 'infisical',
+        packageName: 'infisical/infisical',
+        currentValue: '0.19.20',
+        newValue: '0.20.3',
+        newVersion: '0.20.3',
+      },
+    ],
+  },
+];
+
+async function replayTerraformBranches(consumer, tfRules) {
+  let cfg = buildBaseConfig();
+  for (const rel of consumer.presets) cfg = mergeChildConfig(cfg, readJson(rel));
+  cfg = mergeChildConfig(cfg, tfRules);
+  const branches = new Map();
+  for (const { pr, headRef: _headRef, ...d } of consumer.deps) {
+    const [newMajor, newMinor] = d.newVersion.split('.').map(Number);
+    const upgrade = await applyPackageRules({
+      ...cfg,
+      ...d,
+      manager: 'terraform',
+      depType: 'required_provider',
+      updateType: 'minor',
+      depNameSanitized: d.depName,
+      packageFile: 'versions.tf',
+      newMajor,
+      newMinor,
+    });
+    upgrade.pr = pr;
+    generateBranchName(upgrade);
+    if (!branches.has(upgrade.branchName)) branches.set(upgrade.branchName, []);
+    branches.get(upgrade.branchName).push(upgrade);
+  }
+  return [...branches].map(([branchName, upgrades]) => {
+    const branch = generateBranchConfig(upgrades);
+    return {
+      branchName,
+      prs: upgrades.map((u) => u.pr),
+      groupName: branch.groupName ?? null,
+      schedule: branch.schedule,
+      dependencyDashboardApproval: branch.dependencyDashboardApproval,
+      automerge: branch.automerge,
+    };
+  });
+}
+
+results.terraform_consumer_replay = {
+  source: 'Provider pins and open PR targets from the 2026-10-12 inventory; all four updates are minor.',
+  consumers: [],
+};
+for (const consumer of tfConsumers) {
+  const before = await replayTerraformBranches(consumer, legacyTfPreset);
+  const after = await replayTerraformBranches(consumer, tfPreset);
+  results.terraform_consumer_replay.consumers.push({ repo: consumer.repo, sha: consumer.sha, before, after });
+  assert.equal(before.length, consumer.deps.length, `${consumer.repo} base preset leaves one branch per PR`);
+  for (const branch of before) {
+    assert.equal(branch.groupName, null, `${consumer.repo} base preset rules are inert`);
+    const live = consumer.deps.find((d) => d.pr === branch.prs[0]).headRef;
+    assert.equal(branch.branchName, live, `${consumer.repo} base replay reproduces the live PR branch`);
+  }
+  assert.equal(after.length, 1, `${consumer.repo} candidate groups provider minors`);
+  assert.equal(after[0].branchName, 'renovate/terraform-providers-(minor)');
+  assert.deepEqual(after[0].schedule, ['before 5am on Monday']);
+  assert.equal(after[0].dependencyDashboardApproval, false);
+  assert.equal(after[0].automerge, false);
+}
 
 const zcfg = buildZammadConfig();
 for (const dep of [

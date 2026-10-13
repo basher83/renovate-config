@@ -1,6 +1,6 @@
 {
-  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, and branch-level grouping for two extending consumers.",
-  "completed_at": "2026-10-13T15:32:49.581Z",
+  "purpose": "Replay D017 mise/terraform preset rules: personal-computing#47 bundle, terraform required_provider patch, Zammad-MCP local caps/groups, tool and fallback cases, branch-level grouping for two extending consumers, and open Terraform provider PRs on two terraform-tofu consumers.",
+  "completed_at": "2026-10-13T15:51:17.344Z",
   "runtime": {
     "version": "44.145.1",
     "node": "v24.11.1"
@@ -141,6 +141,101 @@
       "groupSlug": null,
       "minimumReleaseAge": null
     }
+  },
+  "terraform_consumer_replay": {
+    "source": "Provider pins and open PR targets from the 2026-10-12 inventory; all four updates are minor.",
+    "consumers": [
+      {
+        "repo": "basher83/Triangulum-Prime",
+        "sha": "32c06140ca203fa8bfa73204b50c7144dfa82a16",
+        "before": [
+          {
+            "branchName": "renovate/proxmox-0.x",
+            "prs": [
+              111
+            ],
+            "groupName": null,
+            "schedule": [
+              "at any time"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": false
+          },
+          {
+            "branchName": "renovate/scalr-3.x",
+            "prs": [
+              113
+            ],
+            "groupName": null,
+            "schedule": [
+              "at any time"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": false
+          }
+        ],
+        "after": [
+          {
+            "branchName": "renovate/terraform-providers-(minor)",
+            "prs": [
+              111,
+              113
+            ],
+            "groupName": "Terraform Providers (Minor)",
+            "schedule": [
+              "before 5am on Monday"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": false
+          }
+        ]
+      },
+      {
+        "repo": "basher83/Supernova-MicroK8s-Infra",
+        "sha": "68e15d0d058f923fb0d9cd1804a39027c4e7bf0c",
+        "before": [
+          {
+            "branchName": "renovate/proxmox-0.x",
+            "prs": [
+              83
+            ],
+            "groupName": null,
+            "schedule": [
+              "at any time"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": false
+          },
+          {
+            "branchName": "renovate/infisical-0.x",
+            "prs": [
+              76
+            ],
+            "groupName": null,
+            "schedule": [
+              "at any time"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": false
+          }
+        ],
+        "after": [
+          {
+            "branchName": "renovate/terraform-providers-(minor)",
+            "prs": [
+              83,
+              76
+            ],
+            "groupName": "Terraform Providers (Minor)",
+            "schedule": [
+              "before 5am on Monday"
+            ],
+            "dependencyDashboardApproval": false,
+            "automerge": false
+          }
+        ]
+      }
+    ]
   },
   "tool_and_fallback_cases": [
     {

@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T11:34:57-04:00 }
+generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T11:51:31-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -107,7 +107,12 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   **44.145.1** replay on Node 24.11.1 keeps **personal-computing#47** only as historical regression evidence.
   Terraform `required_provider` patches automerge in it. It also replays tool and fallback cases, plus branch
   grouping for `prompting-eval-workbench` at `55d2017d` and `lunar-claude` at `e81cabf8`, using their inventory
-  pins and hypothetical update targets.[^d017-replay] Hosted canary not yet observed.
+  pins and hypothetical update targets. For Terraform it replays the four open provider PRs on `Triangulum-Prime`
+  at `32c06140` (#111, #113) and `Supernova-MicroK8s-Infra` at `68e15d0d` (#83, #76), all minor updates. With the
+  base preset the provider rules stay inert, and the replay reproduces the live branch names (`proxmox-0.x`,
+  `scalr-3.x`, `infisical-0.x`). With the candidate, each repository's pair joins one `Terraform Providers (Minor)`
+  branch scheduled before 5am on Monday, without approval or automerge.[^d017-replay] Hosted canary not yet
+  observed.
 - **Implementation and verification state:** Prepared on branch `cursor/mise-terraform-preset-fixes-47f1` for PR #133.
   Selection, merge, and publication remain operator decisions.
 - **Revisit conditions:** After merge, run the **lunar-claude** canary in

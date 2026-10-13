@@ -10,6 +10,9 @@
   Renovate gates a whole branch on any grouped approval. It added `watchexec`, `gh-aw`, and `taplo` to the tool
   allowlist and regenerated the replay receipt with tool, fallback, and branch-grouping cases. D017 now records
   preparation pending operator selection, and the policy source anchor resolves.
+* **Update**: Added Terraform consumer evidence to the D017 replay: the four open provider PRs on `Triangulum-Prime`
+  and `Supernova-MicroK8s-Infra` are inert under the base preset and group into one Monday minor branch per
+  repository under the candidate. Supernova #76 is a minor update, not a patch.
 
 ## 2026-10-09
 

@@ -1,12 +1,157 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "mise preset - automerge mise-managed development tool updates",
+  "description": "mise preset - separate language runtimes from tools with conservative automerge (see renovate-config#132)",
   "packageRules": [
     {
-      "description": "Automerge mise tool updates",
-      "matchManagers": ["mise"],
-      "automerge": true,
-      "groupName": "mise tools"
+      "description": "Group mise-managed language runtimes separately from CLI tools",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "python",
+        "node",
+        "go",
+        "ruby",
+        "java",
+        "erlang",
+        "elixir",
+        "php",
+        "scala",
+        "kotlin",
+        "deno",
+        "bun",
+        "rust"
+      ],
+      "groupName": "mise language runtimes",
+      "groupSlug": "mise-runtimes"
+    },
+    {
+      "description": "Require Dependency Dashboard approval for mise language runtime minor and major updates",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "python",
+        "node",
+        "go",
+        "ruby",
+        "java",
+        "erlang",
+        "elixir",
+        "php",
+        "scala",
+        "kotlin",
+        "deno",
+        "bun",
+        "rust"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
+      "dependencyDashboardApproval": true,
+      "automerge": false
+    },
+    {
+      "description": "Auto-merge mise language runtime patch updates after minimum release age",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "python",
+        "node",
+        "go",
+        "ruby",
+        "java",
+        "erlang",
+        "elixir",
+        "php",
+        "scala",
+        "kotlin",
+        "deno",
+        "bun",
+        "rust"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "minimumReleaseAge": "3 days",
+      "automerge": true
+    },
+    {
+      "description": "Group mise development tools (non-language runtimes)",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "!python",
+        "!node",
+        "!go",
+        "!ruby",
+        "!java",
+        "!erlang",
+        "!elixir",
+        "!php",
+        "!scala",
+        "!kotlin",
+        "!deno",
+        "!bun",
+        "!rust"
+      ],
+      "groupName": "mise tools",
+      "groupSlug": "mise-tools"
+    },
+    {
+      "description": "Auto-merge mise tool patch and minor updates after minimum release age",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "!python",
+        "!node",
+        "!go",
+        "!ruby",
+        "!java",
+        "!erlang",
+        "!elixir",
+        "!php",
+        "!scala",
+        "!kotlin",
+        "!deno",
+        "!bun",
+        "!rust"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "minimumReleaseAge": "3 days",
+      "automerge": true
+    },
+    {
+      "description": "Do not auto-merge mise tool major updates",
+      "matchManagers": [
+        "mise"
+      ],
+      "matchDepNames": [
+        "!python",
+        "!node",
+        "!go",
+        "!ruby",
+        "!java",
+        "!erlang",
+        "!elixir",
+        "!php",
+        "!scala",
+        "!kotlin",
+        "!deno",
+        "!bun",
+        "!rust"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
     }
   ]
 }

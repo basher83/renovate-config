@@ -292,7 +292,8 @@ The following presets are included in `default.json`:
 - `github-actions-security.json` – GitHub Actions security rules with digest pinning, selective automerge,
   approval for sensitive updates, and separate hosted-runner approval followed by automerge.
   See [runner policy](/github-hosted-runner-policy.md) for coverage and retirement responsibility.
-- `mise.json` – mise-managed development tool updates, grouped and automerged.
+- `mise.json` – mise language runtimes grouped separately with dashboard approval for minor/major; tools auto-merge
+  patch/minor after minimum release age.
 
 ---
 

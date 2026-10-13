@@ -1,5 +1,19 @@
 # Repository knowledge change log
 
+## 2026-10-13
+
+* **Update**: Prepared D017 mise runtime/tool split and terraform `required_provider` matching for PR #133, with the
+  2026-10-12 ET consumer inventory (86 repos), Renovate 44.145.1 replay receipt, and
+  [mise language runtime policy](/mise-language-runtime-policy.md). Hosted canary target: `lunar-claude` (#84).
+  Publication remains pending operator review.
+* **Update**: Review of PR #133 moved approval-gated runtime and 0.x tool updates into their own groups, because
+  Renovate gates a whole branch on any grouped approval. It added `watchexec`, `gh-aw`, and `taplo` to the tool
+  allowlist and regenerated the replay receipt with tool, fallback, and branch-grouping cases. D017 now records
+  preparation pending operator selection, and the policy source anchor resolves.
+* **Update**: Added Terraform consumer evidence to the D017 replay: the four open provider PRs on `Triangulum-Prime`
+  and `Supernova-MicroK8s-Infra` are inert under the base preset and group into one Monday minor branch per
+  repository under the candidate. Supernova #76 is a minor update, not a patch.
+
 ## 2026-10-09
 
 * **Creation**: Captured the operator's D016 selection in a

@@ -8,6 +8,7 @@
         "terraform"
       ],
       "matchDepTypes": [
+        "required_provider",
         "provider"
       ],
       "matchUpdateTypes": [
@@ -21,6 +22,7 @@
         "terraform"
       ],
       "matchDepTypes": [
+        "required_provider",
         "provider"
       ],
       "matchUpdateTypes": [
@@ -39,6 +41,7 @@
         "terraform"
       ],
       "matchDepTypes": [
+        "required_provider",
         "provider"
       ],
       "matchUpdateTypes": [
@@ -55,6 +58,7 @@
         "terraform"
       ],
       "matchDepTypes": [
+        "required_provider",
         "provider"
       ],
       "matchUpdateTypes": [

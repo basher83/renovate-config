@@ -66,7 +66,9 @@ Global presets included by `default.json`:
 - `github-actions-security.json` – GitHub Actions security rules with digest pinning,
   selective automerge, approval for sensitive updates, and a separate hosted-runner group requiring
   dashboard approval, then automerging after checks pass.
-- `mise.json` – mise-managed development tool updates, grouped and automerged.
+- `mise.json` – mise-managed runtime and tool updates: runtime and allowlisted tool patches, plus 1.x+ tool
+  minors, automerge after three days; runtime and 0.x tool minor/major updates require dashboard approval in
+  separate groups.
 
 Optional presets in [`presets/`](./presets/) are extended per project:
 

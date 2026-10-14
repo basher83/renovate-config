@@ -1,7 +1,18 @@
 # Repository knowledge change log
 
+## 2026-10-14
+
+* **Update**: Corrected the D017 hosted record after lunar-claude #84 automerged at 22:44 UTC on 2026-10-13.
+  The `mise-tools-approval` rule sets `automerge: false` for the `uv`/`ruff` group. PR #89 omitted that line, and
+  at the canary write-up `ci` had failed while `CI` was still running, so staying unmerged does not confirm the
+  setting. Terraform provider matching remains unobserved.
+
 ## 2026-10-13
 
+* **Update**: Recorded the D017 hosted canary in `lunar-claude`
+  ([#87](https://github.com/basher83/lunar-claude/issues/87)) after the operator merged PR #133. Runtime and 0.x
+  tool minors waited in separate approval branches, the remaining tool updates stayed in automergeable #84, and the
+  approved `python` PR reported automerge disabled. #84's automerge and the Terraform rules remain unobserved.
 * **Update**: Prepared D017 mise runtime/tool split and terraform `required_provider` matching for PR #133, with the
   2026-10-12 ET consumer inventory (86 repos), Renovate 44.145.1 replay receipt, and
   [mise language runtime policy](/mise-language-runtime-policy.md). Hosted canary target: `lunar-claude` (#84).

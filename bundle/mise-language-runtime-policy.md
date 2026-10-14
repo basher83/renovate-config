@@ -1,14 +1,14 @@
 ---
 type: Policy
 title: mise language runtime and tool update policy
-description: This policy separates mise language runtimes from allowlisted tools, gates runtime and 0.x tool bumps, and plans a lunar-claude canary after publication.
+description: This policy separates mise language runtimes from allowlisted tools, gates runtime and 0.x tool bumps, and records the lunar-claude hosted canary.
 tags: [presets]
 status: draft
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T11:51:31-04:00 }
+generated: { by: cursor_agent/Grok 4.7, at: 2026-10-14T01:47:07-04:00 }
 sources:
   - id: selection
     resource: /decisions.md#2026-10-13--d017-mise-runtimetool-split-and-terraform-required_provider-matching
-    title: D017 preparation for #132 and the terraform depType fix, pending operator selection
+    title: D017 selection for #132 and the terraform depType fix by operator merge of PR #133
   - id: replay
     resource: ../sources/evaluate/2026-10-13-d017-mise-terraform-receipt.json
     title: Renovate 44.145.1 package-rule and branch-grouping replay
@@ -18,11 +18,14 @@ sources:
   - id: preset
     resource: ../presets/mise.json
     title: Implementing shared mise preset
+  - id: canary
+    resource: https://github.com/basher83/lunar-claude/issues/87
+    title: Hosted canary of the D017 mise split in lunar-claude
 ---
 
 # mise language runtime and tool update policy
 
-**Standing: preparation for PR #133; operator merge is the selection and acceptance event.**[^selection]
+**Standing: selected by operator merge of PR #133 on 2026-10-13; observed in one hosted consumer.**[^selection]
 
 ## Rule summary
 
@@ -42,24 +45,29 @@ sources:
 - **Vulnerability alerts:** Renovate's default `vulnerabilityAlerts.minimumReleaseAge` is already `null`;
   `default.json` restates it, so alert PRs bypass the 3-day gate. Hosted confirmation remains a canary follow-up.
 
-## Canary plan (mise)
+## Canary
 
-After merge of PR #133:
-
-1. **Primary canary:** **`basher83/lunar-claude`** ([#84](https://github.com/basher83/lunar-claude/pull/84)
-   `chore(deps): update mise tools`). It extends only the root preset (inherits global `mise.json`), pins both a
-   language runtime (`python`) and **0.x** tools (`uv`, `ruff`), and already has an open grouped mise PR. It is in
-   blast radius; **`personal-computing` is not** (independent Renovate config since leaving the shared preset).
-   Confirm separate runtime, tool, and approval branches; dashboard approval on runtime and 0.x tool minors; and
-   automerge of the remaining tool updates after three days.
-2. **Secondary:** **`Zammad-MCP`** ([#400](https://github.com/basher83/Zammad-MCP/pull/400) `uv` bump): local caps
-   and **uv version pins** grouping on top of the shared rules (replay covers caps and the local group).
-3. **Terraform (preset extenders only):** **`Triangulum-Prime`** or **`Supernova-MicroK8s-Infra`**: their two open
-   provider minors should merge into one Monday `Terraform Providers (Minor)` branch per repository, as replayed.
+1. **Primary (observed):** **`basher83/lunar-claude`**, tracked in
+   [#87](https://github.com/basher83/lunar-claude/issues/87). It extends only the root preset, pins a language
+   runtime (`python`) and **0.x** tools (`uv`, `ruff`), and had the open grouped PR #84. On 2026-10-13 hosted
+   Renovate held `python` 3.15.0 and the `uv`/`ruff` minors in separate approval branches and rebased #84 to the
+   eight automergeable tool updates, with automerge enabled. The approved PR #88 reported automerge disabled by
+   config. #84 automerged at 22:44 UTC on 2026-10-13 after the consumer's CI passed. PR #89 (`uv`, `ruff`) omits
+   its automerge line, so staying unmerged does not confirm `automerge: false` on its own. The
+   `mise-tools-approval` rule sets that value.[^canary]
+2. **Secondary (not run):** **`Zammad-MCP`** ([#400](https://github.com/basher83/Zammad-MCP/pull/400) `uv` bump):
+   local caps and **uv version pins** grouping on top of the shared rules (replay covers caps and the local group).
+3. **Terraform (pending):** **`Triangulum-Prime`** or **`Supernova-MicroK8s-Infra`**: their two open provider minors
+   should merge into one Monday `Terraform Providers (Minor)` branch per repository, as replayed.
    **`lunar-claude`** has `required_providers` in examples but does **not** extend `terraform-tofu.json`; the
    terraform fix does not apply there.
 
-Record hosted outcomes in `bundle/decisions.md` or a follow-up evidence receipt; do not treat merge alone as proof.
+Approved branches wait for status checks before becoming PRs, because the base preset sets
+`prCreation: "not-pending"`. In a consumer whose workflows run only on pull requests, that means about 25 hours
+(`prNotPendingHours`) unless the operator ticks "unpend" on the dashboard.[^canary]
+
+Record further hosted outcomes in `bundle/decisions.md` or a follow-up evidence receipt; do not treat merge alone
+as proof.
 
 ## Evidence limits
 
@@ -72,7 +80,9 @@ dashboard. Its Terraform replay uses the open provider PRs on `Triangulum-Prime`
 at their inventory revisions; the base-preset run reproduces their live branch names. Terraform `provider` depType
 remains valid for `provider` blocks; `required_provider` is the common case in `required_providers` blocks.[^replay]
 
-[^selection]: D017 records preparation scope; operator merge is the selection and acceptance event.
+[^selection]: D017 records scope and the operator merge of PR #133 that selected and accepted it.
 [^survey]: Authoritative inventory captured 2026-10-12 ET; bossjones repos are out of scope for this repository.
 [^preset]: Shared mise preset implementing runtime/tool split, approval groups, and allowlist.
 [^replay]: Renovate 44.145.1 package-rule and branch-grouping replay; #47 fixture is historical regression evidence only.
+[^canary]: Hosted Renovate observations in lunar-claude on 2026-10-13,
+    including the operator's closing comment on #87.

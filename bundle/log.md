@@ -1,5 +1,12 @@
 # Repository knowledge change log
 
+## 2026-10-14
+
+* **Update**: Corrected the D017 hosted record after lunar-claude #84 automerged at 22:44 UTC on 2026-10-13.
+  The `mise-tools-approval` rule sets `automerge: false` for the `uv`/`ruff` group. PR #89 omitted that line, and
+  at the canary write-up `ci` had failed while `CI` was still running, so staying unmerged does not confirm the
+  setting. Terraform provider matching remains unobserved.
+
 ## 2026-10-13
 
 * **Update**: Recorded the D017 hosted canary in `lunar-claude`

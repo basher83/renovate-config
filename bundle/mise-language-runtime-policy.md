@@ -4,7 +4,7 @@ title: mise language runtime and tool update policy
 description: This policy separates mise language runtimes from allowlisted tools, gates runtime and 0.x tool bumps, and records the lunar-claude hosted canary.
 tags: [presets]
 status: draft
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T16:58:30-04:00 }
+generated: { by: cursor_agent/Grok 4.7, at: 2026-10-14T01:47:07-04:00 }
 sources:
   - id: selection
     resource: /decisions.md#2026-10-13--d017-mise-runtimetool-split-and-terraform-required_provider-matching
@@ -52,7 +52,9 @@ sources:
    runtime (`python`) and **0.x** tools (`uv`, `ruff`), and had the open grouped PR #84. On 2026-10-13 hosted
    Renovate held `python` 3.15.0 and the `uv`/`ruff` minors in separate approval branches and rebased #84 to the
    eight automergeable tool updates, with automerge enabled. The approved PR #88 reported automerge disabled by
-   config. #84 has not automerged because the consumer's own CI already fails on its `main`.[^canary]
+   config. #84 automerged at 22:44 UTC on 2026-10-13 after the consumer's CI passed. PR #89 (`uv`, `ruff`) omits
+   its automerge line, so staying unmerged does not confirm `automerge: false` on its own. The
+   `mise-tools-approval` rule sets that value.[^canary]
 2. **Secondary (not run):** **`Zammad-MCP`** ([#400](https://github.com/basher83/Zammad-MCP/pull/400) `uv` bump):
    local caps and **uv version pins** grouping on top of the shared rules (replay covers caps and the local group).
 3. **Terraform (pending):** **`Triangulum-Prime`** or **`Supernova-MicroK8s-Infra`**: their two open provider minors
@@ -82,4 +84,5 @@ remains valid for `provider` blocks; `required_provider` is the common case in `
 [^survey]: Authoritative inventory captured 2026-10-12 ET; bossjones repos are out of scope for this repository.
 [^preset]: Shared mise preset implementing runtime/tool split, approval groups, and allowlist.
 [^replay]: Renovate 44.145.1 package-rule and branch-grouping replay; #47 fixture is historical regression evidence only.
-[^canary]: Agent-recorded observations of hosted Renovate in lunar-claude, 2026-10-13.
+[^canary]: Hosted Renovate observations in lunar-claude on 2026-10-13,
+    including the operator's closing comment on #87.

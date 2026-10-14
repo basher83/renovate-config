@@ -4,7 +4,7 @@ title: Renovate-config prospective decisions
 description: This record preserves material decisions, their authority, rationale, scope, and revisit conditions.
 tags: [governance]
 status: stable
-generated: { by: claude_agent/Opus 5.5, at: 2026-10-13T16:58:30-04:00 }
+generated: { by: cursor_agent/Grok 4.7, at: 2026-10-14T01:47:07-04:00 }
 sources:
   - id: review-verdicts
     resource: https://github.com/basher83/renovate-config/pull/123#issuecomment-6025792492
@@ -91,7 +91,7 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   approval for a whole branch when any grouped update needs it and automerges a branch only when every grouped update
   does.[^branch-config] Minor/major updates of mise plugins outside both lists require approval in
   `mise plugins (unspecified)`; their patches are neither grouped nor automerged. Match both `required_provider` and
-  `provider` in terraform provider rules. Run a **lunar-claude** hosted mise canary after publication
+  `provider` in terraform provider rules. The **lunar-claude** hosted mise canary completed after publication
   (`personal-computing` no longer extends this preset).
 - **Scope and rationale:** `presets/mise.json`, `presets/terraform-tofu.json`, `default.json`, policy, and survey
   receipts. `vulnerabilityAlerts.minimumReleaseAge: null` in `default.json` restates Renovate's default for
@@ -123,8 +123,10 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   remaining tool updates, kept automerge enabled, and passed `renovate/stability-days`. The `hk` v2 major stayed in
   `renovate/major-mise-tools` without approval. After the operator approved both items, each branch held only its
   expected pins, and PR #88 (`python`) reported automerge disabled by config. PR #89 (`uv`, `ruff`) has a truncated
-  body that omits its automerge line, so only its staying unmerged confirms that result. #84 has not automerged:
-  the consumer's own `ci` check already fails on its `main`. The approved branches also waited under Pending
+  body that omits its automerge line. The `mise-tools-approval` rule sets `automerge: false` for that 0.x minor
+  group. Staying unmerged matches that setting. It does not confirm the setting on its own, because #89's `ci`
+  check had failed and its `CI` check was still running. #84 automerged at 22:44 UTC on 2026-10-13 after the
+  consumer's `ci` check passed on `main`. The approved branches also waited under Pending
   Status Checks until the operator ticked "unpend", because `prCreation: "not-pending"` waits for branch checks and
   this consumer's workflows run only on pull requests; Renovate otherwise opens such PRs after `prNotPendingHours`
   (default 25 hours). Mise lock-file maintenance left the `mise tools` group; its new branch was not observed. The
@@ -133,10 +135,10 @@ Keep routine maintenance records proportionate. Preserve prior rationale when su
   extending `local>basher83/renovate-config` read it from the default branch. The mise split is observed in one
   hosted consumer; the Terraform matching rests on the replay until a provider update runs on a `terraform-tofu`
   consumer.
-- **Revisit conditions:** Observe #84 automerging once `lunar-claude` CI passes, and the next Terraform provider
-  update on `Triangulum-Prime` or `Supernova-MicroK8s-Infra`. Widen the tool allowlist when new mise plugins appear
-  in consumers. Revisit the three-day `minimumReleaseAge` if security patches lag in hosted dashboards, and the
-  `prCreation` setting if approved branches in pull-request-only CI repositories wait too long.
+- **Revisit conditions:** Observe the next Terraform provider update on `Triangulum-Prime` or
+  `Supernova-MicroK8s-Infra`. Widen the tool allowlist when new mise plugins appear in consumers. Revisit the
+  three-day `minimumReleaseAge` if security patches lag in hosted dashboards, and the `prCreation` setting if
+  approved branches in pull-request-only CI repositories wait too long.
 
 ## 2026-10-09 — D016: Replace runner manual merge with automerge
 
@@ -506,7 +508,8 @@ in this record.[^local-contract] [Formatting guidance](/formatting.md) owns the 
 [^branch-config]: Upstream source at the replayed version: any upgrade's approval gates the branch; all must automerge.
 [^d017-inventory]: Read-only inventory of default branches; its three bossjones entries are out of scope.
 [^d017-replay]: Local package-rule replay with branch grouping; it does not run lookup, branchify filtering, or the dashboard.
-[^d017-canary]: Agent-recorded observations of hosted Renovate on the consumer's dashboard, branches, and PRs.
+[^d017-canary]: Hosted Renovate observations on the consumer's dashboard, branches, and PRs,
+    including the operator's closing comment on lunar-claude #87.
 [^amendment-selection]: Exact operator messages and the presented options, extracted from the session transcript.
 [^runner-amendment]: PR body reports the 33-consumer survey; the operator merged it on 2026-10-09.
 [^automerge-replay]: D016 replay with automerge enabled, including the single-update `groupName` trace.

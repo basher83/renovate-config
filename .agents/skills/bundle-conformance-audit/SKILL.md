@@ -50,7 +50,8 @@ Then check what they do not enforce:
   producer from that commit's `Entire-Checkpoint` trailer (`entire checkpoint explain <id> --json` lists
   agent and model). When the checkpoint lists more than one session, leave the stamp and report it.
 - Editing a body is itself a content change: set `generated` to your own harness and model and the current
-  time in the house form, for example `claude_agent/Opus 5.5` or `codex_agent/GPT 6.1 Sol`.
+  time in the house form, for example `claude_agent/Opus 5.5`, `pi_agent/Opus 5.5`, `bb_agent/GPT 6.1 Sol`, 
+  `hermes_agent/GPT 6.1 Sol` or `codex_agent/GPT 6.1 Sol`.
 - Never write an evidence record from your own account of an approval or selection you did not witness.
   For an uncaptured session decision, cite what is addressable, say in the footnote what has no capture,
   and report the gap. A receipt lives in `sources/evaluate/`, outside this audit's scope, so create one

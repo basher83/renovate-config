@@ -1,0 +1,5 @@
+pre-commit is blocking me on trailing-whitespace for an agent skill. All agent dirs should be exempt from this: .claude, .agents, .cursor, .codex, .pi. In fact no pre commit checks should be run on any of those to enclude .entire. pls update
+
+---
+
+commit the pre commit and then i will commit mine

@@ -1,5 +1,8 @@
 minimum_prek_version: "0.2.0"
 
+# Agent tooling directories are exempt from all hooks.
+exclude: ^\.(claude|agents|cursor|codex|pi|entire)/
+
 repos:
   - repo: local
     hooks:

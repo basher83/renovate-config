@@ -301,7 +301,7 @@ Match each claim to a check that can establish it:
 | Effective inherited configuration | Resolved configuration, preset order, and local overrides for an identified consumer | Does not establish a successful update or merge |
 | Observed consumer behavior | Identified consumer logs, update results, checks, and merge conditions | Applies to the observed revision, environment, and time |
 | Policy or prose accepted | Explicit operator decision with scope | Cannot be inferred from lint, metadata, or an agent-written approval marker |
-| Edited documentation checked | Scoped Markdown lint, complete-body review, and local link checks | Does not establish factual accuracy or external link availability |
+| Edited documentation checked | Markdown lint covering the edited files, complete-body review, and local link checks | Does not establish factual accuracy or external link availability |
 
 For a shared preset behavior change, require strict validation and relevant extraction, rule-matching, or
 resolved-configuration evidence from an identified representative consumer before accepting the change for
@@ -311,9 +311,9 @@ imply that exception. One consumer does not prove all consumers or a successful 
 authorized configuration changes, assemble and check the relevant complete configuration against the claims.
 Branch protection and passing checks are merge conditions, not proof that an update is suitable.[^review-rulings]
 
-For documentation-only work, inspect actual linter coverage. The current umbrella task does not explicitly
-cover `bundle/` or AGENTS and excludes `.github`. Use a supported scoped invocation before claiming that edited
-entry points were checked. Do not install tools or broaden machinery merely to turn an unavailable check green.
+For documentation-only work, inspect actual linter coverage. `mise run bundle:lint` covers governed bundle and
+evaluation Markdown, README, and `.github`; it does not cover AGENTS.md or CLAUDE.md. Do not claim lint coverage
+for files outside that set. Do not install tools or broaden machinery merely to turn an unavailable check green.
 
 ## 7. Enforcement and current coverage
 

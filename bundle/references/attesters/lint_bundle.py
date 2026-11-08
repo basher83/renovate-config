@@ -17,7 +17,7 @@ def lint(root: Path) -> int:
     indexes = {path.relative_to(root) for path in (root / "bundle").rglob("index.md")}
     indexes.add(Path("sources/evaluate/index.md"))
     captures = {Path("sources/evaluate") / name for name in SNAPSHOTS if name.endswith(".md")}
-    authored = {Path("AGENTS.md"), Path("README.md")}
+    authored = {Path("README.md")}
     for directory in ("bundle", "sources/evaluate", ".github"):
         authored.update(path.relative_to(root) for path in (root / directory).rglob("*.md"))
     authored -= indexes | captures

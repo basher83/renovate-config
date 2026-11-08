@@ -168,7 +168,7 @@ Source metadata retained in a capture describes its original context, not local 
 ## Verify the edited documents without overstating the result
 
 Check parseable YAML, documented field names and shapes, actor attribution, timestamps, source paths, and keyed
-footnotes. Lint the actual edited files using the scoped invocation in [AGENTS.md](../AGENTS.md). Schema
+footnotes. Lint the edited files with `mise run bundle:lint`. Schema
 acceptance alone does not establish provenance accuracy, operator verification, or policy adoption.
 
 ## Generate governed indexes
